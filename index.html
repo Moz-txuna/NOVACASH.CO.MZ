@@ -117,6 +117,291 @@
         .limit-label-card { font-size: 0.55rem; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 0.5px; }
         .limit-value-card { font-size: 0.85rem; font-weight: 700; color: var(--primary-light); }
         
+        /* FUNDOS DISPONÍVEIS BUTTON */
+        .funds-btn {
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 16px;
+            border: none;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: #1a1a2e;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 0.8rem;
+            position: relative;
+            z-index: 2;
+            letter-spacing: 0.5px;
+        }
+        .funds-btn:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.5);
+        }
+        .funds-btn i { font-size: 1.1rem; }
+
+        /* FUNDOS MODAL */
+        .funds-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(8px);
+            z-index: 20000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem;
+        }
+        .funds-modal-overlay.active { display: flex; }
+        .funds-modal {
+            background: linear-gradient(145deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: 28px;
+            max-width: 480px;
+            width: 100%;
+            padding: 2rem;
+            border: 1px solid rgba(255,255,255,0.15);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+            position: relative;
+            overflow: hidden;
+            animation: modalFadeIn 0.4s ease;
+        }
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: scale(0.9) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .funds-modal::before {
+            content: '';
+            position: absolute;
+            top: -40%;
+            right: -30%;
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(255,215,0,0.12) 0%, rgba(255,215,0,0) 70%);
+            border-radius: 50%;
+        }
+        .funds-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.8rem;
+            position: relative;
+            z-index: 2;
+        }
+        .funds-modal-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .funds-modal-title i { color: #FFD700; }
+        .funds-modal-close {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: rgba(255,255,255,0.6);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .funds-modal-close:hover {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+        .funds-modal-body {
+            position: relative;
+            z-index: 2;
+        }
+        .funds-balance-item {
+            background: rgba(255,255,255,0.06);
+            border-radius: 16px;
+            padding: 1.2rem 1.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(255,255,255,0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .funds-balance-label {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        .funds-balance-value {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: white;
+        }
+        .funds-balance-value.mzn { color: #FFD700; }
+        .funds-balance-value.usd { color: #A7F3D0; }
+        .funds-modal-footer {
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .funds-last-update {
+            color: rgba(255,255,255,0.4);
+            font-size: 0.7rem;
+        }
+        .funds-total-label {
+            color: rgba(255,255,255,0.5);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* REVIEWS SECTION */
+        .reviews-section {
+            padding: 4rem 2rem;
+            background: var(--white);
+        }
+        .reviews-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .reviews-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+        .review-card {
+            background: var(--light);
+            border-radius: var(--border-radius-sm);
+            padding: 1.5rem;
+            transition: var(--transition);
+            border: 1px solid rgba(0,0,0,0.04);
+        }
+        .review-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--box-shadow);
+        }
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.8rem;
+        }
+        .review-name {
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--dark);
+        }
+        .review-stars {
+            color: #FFD700;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+        .review-text {
+            color: var(--gray);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-top: 0.3rem;
+        }
+        .review-date {
+            color: rgba(0,0,0,0.25);
+            font-size: 0.7rem;
+            margin-top: 0.6rem;
+            display: block;
+        }
+
+        .review-form-container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: var(--light);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        .review-form-container h3 {
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+        .review-form-container p {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: 1.2rem;
+        }
+        .review-form .form-group {
+            margin-bottom: 1rem;
+        }
+        .review-form .form-group label {
+            display: block;
+            margin-bottom: 0.4rem;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        .review-form .form-group textarea {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius-sm);
+            font-size: 0.9rem;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 90px;
+        }
+        .review-form .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(255,127,0,0.1);
+        }
+        .star-rating {
+            display: flex;
+            gap: 8px;
+            font-size: 2rem;
+            cursor: pointer;
+            margin-bottom: 0.5rem;
+        }
+        .star-rating i {
+            transition: all 0.2s ease;
+            color: #ddd;
+        }
+        .star-rating i.active,
+        .star-rating i:hover,
+        .star-rating i.hover {
+            color: #FFD700;
+        }
+        .review-form .btn-submit {
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 50px;
+            border: none;
+            background: var(--primary-gradient);
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 8px 20px rgba(255,127,0,0.3);
+        }
+        .review-form .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(255,127,0,0.4);
+        }
+        .review-form .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
         .urgency-banner { background: linear-gradient(135deg, rgba(255,127,0,0.15), rgba(255,215,0,0.1)); border-radius: 60px; padding: 0.6rem 1.2rem; display: inline-flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 1rem; }
         .urgency-badge { background: var(--primary); color: white; padding: 0.25rem 0.8rem; border-radius: 50px; font-size: 0.7rem; font-weight: 700; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 0.7; } 50% { opacity: 1; } }
@@ -212,6 +497,25 @@
         
         /* Remover resposta instantânea das FAQs do chat */
         .faq-answer-chat { display: none !important; }
+
+        /* Review success toast */
+        .review-toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--success);
+            color: white;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+            z-index: 9999;
+            display: none;
+            animation: slideInUp 0.4s ease;
+        }
+        .review-toast.show { display: block; }
     </style>
 </head>
 <body>
@@ -287,13 +591,39 @@
     </div>
 </div>
 
+<!-- FUNDOS DISPONÍVEIS MODAL -->
+<div class="funds-modal-overlay" id="fundsModal">
+    <div class="funds-modal">
+        <div class="funds-modal-header">
+            <div class="funds-modal-title">
+                <i class="fas fa-coins"></i> Fundos Disponíveis
+            </div>
+            <button class="funds-modal-close" id="fundsModalClose">&times;</button>
+        </div>
+        <div class="funds-modal-body">
+            <div class="funds-balance-item">
+                <span class="funds-balance-label">Saldo em Meticais</span>
+                <span class="funds-balance-value mzn" id="fundsBalanceMZN">28.000.000 MT</span>
+            </div>
+            <div class="funds-balance-item">
+                <span class="funds-balance-label">Saldo em Dólares</span>
+                <span class="funds-balance-value usd" id="fundsBalanceUSD">$ 437.500</span>
+            </div>
+            <div class="funds-modal-footer">
+                <span class="funds-total-label">💼 Fundo de Empréstimos</span>
+                <span class="funds-last-update" id="fundsLastUpdate">Atualizado agora</span>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- CONTEÚDO PRINCIPAL -->
 <div id="mainContent" style="display: none;">
     <header>
         <div class="header-container">
             <a href="#" class="logo">💰 NOVA<span style="color: var(--secondary);">CASH.MZ</span></a>
             <button class="nav-toggle" id="navToggle"><i class="fas fa-bars"></i></button>
-            <nav><ul id="navMenu"><li><a href="#home">Início</a></li><li><a href="#como-funciona">Como Funciona</a></li><li><a href="#vantagens">Vantagens</a></li><li><a href="#solicitar">Solicitar</a></li><li><a href="#" id="logoutBtn">Sair</a></li></ul></nav>
+            <nav><ul id="navMenu"><li><a href="#home">Início</a></li><li><a href="#como-funciona">Como Funciona</a></li><li><a href="#vantagens">Vantagens</a></li><li><a href="#solicitar">Solicitar</a></li><li><a href="#avaliacoes">Avaliações</a></li><li><a href="#" id="logoutBtn">Sair</a></li></ul></nav>
         </div>
     </header>
 
@@ -357,6 +687,11 @@
                     <div class="card-name" id="cardUserName">Carregando...</div>
                     <div class="card-phone" id="cardUserPhone"><i class="fas fa-mobile-alt"></i> <span id="cardUserPhoneNumber">---</span></div>
                     <div class="debt-info-card"><div class="debt-label">SALDO EM DÍVIDA</div><div class="debt-amount-card">0,00 MZN</div><span class="debt-status-card"><i class="fas fa-check-circle"></i> Sem dívidas ativas</span></div>
+                    <!-- FUNDOS DISPONÍVEIS BUTTON -->
+                    <button class="funds-btn" id="fundsBtn">
+                        <i class="fas fa-coins"></i> Fundos Disponíveis
+                        <i class="fas fa-chevron-right" style="font-size: 0.7rem;"></i>
+                    </button>
                     <div class="limits-grid"><div class="limit-item-card"><div class="limit-label-card">LIMITE MÁXIMO</div><div class="limit-value-card">300.000 MZN</div></div><div class="limit-item-card"><div class="limit-label-card">LIMITE MÍNIMO</div><div class="limit-value-card">5.000 MZN</div></div><div class="limit-item-card"><div class="limit-label-card">PRAZO</div><div class="limit-value-card">4 a 12 meses</div></div><div class="limit-item-card"><div class="limit-label-card">ANÁLISE</div><div class="limit-value-card">8 a 30 min</div></div></div>
                 </div>
             </div>
@@ -370,6 +705,42 @@
     <section class="trust-section"><div class="section-header"><h2>Segurança e Confiança</h2><p>Plataforma 100% protegida</p></div><div class="trust-grid"><div class="trust-card"><i class="fas fa-clock"></i><h3>Atendimento Rápido</h3><p>Resposta em até 30 minutos</p></div><div class="trust-card"><i class="fas fa-file-alt"></i><h3>Processo Simples</h3><p>Apenas BI e formulário online</p></div><div class="trust-card"><i class="fas fa-lock"></i><h3>Privacidade e Segurança</h3><p>Dados protegidos com criptografia</p></div><div class="trust-card"><i class="fas fa-headset"></i><h3>Suporte ao Cliente</h3><p>Atendimento personalizado</p></div></div><div style="text-align: center; margin-top: 2rem;"><span class="security-seal"><i class="fas fa-shield-alt"></i> Plataforma 100% segura e verificada</span></div></section>
 
     <section class="statistics"><div class="section-header" style="color: white;"><h2 style="color: white;">Nossos Números</h2><p style="color: rgba(255,255,255,0.8);">Confiabilidade comprovada</p></div><div class="stats-grid"><div class="stat-card"><i class="fas fa-users" style="font-size: 2rem; margin-bottom: 1rem;"></i><div class="stat-number" id="statClients">0</div><div>Clientes Satisfeitos</div></div><div class="stat-card"><i class="fas fa-hand-holding-usd" style="font-size: 2rem; margin-bottom: 1rem;"></i><div class="stat-number" id="statLoans">0</div><div>Empréstimos Aprovados</div></div><div class="stat-card"><i class="fas fa-percentage" style="font-size: 2rem; margin-bottom: 1rem;"></i><div class="stat-number" id="statSatisfaction">0</div><div>Taxa de Satisfação</div></div></div></section>
+
+    <!-- REVIEWS SECTION -->
+    <section class="reviews-section" id="avaliacoes">
+        <div class="reviews-container">
+            <div class="section-header">
+                <h2>O que nossos clientes dizem</h2>
+                <p>Avaliações reais de quem já confiou na NOVACASH</p>
+            </div>
+            <div class="reviews-grid" id="reviewsGrid">
+                <!-- Reviews serão inseridos via JavaScript -->
+            </div>
+            
+            <div class="review-form-container">
+                <h3>Deixe sua avaliação</h3>
+                <p>Sua opinião é muito importante para nós!</p>
+                <form class="review-form" id="reviewForm">
+                    <div class="form-group">
+                        <label>Avaliação</label>
+                        <div class="star-rating" id="starRating">
+                            <i class="fas fa-star" data-value="1"></i>
+                            <i class="fas fa-star" data-value="2"></i>
+                            <i class="fas fa-star" data-value="3"></i>
+                            <i class="fas fa-star" data-value="4"></i>
+                            <i class="fas fa-star" data-value="5"></i>
+                        </div>
+                        <input type="hidden" id="reviewRating" value="5">
+                    </div>
+                    <div class="form-group">
+                        <label>Comentário</label>
+                        <textarea id="reviewText" placeholder="Compartilhe sua experiência com a NOVACASH..."></textarea>
+                    </div>
+                    <button type="submit" class="btn-submit" id="reviewSubmitBtn">Publicar Avaliação <i class="fas fa-paper-plane"></i></button>
+                </form>
+            </div>
+        </div>
+    </section>
 
     <section class="faq-section"><div class="section-header"><h2>Perguntas Frequentes</h2></div><div class="faq-list">
         <div class="faq-item"><div class="faq-question">Qual é a localização da empresa? <i class="fas fa-chevron-down"></i></div><div class="faq-answer">Estamos localizados em Maputo, na Baixa da Cidade, Avenida Julius Nyerere. Prestamos os nossos serviços para todo o território nacional de Moçambique.</div></div>
@@ -415,16 +786,287 @@
         </div>
     </section>
 
-    <footer><div class="footer-container"><div><div class="logo" style="margin-bottom: 1rem;">💰 NOVACASH.MZ</div><p>Soluções financeiras rápidas e confiáveis.</p></div><div><h3>Links Rápidos</h3><ul style="list-style: none; margin-top: 1rem;"><li><a href="#home" style="color: white; text-decoration: none;">Início</a></li><li><a href="#solicitar" style="color: white; text-decoration: none;">Solicitar</a></li></ul></div><div><h3>Contactos</h3><p style="margin-top: 1rem;">info@novacash.mz</p><p>+258 84 123 4567</p></div></div><div class="copyright">&copy; 2025 NOVACASH.MZ. Todos os direitos reservados.</div></footer>
+    <footer><div class="footer-container"><div><div class="logo" style="margin-bottom: 1rem;">💰 NOVACASH.MZ</div><p>Soluções financeiras rápidas e confiáveis.</p></div><div><h3>Links Rápidos</h3><ul style="list-style: none; margin-top: 1rem;"><li><a href="#home" style="color: white; text-decoration: none;">Início</a></li><li><a href="#solicitar" style="color: white; text-decoration: none;">Solicitar</a></li><li><a href="#avaliacoes" style="color: white; text-decoration: none;">Avaliações</a></li></ul></div><div><h3>Contactos</h3><p style="margin-top: 1rem;">info@novacash.mz</p><p>+258 84 123 4567</p></div></div><div class="copyright">&copy; 2025 NOVACASH.MZ. Todos os direitos reservados.</div></footer>
 
     <button class="floating-request-btn" id="floatingRequestBtn"><i class="fas fa-hand-holding-usd"></i> Solicitar Agora</button>
     <div id="notificationsContainer" style="position: fixed; bottom: 80px; right: 20px; z-index: 1000;"></div>
 </div>
 
+<!-- REVIEW TOAST -->
+<div class="review-toast" id="reviewToast">✅ Avaliação publicada com sucesso!</div>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const PAYMENT_NUMBER = "876364927";
     const PAYMENT_NAME = "TIOFELO EDSON LUIS JAIELA";
+    
+    // ========== FUNDOS DISPONÍVEIS ==========
+    let availableFunds = 28000000; // 28 milhões em MZN
+    const EXCHANGE_RATE = 64; // 1 USD = 64 MZN
+    
+    function formatNumber(num) {
+        return num.toLocaleString('pt-MZ');
+    }
+    
+    function updateFundsDisplay() {
+        const mznEl = document.getElementById('fundsBalanceMZN');
+        const usdEl = document.getElementById('fundsBalanceUSD');
+        const usdValue = availableFunds / EXCHANGE_RATE;
+        if (mznEl) mznEl.textContent = formatNumber(availableFunds) + ' MT';
+        if (usdEl) usdEl.textContent = '$ ' + formatNumber(Math.round(usdValue));
+        // Update last update time
+        const updateEl = document.getElementById('fundsLastUpdate');
+        if (updateEl) {
+            const now = new Date();
+            updateEl.textContent = 'Atualizado ' + now.toLocaleTimeString('pt-MZ');
+        }
+        // Save to localStorage
+        localStorage.setItem('novacash_funds', availableFunds.toString());
+    }
+    
+    // Load saved funds
+    const savedFunds = localStorage.getItem('novacash_funds');
+    if (savedFunds) {
+        availableFunds = parseInt(savedFunds);
+    }
+    
+    function deductFunds(amount) {
+        if (amount > 0) {
+            availableFunds = Math.max(0, availableFunds - amount);
+            updateFundsDisplay();
+            // Also update localStorage
+            localStorage.setItem('novacash_funds', availableFunds.toString());
+        }
+    }
+    
+    // Fundos modal
+    const fundsBtn = document.getElementById('fundsBtn');
+    const fundsModal = document.getElementById('fundsModal');
+    const fundsModalClose = document.getElementById('fundsModalClose');
+    
+    fundsBtn?.addEventListener('click', function(e) {
+        e.stopPropagation();
+        updateFundsDisplay();
+        fundsModal.classList.add('active');
+    });
+    
+    fundsModalClose?.addEventListener('click', function() {
+        fundsModal.classList.remove('active');
+    });
+    
+    fundsModal?.addEventListener('click', function(e) {
+        if (e.target === this) {
+            fundsModal.classList.remove('active');
+        }
+    });
+    
+    // Update funds when notification appears - intercept the notification system
+    const originalShowNotification = window.showNotification;
+    const notificationAmounts = [5000, 10000, 25000, 50000, 100000, 150000, 200000, 300000];
+    
+    // Override notification to deduct funds
+    const origShowNotif = function() {
+        const name = firstNames[Math.floor(Math.random() * firstNames.length)] + ' ' + lastNames[Math.floor(Math.random() * lastNames.length)];
+        const amount = notificationAmounts[Math.floor(Math.random() * notificationAmounts.length)];
+        const methods = ['M-Pesa', 'E-Mola', 'Banco'];
+        const method = methods[Math.floor(Math.random() * 3)];
+        const container = document.getElementById('notificationsContainer');
+        if (!container) return;
+        const notif = document.createElement('div');
+        notif.className = 'live-notification';
+        notif.innerHTML = `<div style="width:40px;height:40px;background:rgba(255,127,0,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;"><i class="fas fa-hand-holding-usd" style="color:var(--primary);font-size:1.2rem;"></i></div><div style="flex:1"><strong>${name} recebeu ${amount.toLocaleString('pt-MZ')} MZN</strong><small style="display:block;color:var(--gray);margin-top:4px;">via ${method} ✅</small></div><button class="notification-close" style="background:none;border:none;color:var(--gray);cursor:pointer;">&times;</button>`;
+        container.appendChild(notif);
+        notif.querySelector('.notification-close')?.addEventListener('click', () => notif.remove());
+        setTimeout(() => notif.remove(), 8000);
+        
+        // DEDUCT FROM FUNDS
+        deductFunds(amount);
+    };
+    
+    // Override the notification function
+    const firstNames = ['João', 'Carla', 'Ernesto', 'Marta', 'António', 'Filomena', 'Carlos', 'Ana', 'Paulo', 'Rosa', 'José', 'Lúcia', 'Manuel', 'Isabel', 'Fernando'];
+    const lastNames = ['Matola', 'Mucavele', 'Macamo', 'Chongo', 'Sitoe', 'Langa', 'Nhaca', 'Munguambe', 'Chicava', 'Zandamela'];
+    
+    // Override showNotification
+    window.showNotification = function() {
+        const name = firstNames[Math.floor(Math.random() * firstNames.length)] + ' ' + lastNames[Math.floor(Math.random() * lastNames.length)];
+        const amount = notificationAmounts[Math.floor(Math.random() * notificationAmounts.length)];
+        const methods = ['M-Pesa', 'E-Mola', 'Banco'];
+        const method = methods[Math.floor(Math.random() * 3)];
+        const container = document.getElementById('notificationsContainer');
+        if (!container) return;
+        const notif = document.createElement('div');
+        notif.className = 'live-notification';
+        notif.innerHTML = `<div style="width:40px;height:40px;background:rgba(255,127,0,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;"><i class="fas fa-hand-holding-usd" style="color:var(--primary);font-size:1.2rem;"></i></div><div style="flex:1"><strong>${name} recebeu ${amount.toLocaleString('pt-MZ')} MZN</strong><small style="display:block;color:var(--gray);margin-top:4px;">via ${method} ✅</small></div><button class="notification-close" style="background:none;border:none;color:var(--gray);cursor:pointer;">&times;</button>`;
+        container.appendChild(notif);
+        notif.querySelector('.notification-close')?.addEventListener('click', () => notif.remove());
+        setTimeout(() => notif.remove(), 8000);
+        
+        // DEDUCT FROM FUNDS
+        deductFunds(amount);
+    };
+    
+    // Initial display
+    updateFundsDisplay();
+    
+    // ========== REVIEWS SYSTEM ==========
+    const REVIEWS_STORAGE_KEY = 'novacash_reviews';
+    
+    // Initial reviews
+    const defaultReviews = [
+        { name: 'João Matola', rating: 5, text: 'Excelente serviço! Recebi o meu empréstimo em menos de 20 minutos. Recomendo a todos que precisam de dinheiro rápido com segurança.', date: '2025-01-15' },
+        { name: 'Carla Mucavele', rating: 5, text: 'Fui muito bem atendida, processo simples e transparente. O dinheiro caiu na minha conta M-Pesa rapidinho. Nota 10!', date: '2025-01-18' },
+        { name: 'Ernesto Macamo', rating: 4, text: 'Gostei muito da experiência. O suporte é rápido e as condições são justas. Única coisa é que a taxa poderia ser um pouco menor.', date: '2025-01-20' },
+        { name: 'Marta Chongo', rating: 5, text: 'Salvou-me na hora certa. Aprovação super rápida e sem burocracia. Já indiquei para vários amigos.', date: '2025-01-22' },
+        { name: 'António Sitoe', rating: 4, text: 'Bom serviço, confiável e seguro. O processo é bem explicado e a equipe é atenciosa.', date: '2025-01-25' },
+        { name: 'Filomena Langa', rating: 5, text: 'Melhor plataforma de empréstimos em Moçambique! Já usei duas vezes e sempre fui atendida com rapidez e profissionalismo.', date: '2025-01-28' },
+        { name: 'Carlos Nhaca', rating: 5, text: 'Muito satisfeito com o serviço. A taxa de juros é justa e o processo é muito transparente. Recomendo!', date: '2025-02-01' },
+        { name: 'Ana Munguambe', rating: 4, text: 'Atendimento excelente, o pessoal é muito educado e tirou todas as minhas dúvidas. O dinheiro chegou no prazo.', date: '2025-02-03' }
+    ];
+    
+    // Load reviews from localStorage
+    let reviews = [];
+    const savedReviews = localStorage.getItem(REVIEWS_STORAGE_KEY);
+    if (savedReviews) {
+        try {
+            reviews = JSON.parse(savedReviews);
+        } catch(e) {
+            reviews = [...defaultReviews];
+        }
+    } else {
+        reviews = [...defaultReviews];
+        localStorage.setItem(REVIEWS_STORAGE_KEY, JSON.stringify(reviews));
+    }
+    
+    function renderReviews() {
+        const grid = document.getElementById('reviewsGrid');
+        if (!grid) return;
+        grid.innerHTML = '';
+        // Show latest reviews first
+        const sorted = [...reviews].reverse();
+        sorted.forEach(review => {
+            const card = document.createElement('div');
+            card.className = 'review-card';
+            const starsHtml = '★'.repeat(Math.floor(review.rating)) + '☆'.repeat(5 - Math.floor(review.rating));
+            card.innerHTML = `
+                <div class="review-header">
+                    <span class="review-name">${review.name}</span>
+                    <span class="review-stars">${starsHtml}</span>
+                </div>
+                <div class="review-text">${review.text}</div>
+                <span class="review-date">${review.date || new Date().toLocaleDateString('pt-MZ')}</span>
+            `;
+            grid.appendChild(card);
+        });
+    }
+    
+    function addReview(name, rating, text) {
+        const review = {
+            name: name,
+            rating: rating,
+            text: text,
+            date: new Date().toLocaleDateString('pt-MZ')
+        };
+        reviews.push(review);
+        localStorage.setItem(REVIEWS_STORAGE_KEY, JSON.stringify(reviews));
+        renderReviews();
+    }
+    
+    // Render initial reviews
+    renderReviews();
+    
+    // Star rating system
+    const stars = document.querySelectorAll('#starRating i');
+    const ratingInput = document.getElementById('reviewRating');
+    
+    stars.forEach(star => {
+        star.addEventListener('click', function() {
+            const value = parseInt(this.dataset.value);
+            ratingInput.value = value;
+            stars.forEach(s => {
+                const val = parseInt(s.dataset.value);
+                if (val <= value) {
+                    s.classList.add('active');
+                } else {
+                    s.classList.remove('active');
+                }
+            });
+        });
+        
+        star.addEventListener('mouseenter', function() {
+            const value = parseInt(this.dataset.value);
+            stars.forEach(s => {
+                const val = parseInt(s.dataset.value);
+                if (val <= value) {
+                    s.classList.add('hover');
+                } else {
+                    s.classList.remove('hover');
+                }
+            });
+        });
+        
+        star.addEventListener('mouseleave', function() {
+            stars.forEach(s => s.classList.remove('hover'));
+        });
+    });
+    
+    // Set default rating (5 stars)
+    ratingInput.value = 5;
+    stars.forEach(s => {
+        if (parseInt(s.dataset.value) <= 5) s.classList.add('active');
+    });
+    
+    // Review form submission
+    const reviewForm = document.getElementById('reviewForm');
+    const reviewSubmitBtn = document.getElementById('reviewSubmitBtn');
+    const reviewText = document.getElementById('reviewText');
+    const reviewToast = document.getElementById('reviewToast');
+    
+    reviewForm?.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Get current user
+        const session = sessionStorage.getItem('novacash_session');
+        if (!session) {
+            alert('Por favor, faça login para publicar uma avaliação.');
+            return;
+        }
+        
+        const user = JSON.parse(session);
+        const userName = user.fullName || user.phone || 'Cliente NOVACASH';
+        const rating = parseInt(ratingInput.value) || 5;
+        const text = reviewText.value.trim();
+        
+        if (!text) {
+            alert('Por favor, escreva um comentário.');
+            return;
+        }
+        
+        // Add review
+        addReview(userName, rating, text);
+        
+        // Show toast
+        reviewToast.classList.add('show');
+        setTimeout(() => {
+            reviewToast.classList.remove('show');
+        }, 3000);
+        
+        // Reset form
+        reviewText.value = '';
+        ratingInput.value = 5;
+        stars.forEach(s => {
+            if (parseInt(s.dataset.value) <= 5) {
+                s.classList.add('active');
+            } else {
+                s.classList.remove('active');
+            }
+        });
+        
+        // Scroll to reviews
+        document.getElementById('avaliacoes')?.scrollIntoView({ behavior: 'smooth' });
+    });
+    
+    // ========== EXISTING FUNCTIONALITY ==========
     
     let users = JSON.parse(localStorage.getItem('novacash_users')) || [];
     let currentUser = null;
@@ -512,7 +1154,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     document.getElementById('logoutBtn')?.addEventListener('click', () => { sessionStorage.removeItem('novacash_session'); document.getElementById('mainContent').style.display = 'none'; document.getElementById('mainLoginOverlay').style.display = 'flex'; });
     
-    // ========== CHAT MELHORADO ==========
+    // ========== CHAT ==========
     const chatBtn = document.getElementById('chatBotBtn');
     const chatWin = document.getElementById('chatWindow');
     chatBtn?.addEventListener('click', () => { chatWin.style.display = chatWin.style.display === 'flex' ? 'none' : 'flex'; });
@@ -522,7 +1164,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const chatInput = document.getElementById('chatUserInput');
     const sendBtn = document.getElementById('sendChatBtn');
     
-    // Contador de utilizadores online (entre 20 e 50)
     let onlineUsers = 24;
     const onlineSpan = document.getElementById('onlineUsersCount');
     function updateOnlineCount() {
@@ -532,7 +1173,6 @@ document.addEventListener('DOMContentLoaded', function() {
     updateOnlineCount();
     setInterval(updateOnlineCount, 25000);
     
-    // Função para remover mensagens antigas após 50 segundos
     function scheduleMessageRemoval(msgElement) {
         setTimeout(() => {
             if (msgElement && msgElement.parentNode) {
@@ -558,8 +1198,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         chatMessages.appendChild(msgDiv);
         chatMessages.scrollTop = chatMessages.scrollHeight;
-        
-        // Agendar remoção após 50 segundos
         scheduleMessageRemoval(msgDiv);
     }
     
@@ -573,8 +1211,6 @@ document.addEventListener('DOMContentLoaded', function() {
         typingDiv.innerHTML = `<span>✍️ ${displayName} está ${isAdmin ? 'respondendo' : 'escrevendo'}...</span><div class="dots"><span></span><span></span><span></span></div>`;
         chatMessages.appendChild(typingDiv);
         chatMessages.scrollTop = chatMessages.scrollHeight;
-        
-        // Agendar remoção do indicador se ele ficar muito tempo
         setTimeout(() => {
             if (typingDiv && typingDiv.parentNode) {
                 typingDiv.remove();
@@ -583,7 +1219,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
         }, 15000);
-        
         return typingDiv;
     }
     
@@ -599,10 +1234,8 @@ document.addEventListener('DOMContentLoaded', function() {
     let simulationActive = true;
     let simulationTimeout = null;
     
-    // Lista de clientes variados
     const clientNames = ["Pedro", "Maria", "António", "Celina", "Joaquim", "Fátima", "Carlos", "Elisa", "Paulo", "Rosa", "Mateus", "Helena", "Fernando", "Isabel", "Lúcio"];
     
-    // Lista expandida de conversas com as novas perguntas
     const conversations = [
         { question: "Quanto tempo demora para receber o empréstimo?", answer: "O tempo de recebimento do empréstimo varia normalmente entre 8 e 30 minutos após a conclusão das etapas necessárias e validação das informações fornecidas pelo cliente." },
         { question: "Por que preciso pagar a taxa de inscrição?", answer: "A taxa de inscrição varia entre 514 MT e 3.099 MT, dependendo do valor do empréstimo solicitado. Esta taxa cobre os custos de análise de crédito, validação dos dados e processamento do pedido. O pagamento é efetuado apenas uma vez, durante a solicitação do empréstimo. Este valor não é descontado nem reduz o valor do empréstimo aprovado." },
@@ -656,7 +1289,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const conv = getRandomConversation();
         const clientName = getRandomClientName();
         
-        // Cliente digitando
         const clientTypingIndicator = addTypingIndicator(clientName, false);
         const clientTypingDuration = Math.floor(Math.random() * 5000) + 3000;
         
@@ -667,7 +1299,6 @@ document.addEventListener('DOMContentLoaded', function() {
             isTypingActive = false;
             addMessage(conv.question, false, false, clientName);
             
-            // ADM digitando
             setTimeout(() => {
                 if (!simulationActive) return;
                 const adminTypingIndicator = addTypingIndicator("ADM", true);
@@ -680,7 +1311,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     isTypingActive = false;
                     addMessage(conv.answer, false, true, null);
                     
-                    // Agendar próxima conversa
                     if (simulationTimeout) clearTimeout(simulationTimeout);
                     const nextDelay = Math.floor(Math.random() * 10000) + 25000;
                     simulationTimeout = setTimeout(() => {
@@ -691,7 +1321,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }, clientTypingDuration);
     }
     
-    // Iniciar simulação
     let startDelay = Math.floor(Math.random() * 10000) + 5000;
     setTimeout(() => {
         if (chatWin && chatWin.style.display === 'flex') {
@@ -699,7 +1328,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }, startDelay);
     
-    // Resposta do chat quando usuário envia mensagem
     function getUserBotResponse(input) {
         const lower = input.toLowerCase();
         if (lower.includes('tempo') || lower.includes('demora') || lower.includes('receber')) return 'O tempo de recebimento do empréstimo varia normalmente entre 8 e 30 minutos após a conclusão das etapas necessárias e validação das informações fornecidas pelo cliente.';
@@ -755,7 +1383,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     chatInput?.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendBtn.click(); });
     
-    // Perguntas frequentes do chat - SEM resposta instantânea
     document.querySelectorAll('.faq-chat-item').forEach(item => {
         item.addEventListener('click', function() {
             const question = this.getAttribute('data-question');
@@ -844,24 +1471,19 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('biBack')?.addEventListener('change', function() { previewImage(this, 'biBackPreview'); });
     document.getElementById('paymentProof')?.addEventListener('change', function() { previewImage(this, 'paymentProofPreview'); });
     
-    // Notificações
-    const firstNames = ['João', 'Carla', 'Ernesto', 'Marta', 'António', 'Filomena'];
-    const lastNames = ['Matola', 'Mucavele', 'Macamo', 'Chongo', 'Sitoe'];
-    function showNotification() {
-        const name = firstNames[Math.floor(Math.random() * firstNames.length)] + ' ' + lastNames[Math.floor(Math.random() * lastNames.length)];
-        const amount = [5000, 10000, 25000, 50000, 100000][Math.floor(Math.random() * 5)];
-        const methods = ['M-Pesa', 'E-Mola', 'Banco'];
-        const method = methods[Math.floor(Math.random() * 3)];
-        const container = document.getElementById('notificationsContainer');
-        if (!container) return;
-        const notif = document.createElement('div');
-        notif.className = 'live-notification';
-        notif.innerHTML = `<div style="width:40px;height:40px;background:rgba(255,127,0,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;"><i class="fas fa-hand-holding-usd" style="color:var(--primary);font-size:1.2rem;"></i></div><div style="flex:1"><strong>${name} recebeu ${amount.toLocaleString('pt-MZ')} MZN</strong><small style="display:block;color:var(--gray);margin-top:4px;">via ${method} ✅</small></div><button class="notification-close" style="background:none;border:none;color:var(--gray);cursor:pointer;">&times;</button>`;
-        container.appendChild(notif);
-        notif.querySelector('.notification-close')?.addEventListener('click', () => notif.remove());
-        setTimeout(() => notif.remove(), 8000);
-    }
-    setTimeout(function schedule() { showNotification(); setTimeout(schedule, 25000 + Math.random() * 5000); }, 3000);
+    // Notifications
+    let notificationInterval = setInterval(() => {
+        if (window.showNotification) {
+            window.showNotification();
+        }
+    }, 25000 + Math.random() * 5000);
+    
+    // Initial notification after 3 seconds
+    setTimeout(() => {
+        if (window.showNotification) {
+            window.showNotification();
+        }
+    }, 3000);
     
     // Estatísticas animadas
     function animateValue(el, start, end, suffix = '') {

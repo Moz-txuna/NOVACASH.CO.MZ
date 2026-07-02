@@ -2240,9 +2240,7 @@
         setTimeout(showLoanNotification, 3000);
         setTimeout(showLoanNotification, 8000);
 
-        // ============================================================
-        // LOGIN COM 7 SEGUNDOS - ACEITA QUALQUER NOME/TELEFONE
-        // ============================================================
+       
         document.getElementById('loginFormApp').addEventListener('submit', function(e) {
             e.preventDefault();
 
@@ -2336,9 +2334,7 @@
             }, 1000);
         });
 
-        // ============================================================
-        // REGISTER - Cria conta com senha opcional
-        // ============================================================
+        
         document.getElementById('registerFormApp').addEventListener('submit', function(e) {
             e.preventDefault();
             const fullName = document.getElementById('regNameApp').value.trim();
@@ -2373,9 +2369,7 @@
             document.getElementById('loginNameApp').value = fullName;
         });
 
-        // ============================================================
-        // SWITCH SCREENS
-        // ============================================================
+        
         document.getElementById('showRegisterApp').addEventListener('click', (e) => {
             e.preventDefault();
             document.getElementById('loginScreen').classList.add('hide');
@@ -2388,9 +2382,7 @@
             document.getElementById('loginScreen').classList.remove('hide');
         });
 
-        // ============================================================
-        // LOGOUT
-        // ============================================================
+    
         document.getElementById('profileLogoutBtn').addEventListener('click', () => {
             sessionStorage.removeItem('novacash_session');
             currentUser = null;
@@ -2399,9 +2391,7 @@
             showToast('Sessão encerrada', 'info');
         });
 
-        // ============================================================
-        // DASHBOARD UPDATE
-        // ============================================================
+        
         function updateDashboard(user) {
             if (!user) return;
             const nameParts = user.fullName.split(' ');
@@ -2445,9 +2435,7 @@
             renderReviews();
         }
 
-        // ============================================================
-        // REVIEWS SYSTEM
-        // ============================================================
+        
         const REVIEWS_KEY = 'novacash_reviews';
         let allReviews = JSON.parse(localStorage.getItem(REVIEWS_KEY)) || [];
 
@@ -2534,9 +2522,7 @@
 
         renderReviews();
 
-        // ============================================================
-        // LOAN SIMULATOR
-        // ============================================================
+      
         const simAmount = document.getElementById('simAmount');
         const simTerm = document.getElementById('simTerm');
 
@@ -2575,9 +2561,7 @@
         simTerm.addEventListener('input', updateSimulator);
         updateSimulator();
 
-        // ============================================================
-        // STEP NAVIGATION
-        // ============================================================
+        
         let currentStep = 1;
         const stepDots = document.querySelectorAll('.step-dot');
         const stepContents = document.querySelectorAll('.step-content');
@@ -2640,9 +2624,7 @@
             previewFile(this, 'proofPreviewApp');
         });
 
-        // ============================================================
-        // UPDATE SUMMARY
-        // ============================================================
+        
         function updateSummary() {
             const name = document.getElementById('loanFullName').value.trim() || '---';
             const phone = document.getElementById('loanPhone').value.trim() || '---';
@@ -2677,18 +2659,13 @@
         simAmount.addEventListener('input', updateSummary);
         simTerm.addEventListener('input', updateSummary);
 
-        // ============================================================
-        // BOTÃO EFETUAR PAGAMENTO
-        // ============================================================
         document.getElementById('payFeeBtn').addEventListener('click', function() {
             const method = document.querySelector('.pm-item.active')?.dataset.method || 'M-Pesa';
             const code = method === 'E-Mola' ? '*898#' : '*150#';
             window.location.href = 'tel:' + code;
         });
 
-        // ============================================================
-        // SUBMIT LOAN (30 segundos)
-        // ============================================================
+       
         document.getElementById('submitLoanApp').addEventListener('click', function() {
             if (!currentUser) {
                 showToast('Faça login para solicitar', 'error');
@@ -2796,9 +2773,7 @@
             }, 1000);
         });
 
-        // ============================================================
-        // HISTORY
-        // ============================================================
+        
         function updateHistory() {
             const container = document.getElementById('historyList');
             if (!currentUser || !currentUser.loans || currentUser.loans.length === 0) {
@@ -2831,9 +2806,7 @@
             });
         }
 
-        // ============================================================
-        // NOTIFICATIONS
-        // ============================================================
+       
         function updateNotifications() {
             const container = document.getElementById('notifList');
             const notifs = currentUser?.notifs || [];
@@ -2874,9 +2847,7 @@
             updateNotifications();
         }
 
-        // ============================================================
-        // POPUP
-        // ============================================================
+        
         function showPopup(text) {
             const popup = document.getElementById('notifPopup');
             document.getElementById('popupText').textContent = text;
@@ -2887,9 +2858,7 @@
             document.getElementById('notifPopup').classList.remove('show');
         });
 
-        // ============================================================
-        // CHAT SYSTEM
-        // ============================================================
+        
         const chatFab = document.getElementById('chatFab');
         const chatWindow = document.getElementById('chatWindowApp');
         const chatClose = document.getElementById('chatCloseApp');
@@ -2977,9 +2946,7 @@
             });
         });
 
-        // ============================================================
-        // FUNDS MODAL
-        // ============================================================
+       
         document.getElementById('fundsBtnCard').addEventListener('click', function(e) {
             e.stopPropagation();
             updateFundsDisplay();
@@ -2996,9 +2963,6 @@
             }
         });
 
-        // ============================================================
-        // NAVIGATION SHORTCUTS
-        // ============================================================
         document.getElementById('seeAllActivity').addEventListener('click', () => {
             navigateTo('pageHistory');
             updateHistory();
@@ -3051,9 +3015,7 @@
             if (e.target === modalOverlay) modalOverlay.classList.remove('active');
         });
 
-        // ============================================================
-        // PROFILE MENU
-        // ============================================================
+       
         document.getElementById('profileEditBtn').addEventListener('click', () => {
             openModal('Editar Perfil', `
                 <div class="form-group">
@@ -3187,9 +3149,6 @@
             `);
         });
 
-        // ============================================================
-        // SPLASH
-        // ============================================================
         setTimeout(() => {
             document.getElementById('splashScreen').classList.add('hide');
             setTimeout(() => {
@@ -3200,9 +3159,7 @@
             }, 600);
         }, 1800);
 
-        // ============================================================
-        // INIT
-        // ============================================================
+       
         if (currentUser) {
             updateDashboard(currentUser);
             updateHistory();

@@ -1,214 +1,3110 @@
-              ```html
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NOVACASH - Manutenção</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#FF7F00">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>NOVACASH.MZ - Fintech</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* ===== RESET & VARIABLES ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        :root {
+            --primary: #FF7F00;
+            --primary-dark: #E66A00;
+            --primary-light: #FFA347;
+            --primary-gradient: linear-gradient(135deg, #FF7F00 0%, #FFB347 100%);
+            --secondary: #FFD700;
+            --white: #FFFFFF;
+            --light: #F5F7FA;
+            --dark: #0A0A0F;
+            --gray: #6B7280;
+            --gray-light: #E5E7EB;
+            --success: #10B981;
+            --error: #EF4444;
+            --shadow: 0 4px 20px rgba(0,0,0,0.08);
+            --shadow-lg: 0 10px 40px rgba(0,0,0,0.12);
+            --shadow-xl: 0 20px 60px rgba(0,0,0,0.15);
+            --radius: 16px;
+            --radius-lg: 24px;
+            --radius-xl: 32px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        body { font-family: 'Inter', sans-serif; background: var(--light); color: var(--dark); overflow-x: hidden; }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+        /* ===== SPLASH ===== */
+        #splashScreen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--primary-gradient);
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            z-index: 99999;
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        #splashScreen.hide { opacity: 0; transform: scale(1.05); pointer-events: none; }
+        #splashScreen .logo-splash { font-size: 3.5rem; font-weight: 900; color: white; letter-spacing: -1px; }
+        #splashScreen .logo-splash span { color: var(--secondary); }
+        #splashScreen .sub-splash { color: rgba(255,255,255,0.7); margin-top: 0.5rem; font-weight: 500; }
+        #splashScreen .loader-splash { margin-top: 2rem; width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.2); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
-<style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:'Inter',sans-serif;
-}
+        /* ===== APP SHELL ===== */
+        #app { display: none; height: 100vh; max-height: 100vh; overflow: hidden; background: var(--light); }
+        #app.active { display: flex; flex-direction: column; }
 
-body{
-    min-height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    background:linear-gradient(135deg,#ff7b00,#ffb347);
-    overflow:hidden;
-}
+        /* ===== STATUS BAR ===== */
+        .status-bar {
+            background: var(--primary-gradient);
+            padding: 0.5rem 1.2rem 0.3rem;
+            display: flex;
+            justify-content: space-between;
+            color: rgba(255,255,255,0.8);
+            font-size: 0.6rem;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            flex-shrink: 0;
+        }
+        .status-bar .time { color: white; font-weight: 700; }
+        .status-bar .icons { display: flex; gap: 6px; font-size: 0.7rem; }
 
-.bg-circle{
-    position:absolute;
-    border-radius:50%;
-    background:rgba(255,255,255,0.08);
-}
+        /* ===== HEADER ===== */
+        .app-header {
+            background: var(--white);
+            padding: 0.8rem 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(0,0,0,0.04);
+            flex-shrink: 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .app-header .logo-mini {
+            font-size: 1.2rem;
+            font-weight: 800;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .app-header .header-actions { display: flex; gap: 0.8rem; align-items: center; }
+        .app-header .header-actions .icon-btn {
+            background: none; border: none;
+            font-size: 1.2rem; color: var(--gray);
+            cursor: pointer; padding: 0.3rem;
+            border-radius: 50%;
+            transition: var(--transition);
+            position: relative;
+        }
+        .app-header .header-actions .icon-btn:hover { background: var(--light); }
+        .app-header .header-actions .icon-btn .badge {
+            position: absolute; top: -2px; right: -2px;
+            background: var(--error); color: white;
+            font-size: 0.5rem; font-weight: 700;
+            width: 18px; height: 18px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .app-header .profile-avatar {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            display: flex;
+            align-items: center; justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            border: 2px solid var(--primary-light);
+            transition: var(--transition);
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+        .app-header .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .app-header .profile-avatar:hover { transform: scale(1.05); }
 
-.circle1{
-    width:350px;
-    height:350px;
-    top:-100px;
-    right:-100px;
-}
+        /* ===== BOTTOM NAV ===== */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--white);
+            border-top: 1px solid rgba(0,0,0,0.06);
+            display: flex;
+            justify-content: space-around;
+            padding: 0.4rem 0 0.6rem;
+            z-index: 1000;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
+            flex-shrink: 0;
+            backdrop-filter: blur(10px);
+            background: rgba(255,255,255,0.95);
+        }
+        .bottom-nav .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.2rem 0.8rem;
+            color: var(--gray);
+            transition: var(--transition);
+            position: relative;
+            font-size: 0.6rem;
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
+            flex: 1;
+            max-width: 72px;
+        }
+        .bottom-nav .nav-item i { font-size: 1.3rem; transition: var(--transition); }
+        .bottom-nav .nav-item.active { color: var(--primary); }
+        .bottom-nav .nav-item.active i { transform: translateY(-2px); }
+        .bottom-nav .nav-item .nav-badge {
+            position: absolute; top: -4px; right: 4px;
+            background: var(--error); color: white;
+            font-size: 0.5rem; font-weight: 700;
+            width: 18px; height: 18px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .bottom-nav .nav-item .nav-label { font-size: 0.55rem; }
 
-.circle2{
-    width:250px;
-    height:250px;
-    bottom:-80px;
-    left:-80px;
-}
+        /* ===== PAGES ===== */
+        .page { display: none; animation: fadeSlideUp 0.3s ease; }
+        .page.active { display: block; }
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .app-content {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 1rem 1.2rem 5rem;
+            -webkit-overflow-scrolling: touch;
+        }
+        .app-content::-webkit-scrollbar { width: 0; }
 
-.card{
-    width:90%;
-    max-width:500px;
-    background:rgba(255,255,255,0.12);
-    backdrop-filter:blur(15px);
-    border:1px solid rgba(255,255,255,0.2);
-    border-radius:30px;
-    padding:40px 30px;
-    text-align:center;
-    color:#fff;
-    box-shadow:0 20px 50px rgba(0,0,0,0.2);
-}
+        /* ===== GREETING ===== */
+        .greeting-section { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem; }
+        .greeting-section h1 { font-size: 1.3rem; font-weight: 700; }
+        .greeting-section h1 span { color: var(--primary); }
+        .greeting-section p { color: var(--gray); font-size: 0.8rem; margin-top: 0.1rem; }
 
-.logo{
-    font-size:38px;
-    font-weight:800;
-    margin-bottom:10px;
-}
+        /* ===== PREMIUM BANK CARD ===== */
+        .bank-card-premium {
+            background: linear-gradient(145deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            color: white;
+            margin-bottom: 1.2rem;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: var(--shadow-lg);
+        }
+        .bank-card-premium::before {
+            content: '';
+            position: absolute;
+            top: -40%;
+            right: -20%;
+            width: 250px;
+            height: 250px;
+            background: radial-gradient(circle, rgba(255,127,0,0.15) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        .bank-card-premium .card-chip-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.8rem;
+            position: relative;
+            z-index: 1;
+        }
+        .bank-card-premium .card-chip-row .chip {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            padding: 0.2rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .bank-card-premium .card-chip-row .card-type {
+            font-size: 0.6rem;
+            font-weight: 600;
+            background: rgba(255,255,255,0.15);
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            letter-spacing: 0.5px;
+        }
+        .bank-card-premium .card-user-row {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+        .bank-card-premium .card-user-row .user-avatar-card {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.3);
+            overflow: hidden;
+            flex-shrink: 0;
+            background: var(--primary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        .bank-card-premium .card-user-row .user-avatar-card img { width: 100%; height: 100%; object-fit: cover; }
+        .bank-card-premium .card-user-row .user-info .user-name { font-size: 1.1rem; font-weight: 700; }
+        .bank-card-premium .card-user-row .user-info .user-phone { font-size: 0.7rem; color: rgba(255,255,255,0.6); }
+        .bank-card-premium .card-debt {
+            background: rgba(255,255,255,0.08);
+            border-radius: var(--radius);
+            padding: 0.8rem 1rem;
+            margin: 0.8rem 0;
+            position: relative;
+            z-index: 1;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+        .bank-card-premium .card-debt .debt-label {
+            font-size: 0.6rem;
+            color: rgba(255,255,255,0.5);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .bank-card-premium .card-debt .debt-amount {
+            font-size: 1.6rem;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+        .bank-card-premium .card-debt .debt-status {
+            display: inline-block;
+            background: rgba(16,185,129,0.2);
+            color: #A7F3D0;
+            padding: 0.15rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            margin-top: 0.2rem;
+        }
+        .bank-card-premium .funds-btn-card {
+            width: 100%;
+            padding: 0.7rem;
+            border-radius: var(--radius);
+            border: none;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: #1a1a2e;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(255,215,0,0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            position: relative;
+            z-index: 1;
+        }
+        .bank-card-premium .funds-btn-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255,215,0,0.4);
+        }
+        .bank-card-premium .card-limits {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.5rem;
+            margin-top: 0.8rem;
+            position: relative;
+            z-index: 1;
+        }
+        .bank-card-premium .card-limits .limit-item {
+            background: rgba(255,255,255,0.06);
+            border-radius: 10px;
+            padding: 0.4rem;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+        .bank-card-premium .card-limits .limit-item .limit-label {
+            font-size: 0.5rem;
+            color: rgba(255,255,255,0.5);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .bank-card-premium .card-limits .limit-item .limit-value {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--primary-light);
+        }
 
-.icon{
-    font-size:70px;
-    margin-bottom:20px;
-}
+        /* ===== LOAN BUTTON ===== */
+        .loan-btn-main {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: var(--radius);
+            background: var(--primary-gradient);
+            color: white;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 20px rgba(255,127,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+            margin-bottom: 1.2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .loan-btn-main:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(255,127,0,0.4);
+        }
+        .loan-btn-main::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: rotate(45deg);
+            animation: shimmer 3s infinite;
+        }
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
+        }
+        .loan-btn-main i { font-size: 1.2rem; }
 
-h2{
-    font-size:30px;
-    margin-bottom:15px;
-}
+        /* ===== QUICK STATS ===== */
+        .quick-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; margin-bottom: 1.2rem; }
+        .quick-stat {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 0.8rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(0,0,0,0.04);
+        }
+        .quick-stat .stat-icon { font-size: 1.2rem; color: var(--primary); margin-bottom: 0.2rem; }
+        .quick-stat .stat-value { font-size: 1rem; font-weight: 700; }
+        .quick-stat .stat-label { font-size: 0.6rem; color: var(--gray); }
 
-p{
-    line-height:1.7;
-    opacity:.95;
-    margin-bottom:25px;
-}
+        /* ===== ACTIVITY ===== */
+        .section-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin: 1.2rem 0 0.8rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .section-title .see-all {
+            font-size: 0.7rem;
+            color: var(--primary);
+            font-weight: 600;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+        .activity-item {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 0.7rem 1rem;
+            margin-bottom: 0.6rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(0,0,0,0.04);
+            transition: var(--transition);
+            cursor: pointer;
+            animation: slideInActivity 0.4s ease;
+        }
+        @keyframes slideInActivity {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .activity-item:hover { transform: translateX(4px); }
+        .activity-item .activity-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 0.9rem;
+        }
+        .activity-item .activity-icon.green { background: rgba(16,185,129,0.12); color: var(--success); }
+        .activity-item .activity-icon.orange { background: rgba(255,127,0,0.12); color: var(--primary); }
+        .activity-item .activity-icon.blue { background: rgba(59,130,246,0.12); color: #3B82F6; }
+        .activity-item .activity-info { flex: 1; }
+        .activity-item .activity-info .act-title { font-weight: 600; font-size: 0.8rem; }
+        .activity-item .activity-info .act-desc { font-size: 0.65rem; color: var(--gray); }
+        .activity-item .activity-amount { font-weight: 700; font-size: 0.8rem; }
+        .activity-item .activity-amount.positive { color: var(--success); }
 
-.countdown{
-    display:flex;
-    justify-content:center;
-    gap:15px;
-    margin-bottom:30px;
-    flex-wrap:wrap;
-}
+        /* ===== LOAN SIMULATOR ===== */
+        .simulator-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 1.2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(0,0,0,0.04);
+            margin-bottom: 1rem;
+        }
+        .simulator-card .sim-label {
+            font-size: 0.7rem;
+            color: var(--gray);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .simulator-card .sim-value {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--dark);
+            margin: 0.2rem 0 0.3rem;
+        }
+        .simulator-card input[type="range"] {
+            width: 100%;
+            height: 4px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: var(--gray-light);
+            border-radius: 10px;
+            outline: none;
+            margin: 0.5rem 0;
+        }
+        .simulator-card input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(255,127,0,0.3);
+        }
+        .sim-results {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.6rem;
+            margin-top: 0.8rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid var(--gray-light);
+        }
+        .sim-results .sim-result-item { text-align: center; padding: 0.4rem; background: var(--light); border-radius: var(--radius); }
+        .sim-results .sim-result-item .sri-label { font-size: 0.55rem; color: var(--gray); text-transform: uppercase; }
+        .sim-results .sim-result-item .sri-value { font-size: 0.85rem; font-weight: 700; margin-top: 0.1rem; }
+        .sim-results .sim-result-item .sri-value.primary { color: var(--primary); }
 
-.box{
-    background:rgba(255,255,255,0.15);
-    padding:18px;
-    border-radius:20px;
-    min-width:90px;
-}
+        /* ===== STEPS ===== */
+        .step-progress {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding: 0 0.5rem;
+        }
+        .step-progress::before {
+            content: '';
+            position: absolute;
+            top: 12px;
+            left: 1.5rem;
+            right: 1.5rem;
+            height: 2px;
+            background: var(--gray-light);
+            z-index: 0;
+        }
+        .step-progress .step-dot {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--gray-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.6rem;
+            font-weight: 700;
+            color: var(--gray);
+            position: relative;
+            z-index: 1;
+            transition: var(--transition);
+            border: 2px solid var(--white);
+        }
+        .step-progress .step-dot.active {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: 0 2px 12px rgba(255,127,0,0.3);
+        }
+        .step-progress .step-dot.done {
+            background: var(--success);
+            color: white;
+        }
+        .step-progress .step-label {
+            font-size: 0.5rem;
+            color: var(--gray);
+            margin-top: 0.2rem;
+            text-align: center;
+            position: absolute;
+            top: 32px;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            font-weight: 500;
+        }
+        .step-content { display: none; animation: fadeSlideUp 0.3s ease; }
+        .step-content.active { display: block; }
 
-.number{
-    font-size:30px;
-    font-weight:800;
-}
+        /* ===== FORM ===== */
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; font-weight: 600; font-size: 0.8rem; margin-bottom: 0.3rem; color: var(--dark); }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            border: 2px solid var(--gray-light);
+            border-radius: var(--radius);
+            font-size: 0.9rem;
+            font-family: 'Inter', sans-serif;
+            transition: var(--transition);
+            background: var(--white);
+        }
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(255,127,0,0.08);
+        }
+        .form-group input::placeholder { color: var(--gray); opacity: 0.6; }
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+        }
+        .file-input-wrapper input[type="file"] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+        .file-input-wrapper .file-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.7rem;
+            border: 2px dashed var(--gray-light);
+            border-radius: var(--radius);
+            color: var(--gray);
+            font-weight: 500;
+            font-size: 0.8rem;
+            transition: var(--transition);
+            background: var(--light);
+            text-align: center;
+        }
+        .file-input-wrapper .file-label:hover { border-color: var(--primary); color: var(--primary); }
 
-.label{
-    font-size:13px;
-    margin-top:5px;
-}
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.7rem 1.5rem;
+            border-radius: var(--radius);
+            border: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            width: 100%;
+        }
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255,127,0,0.25);
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 25px rgba(255,127,0,0.35); }
+        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+        .btn-outline:hover { background: var(--primary); color: white; }
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+        .btn-success:hover { transform: translateY(-2px); box-shadow: 0 6px 25px rgba(16,185,129,0.35); }
 
-.footer{
-    background:rgba(255,255,255,0.15);
-    padding:15px;
-    border-radius:20px;
-    font-weight:600;
-}
+        .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.6rem;
+            margin-bottom: 1rem;
+        }
+        .payment-methods .pm-item {
+            padding: 0.6rem;
+            border: 2px solid var(--gray-light);
+            border-radius: var(--radius);
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            background: var(--white);
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+        .payment-methods .pm-item i { display: block; font-size: 1.2rem; margin-bottom: 0.2rem; color: var(--gray); }
+        .payment-methods .pm-item.active {
+            border-color: var(--primary);
+            background: rgba(255,127,0,0.05);
+        }
+        .payment-methods .pm-item.active i { color: var(--primary); }
 
-.status{
-    display:inline-block;
-    background:#fff;
-    color:#ff7b00;
-    padding:8px 20px;
-    border-radius:50px;
-    margin-top:20px;
-    font-weight:700;
-}
-</style>
+        /* ===== PROFILE ===== */
+        .profile-header {
+            text-align: center;
+            padding: 1rem 0;
+        }
+        .profile-header .profile-avatar-lg {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0 auto 0.5rem;
+            border: 3px solid var(--primary-light);
+            box-shadow: 0 4px 20px rgba(255,127,0,0.2);
+            overflow: hidden;
+            cursor: pointer;
+            position: relative;
+        }
+        .profile-header .profile-avatar-lg img { width: 100%; height: 100%; object-fit: cover; }
+        .profile-header .profile-avatar-lg .avatar-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.6);
+            color: white;
+            font-size: 0.5rem;
+            padding: 0.2rem;
+            text-align: center;
+            opacity: 0;
+            transition: var(--transition);
+        }
+        .profile-header .profile-avatar-lg:hover .avatar-overlay { opacity: 1; }
+        .profile-header .profile-name { font-size: 1.2rem; font-weight: 700; }
+        .profile-header .profile-phone { font-size: 0.8rem; color: var(--gray); }
+
+        .profile-menu {
+            background: var(--white);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            margin-top: 1rem;
+        }
+        .profile-menu .pm-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.8rem 1rem;
+            border-bottom: 1px solid var(--gray-light);
+            cursor: pointer;
+            transition: var(--transition);
+            background: none;
+            border-left: none;
+            border-right: none;
+            border-top: none;
+            width: 100%;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            color: var(--dark);
+        }
+        .profile-menu .pm-item:last-child { border-bottom: none; }
+        .profile-menu .pm-item:hover { background: var(--light); }
+        .profile-menu .pm-item i { font-size: 1rem; color: var(--primary); width: 24px; text-align: center; }
+        .profile-menu .pm-item .pm-arrow { margin-left: auto; color: var(--gray); font-size: 0.7rem; }
+        .profile-menu .pm-item.danger { color: var(--error); }
+        .profile-menu .pm-item.danger i { color: var(--error); }
+
+        /* ===== NOTIFICATIONS ===== */
+        .notif-item {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 0.8rem 1rem;
+            margin-bottom: 0.6rem;
+            box-shadow: var(--shadow);
+            border-left: 3px solid var(--primary);
+            display: flex;
+            gap: 0.8rem;
+            align-items: flex-start;
+            animation: slideInNotif 0.4s ease;
+        }
+        @keyframes slideInNotif {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .notif-item .notif-icon { font-size: 1.2rem; color: var(--primary); flex-shrink: 0; margin-top: 0.1rem; }
+        .notif-item .notif-content { flex: 1; }
+        .notif-item .notif-content .notif-title { font-weight: 600; font-size: 0.85rem; }
+        .notif-item .notif-content .notif-desc { font-size: 0.75rem; color: var(--gray); }
+        .notif-item .notif-content .notif-time { font-size: 0.6rem; color: var(--gray); margin-top: 0.2rem; display: block; }
+        .notif-item.unread { background: rgba(255,127,0,0.04); }
+        .notif-item.error { border-left-color: var(--error); }
+        .notif-item.error .notif-icon { color: var(--error); }
+
+        /* ===== HISTORY ===== */
+        .history-item {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 0.8rem 1rem;
+            margin-bottom: 0.6rem;
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .history-item .hi-left .hi-amount { font-weight: 700; font-size: 0.9rem; }
+        .history-item .hi-left .hi-date { font-size: 0.65rem; color: var(--gray); }
+        .history-item .hi-status {
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.55rem;
+            font-weight: 600;
+        }
+        .history-item .hi-status.approved { background: rgba(16,185,129,0.12); color: var(--success); }
+        .history-item .hi-status.pending { background: rgba(255,127,0,0.12); color: var(--primary); }
+        .history-item .hi-status.rejected { background: rgba(239,68,68,0.12); color: var(--error); }
+
+        /* ===== REVIEWS ===== */
+        .reviews-section-app {
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--gray-light);
+        }
+        .review-card-app {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 0.8rem 1rem;
+            margin-bottom: 0.6rem;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(0,0,0,0.04);
+        }
+        .review-card-app .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.3rem;
+        }
+        .review-card-app .review-header .review-name { font-weight: 700; font-size: 0.85rem; }
+        .review-card-app .review-header .review-stars { color: #FFD700; font-size: 0.7rem; letter-spacing: 1px; }
+        .review-card-app .review-text { font-size: 0.8rem; color: var(--gray); line-height: 1.5; }
+        .review-card-app .review-date { font-size: 0.55rem; color: rgba(0,0,0,0.25); margin-top: 0.3rem; display: block; }
+
+        .review-form-app {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 1rem;
+            margin-top: 1rem;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(0,0,0,0.04);
+        }
+        .review-form-app .star-rating {
+            display: flex;
+            gap: 6px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            margin-bottom: 0.5rem;
+        }
+        .review-form-app .star-rating i { color: #ddd; transition: var(--transition); }
+        .review-form-app .star-rating i.active,
+        .review-form-app .star-rating i.hover { color: #FFD700; }
+        .review-form-app textarea {
+            width: 100%;
+            padding: 0.6rem 0.8rem;
+            border: 2px solid var(--gray-light);
+            border-radius: var(--radius);
+            font-size: 0.8rem;
+            font-family: 'Inter', sans-serif;
+            resize: vertical;
+            min-height: 70px;
+            transition: var(--transition);
+        }
+        .review-form-app textarea:focus { outline: none; border-color: var(--primary); }
+
+        /* ===== TOAST ===== */
+        .toast-container {
+            position: fixed;
+            top: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            width: 90%;
+            max-width: 400px;
+            pointer-events: none;
+        }
+        .toast {
+            padding: 0.8rem 1rem;
+            border-radius: var(--radius);
+            color: white;
+            font-weight: 500;
+            font-size: 0.85rem;
+            box-shadow: var(--shadow-lg);
+            animation: slideDown 0.3s ease;
+            pointer-events: auto;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        .toast.success { background: var(--success); }
+        .toast.error { background: var(--error); }
+        .toast.info { background: var(--primary); }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== LOGIN ===== */
+        #loginScreen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--light);
+            z-index: 100000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            transition: opacity 0.5s ease;
+        }
+        #loginScreen.hide { opacity: 0; pointer-events: none; }
+        #loginScreen .login-box {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            padding: 2rem 1.5rem;
+            width: 100%;
+            max-width: 380px;
+            box-shadow: var(--shadow-xl);
+        }
+        #loginScreen .login-box .login-logo { text-align: center; margin-bottom: 1.5rem; }
+        #loginScreen .login-box .login-logo h1 {
+            font-size: 2rem;
+            font-weight: 900;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        #loginScreen .login-box .login-logo p { color: var(--gray); font-size: 0.8rem; margin-top: 0.2rem; }
+        #loginScreen .login-box .form-group input {
+            background: var(--light);
+            border-color: transparent;
+            padding: 0.8rem 1rem;
+        }
+        #loginScreen .login-box .form-group input:focus {
+            border-color: var(--primary);
+            background: var(--white);
+        }
+        #loginScreen .login-box .login-options {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            margin: 0.5rem 0 1rem;
+        }
+        #loginScreen .login-box .login-options a { color: var(--primary); text-decoration: none; font-weight: 600; }
+        #loginScreen .login-box .login-options a:hover { text-decoration: underline; }
+
+        /* ===== REGISTER ===== */
+        #registerScreen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--light);
+            z-index: 100001;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+        #registerScreen.active { display: flex; }
+        #registerScreen .register-box {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            padding: 2rem 1.5rem;
+            width: 100%;
+            max-width: 380px;
+            box-shadow: var(--shadow-xl);
+            margin: auto;
+        }
+        #registerScreen .register-box .register-logo { text-align: center; margin-bottom: 1.5rem; }
+        #registerScreen .register-box .register-logo h1 {
+            font-size: 2rem;
+            font-weight: 900;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        #registerScreen .register-box .register-logo p { color: var(--gray); font-size: 0.8rem; }
+
+        /* ===== LOADING OVERLAY ===== */
+        .loading-overlay-app {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(12px);
+            z-index: 99999;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .loading-overlay-app.active { display: flex; }
+        .loading-overlay-app .loader-spinner {
+            width: 60px; height: 60px;
+            border: 4px solid rgba(255,255,255,0.1);
+            border-top-color: var(--secondary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        .loading-overlay-app .loader-text {
+            color: white;
+            font-weight: 500;
+            font-size: 1rem;
+            text-align: center;
+            min-height: 2rem;
+            transition: opacity 0.3s;
+        }
+        .loading-overlay-app .loader-progress {
+            width: 280px;
+            max-width: 85%;
+            height: 6px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+        }
+        .loading-overlay-app .loader-progress .loader-fill {
+            height: 100%;
+            background: var(--primary-gradient);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(255,127,0,0.3);
+        }
+        .loading-overlay-app .loader-pulse {
+            display: flex;
+            gap: 8px;
+            margin-top: 0.5rem;
+        }
+        .loading-overlay-app .loader-pulse span {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--secondary);
+            animation: pulseDot 1.4s infinite ease-in-out;
+        }
+        .loading-overlay-app .loader-pulse span:nth-child(2) { animation-delay: 0.2s; }
+        .loading-overlay-app .loader-pulse span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes pulseDot {
+            0%, 80%, 100% { transform: scale(0.6); opacity: 0.3; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
+        /* ===== CHAT ===== */
+        .chat-fab {
+            position: fixed;
+            bottom: 5.5rem;
+            right: 1.2rem;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            font-size: 1.4rem;
+            box-shadow: 0 4px 20px rgba(255,127,0,0.35);
+            cursor: pointer;
+            transition: var(--transition);
+            z-index: 900;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .chat-fab:hover { transform: scale(1.05); }
+
+        .chat-window-app {
+            position: fixed;
+            bottom: 7rem;
+            right: 1rem;
+            width: 92%;
+            max-width: 380px;
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-xl);
+            z-index: 9999;
+            display: none;
+            flex-direction: column;
+            max-height: 500px;
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.06);
+        }
+        .chat-window-app.active { display: flex; animation: slideUp 0.3s ease; }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .chat-window-app .chat-header-app {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 0.8rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        .chat-window-app .chat-header-app .chat-title { font-weight: 700; font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem; }
+        .chat-window-app .chat-header-app .chat-title .online-dot { width: 8px; height: 8px; border-radius: 50%; background: #10B981; display: inline-block; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+        .chat-window-app .chat-header-app .chat-close { background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer; }
+        .chat-window-app .chat-messages-app {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            max-height: 280px;
+            background: var(--light);
+        }
+        .chat-window-app .chat-messages-app .msg {
+            padding: 0.5rem 0.8rem;
+            border-radius: var(--radius);
+            max-width: 85%;
+            font-size: 0.8rem;
+            line-height: 1.4;
+            animation: fadeSlideUp 0.2s ease;
+        }
+        .chat-window-app .chat-messages-app .msg.bot {
+            background: var(--white);
+            color: var(--dark);
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+            box-shadow: var(--shadow);
+        }
+        .chat-window-app .chat-messages-app .msg.user {
+            background: var(--primary);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+        .chat-window-app .chat-messages-app .msg .msg-sender { font-weight: 600; font-size: 0.65rem; display: block; margin-bottom: 0.1rem; }
+        .chat-window-app .chat-messages-app .msg.bot .msg-sender { color: var(--primary); }
+        .chat-window-app .chat-messages-app .msg .typing-dots { display: flex; gap: 3px; padding: 0.2rem 0; }
+        .chat-window-app .chat-messages-app .msg .typing-dots span {
+            width: 6px; height: 6px; background: var(--gray);
+            border-radius: 50%;
+            animation: typingDot 1.4s infinite;
+        }
+        .chat-window-app .chat-messages-app .msg .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .chat-window-app .chat-messages-app .msg .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typingDot { 0%, 60%, 100% { opacity: 0.3; transform: scale(0.8); } 30% { opacity: 1; transform: scale(1); } }
+        .chat-window-app .chat-input-app {
+            display: flex;
+            gap: 0.5rem;
+            padding: 0.6rem 1rem;
+            border-top: 1px solid var(--gray-light);
+            flex-shrink: 0;
+            background: var(--white);
+        }
+        .chat-window-app .chat-input-app input {
+            flex: 1;
+            padding: 0.5rem 0.8rem;
+            border: 2px solid var(--gray-light);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            transition: var(--transition);
+        }
+        .chat-window-app .chat-input-app input:focus { border-color: var(--primary); }
+        .chat-window-app .chat-input-app button {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            border: none;
+            background: var(--primary-gradient);
+            color: white;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .chat-window-app .chat-input-app button:hover { transform: scale(1.02); }
+
+        .chat-faq-app {
+            padding: 0.4rem 1rem;
+            background: var(--white);
+            border-top: 1px solid var(--gray-light);
+            max-height: 100px;
+            overflow-y: auto;
+            flex-shrink: 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.3rem;
+        }
+        .chat-faq-app .faq-chip {
+            padding: 0.15rem 0.6rem;
+            border-radius: 20px;
+            background: var(--light);
+            font-size: 0.55rem;
+            color: var(--gray);
+            cursor: pointer;
+            border: 1px solid var(--gray-light);
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+        .chat-faq-app .faq-chip:hover { border-color: var(--primary); color: var(--primary); }
+
+        /* ===== MODAL ===== */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(8px);
+            z-index: 99998;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-content {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            padding: 1.5rem;
+            max-width: 400px;
+            width: 100%;
+            animation: modalFade 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        @keyframes modalFade {
+            from { opacity: 0; transform: scale(0.95) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .modal-content .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .modal-content .modal-header h3 { font-size: 1.1rem; }
+        .modal-content .modal-header .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--gray);
+            cursor: pointer;
+            padding: 0.2rem;
+        }
+
+        .image-preview { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.5rem; }
+        .image-preview img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 2px solid var(--primary); }
+
+        /* ===== PAYMENT SUMMARY ===== */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.6rem;
+            margin: 0.8rem 0;
+        }
+        .summary-item {
+            background: var(--light);
+            border-radius: 12px;
+            padding: 0.5rem 0.8rem;
+        }
+        .summary-item .label {
+            font-size: 0.6rem;
+            color: var(--gray);
+            text-transform: uppercase;
+        }
+        .summary-item .value {
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .pay-btn {
+            display: block;
+            width: 100%;
+            padding: 0.9rem;
+            border: none;
+            border-radius: 60px;
+            background: var(--primary-gradient);
+            color: white;
+            font-weight: 700;
+            font-size: 1rem;
+            box-shadow: 0 8px 25px rgba(255,127,0,0.25);
+            cursor: pointer;
+            transition: 0.2s;
+            text-align: center;
+            margin: 0.8rem 0;
+        }
+        .pay-btn:hover {
+            transform: scale(1.02);
+        }
+        .pay-btn.secondary {
+            background: var(--gray-light);
+            color: var(--dark);
+            box-shadow: none;
+        }
+
+        /* ===== NOTIFICATION POPUP ===== */
+        .notif-popup {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--white);
+            border-radius: 20px;
+            padding: 1rem 1.5rem;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+            z-index: 9999;
+            width: 90%;
+            max-width: 400px;
+            display: none;
+            align-items: center;
+            gap: 12px;
+            border-left: 5px solid var(--error);
+            animation: slideUp 0.3s ease;
+        }
+        .notif-popup.show { display: flex; }
+        .notif-popup .icon { font-size: 1.5rem; color: var(--error); }
+        .notif-popup .text { flex: 1; font-size: 0.85rem; font-weight: 500; }
+        .notif-popup .close-popup { background: none; border: none; font-size: 1.2rem; color: var(--gray); cursor: pointer; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 480px) {
+            .app-content { padding: 0.8rem 0.8rem 5rem; }
+            .bank-card-premium .card-amount { font-size: 1.8rem; }
+            .quick-stats { gap: 0.4rem; }
+            .quick-stat { padding: 0.6rem; }
+            .sim-results { grid-template-columns: 1fr 1fr; }
+            .payment-methods { grid-template-columns: 1fr 1fr 1fr; }
+            .chat-window-app { width: 95%; right: 0.5rem; bottom: 6rem; max-height: 450px; }
+            .step-progress .step-label { font-size: 0.45rem; }
+            .bottom-nav .nav-item { max-width: 60px; }
+            .bank-card-premium .card-limits { grid-template-columns: repeat(2, 1fr); }
+            .loading-overlay-app .loader-progress { width: 90%; }
+        }
+
+        @media (min-width: 768px) {
+            .app-content { max-width: 600px; margin: 0 auto; padding: 1.5rem 1.5rem 6rem; }
+            .bottom-nav { max-width: 600px; left: 50%; transform: translateX(-50%); border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
+            .chat-window-app { right: calc(50% - 300px + 1rem); }
+            .chat-fab { right: calc(50% - 300px + 1rem); }
+        }
+    </style>
 </head>
 <body>
 
-<div class="bg-circle circle1"></div>
-<div class="bg-circle circle2"></div>
+    <!-- ===== SPLASH ===== -->
+    <div id="splashScreen">
+        <div class="logo-splash">NOVA<span>CASH</span></div>
+        <div class="sub-splash">Empréstimos Rápidos • Moçambique</div>
+        <div class="loader-splash"></div>
+    </div>
 
-<div class="card">
-    <div class="icon">🛠️</div>
+    <!-- ===== TOAST ===== -->
+    <div class="toast-container" id="toastContainer"></div>
 
-    <div class="logo">NOVACASH</div>
+    <!-- ===== LOADING ===== -->
+    <div class="loading-overlay-app" id="loadingOverlayApp">
+        <div class="loader-spinner"></div>
+        <div class="loader-text" id="loaderText">Processando...</div>
+        <div class="loader-progress"><div class="loader-fill" id="loaderFill"></div></div>
+        <div class="loader-pulse"><span></span><span></span><span></span></div>
+    </div>
 
-    <h2>Plataforma em Manutenção</h2>
+    <!-- ===== NOTIFICATION POPUP ===== -->
+    <div class="notif-popup" id="notifPopup">
+        <div class="icon"><i class="fas fa-exclamation-triangle"></i></div>
+        <div class="text" id="popupText">ERRO NA SUA FOTO DE COMPROVATIVO</div>
+        <button class="close-popup" id="popupClose">&times;</button>
+    </div>
 
-    <p>
-        Estamos a realizar algumas melhorias para oferecer uma experiência
-        ainda mais rápida, segura e moderna para todos os nossos clientes.
-        A plataforma estará novamente disponível às <strong>16:20</strong>.
-    </p>
-
-    <div class="countdown">
-        <div class="box">
-            <div class="number" id="hours">00</div>
-            <div class="label">Horas</div>
-        </div>
-
-        <div class="box">
-            <div class="number" id="minutes">00</div>
-            <div class="label">Minutos</div>
-        </div>
-
-        <div class="box">
-            <div class="number" id="seconds">00</div>
-            <div class="label">Segundos</div>
+    <!-- ===== LOGIN ===== -->
+    <div id="loginScreen">
+        <div class="login-box">
+            <div class="login-logo">
+                <h1>💰 NOVACASH</h1>
+                <p>Empréstimos rápidos e seguros</p>
+            </div>
+            <form id="loginFormApp">
+                <div class="form-group">
+                    <input type="text" id="loginNameApp" placeholder="Nome Completo" required>
+                </div>
+                <div class="form-group">
+                    <input type="tel" id="loginPhoneApp" placeholder="Número de Telefone" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="loginPasswordApp" placeholder="Senha (4-6 dígitos)" maxlength="6" required>
+                </div>
+                <div class="login-options">
+                    <label><input type="checkbox" id="rememberMe"> Lembrar-me</label>
+                    <a href="#" id="forgotPassBtn">Esqueci a senha</a>
+                </div>
+                <button type="submit" class="btn btn-primary" id="loginBtnSubmit">Entrar <i class="fas fa-arrow-right"></i></button>
+            </form>
+            <div style="text-align: center; margin-top: 1rem;">
+                <span style="color: var(--gray); font-size: 0.8rem;">Não tem conta? </span>
+                <a href="#" id="showRegisterApp" style="color: var(--primary); font-weight: 600; text-decoration: none;">Criar Conta</a>
+            </div>
         </div>
     </div>
 
-    <div class="footer">
-        🚀 NOVACASH estará novamente disponível às 16:20.
+    <!-- ===== REGISTER ===== -->
+    <div id="registerScreen">
+        <div class="register-box">
+            <div class="register-logo">
+                <h1>💰 NOVACASH</h1>
+                <p>Crie sua conta gratuitamente</p>
+            </div>
+            <form id="registerFormApp">
+                <div class="form-group">
+                    <input type="text" id="regNameApp" placeholder="Nome Completo" required>
+                </div>
+                <div class="form-group">
+                    <input type="tel" id="regPhoneApp" placeholder="Número de Telefone" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="regPassApp" placeholder="Senha (4-6 dígitos)" maxlength="6" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="regConfirmApp" placeholder="Confirmar Senha" maxlength="6" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Criar Conta <i class="fas fa-user-plus"></i></button>
+            </form>
+            <div style="text-align: center; margin-top: 1rem;">
+                <span style="color: var(--gray); font-size: 0.8rem;">Já tem conta? </span>
+                <a href="#" id="backToLoginApp" style="color: var(--primary); font-weight: 600; text-decoration: none;">Fazer Login</a>
+            </div>
+        </div>
     </div>
 
-    <div class="status">
-        Melhorias em andamento...
+    <!-- ===== APP ===== -->
+    <div id="app">
+        <div class="status-bar">
+            <span class="time" id="statusTime">00:00</span>
+            <span class="icons"><i class="fas fa-signal"></i> <i class="fas fa-wifi"></i> <i class="fas fa-battery-three-quarters"></i></span>
+        </div>
+
+        <header class="app-header">
+            <span class="logo-mini">💰 NOVACASH</span>
+            <div class="header-actions">
+                <button class="icon-btn" id="notifHeaderBtn"><i class="fas fa-bell"></i><span class="badge" id="notifBadge">0</span></button>
+                <div class="profile-avatar" id="headerAvatar">JD</div>
+            </div>
+        </header>
+
+        <main class="app-content" id="appContent">
+
+            <!-- ===== DASHBOARD ===== -->
+            <div class="page active" id="pageDashboard">
+                <div class="greeting-section">
+                    <div>
+                        <h1>Olá, <span id="dashName">João</span> 👋</h1>
+                        <p id="dashDate">Bem-vindo de volta</p>
+                    </div>
+                </div>
+
+                <!-- Premium Bank Card -->
+                <div class="bank-card-premium">
+                    <div class="card-chip-row">
+                        <span class="chip">💳</span>
+                        <span class="card-type">PREMIUM</span>
+                    </div>
+                    <div class="card-user-row">
+                        <div class="user-avatar-card" id="cardAvatar">JD</div>
+                        <div class="user-info">
+                            <div class="user-name" id="cardUserName">João Domingos</div>
+                            <div class="user-phone" id="cardUserPhone">84 123 4567</div>
+                        </div>
+                    </div>
+                    <div class="card-debt">
+                        <div class="debt-label">SALDO EM DÍVIDA</div>
+                        <div class="debt-amount" id="cardDebtAmount">0,00 MZN</div>
+                        <span class="debt-status" id="cardDebtStatus"><i class="fas fa-check-circle"></i> Sem dívidas ativas</span>
+                    </div>
+                    <button class="funds-btn-card" id="fundsBtnCard">
+                        <i class="fas fa-coins"></i> Fundos Disponíveis para Empréstimo
+                        <i class="fas fa-chevron-right" style="font-size:0.7rem;"></i>
+                    </button>
+                    <div class="card-limits">
+                        <div class="limit-item"><div class="limit-label">MÁXIMO</div><div class="limit-value">300.000 MZN</div></div>
+                        <div class="limit-item"><div class="limit-label">MÍNIMO</div><div class="limit-value">5.000 MZN</div></div>
+                        <div class="limit-item"><div class="limit-label">PRAZO</div><div class="limit-value">4 a 12 meses</div></div>
+                        <div class="limit-item"><div class="limit-label">ANÁLISE</div><div class="limit-value">8 a 30 min</div></div>
+                    </div>
+                </div>
+
+                <!-- Botão Solicitar Empréstimo -->
+                <button class="loan-btn-main" id="loanBtnMain">
+                    <i class="fas fa-hand-holding-usd"></i> Solicitar o Seu Empréstimo
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+
+                <!-- Quick Stats -->
+                <div class="quick-stats">
+                    <div class="quick-stat">
+                        <div class="stat-icon"><i class="fas fa-hand-holding-usd"></i></div>
+                        <div class="stat-value" id="statLoansDash">0</div>
+                        <div class="stat-label">Empréstimos</div>
+                    </div>
+                    <div class="quick-stat">
+                        <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                        <div class="stat-value" id="statApprovedDash">0</div>
+                        <div class="stat-label">Aprovados</div>
+                    </div>
+                    <div class="quick-stat">
+                        <div class="stat-icon"><i class="fas fa-percentage"></i></div>
+                        <div class="stat-value" id="statRateDash">0%</div>
+                        <div class="stat-label">Aprovação</div>
+                    </div>
+                </div>
+
+                <!-- Activity -->
+                <div class="section-title">
+                    <span>Atividade Recente</span>
+                    <button class="see-all" id="seeAllActivity">Ver todos</button>
+                </div>
+                <div id="activityList">
+                    <div class="activity-item">
+                        <div class="activity-icon green"><i class="fas fa-check"></i></div>
+                        <div class="activity-info"><div class="act-title">Empréstimo aprovado</div><div class="act-desc">50.000 MZN • 6 meses</div></div>
+                        <div class="activity-amount positive">+50.000 MZN</div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon orange"><i class="fas fa-clock"></i></div>
+                        <div class="activity-info"><div class="act-title">Em análise</div><div class="act-desc">Solicitação em processamento</div></div>
+                        <div class="activity-amount">⏳</div>
+                    </div>
+                </div>
+
+                <!-- Reviews Section -->
+                <div class="reviews-section-app">
+                    <div class="section-title"><span>⭐ Avaliações de Clientes</span></div>
+                    <div id="reviewsListApp"></div>
+                    <div class="review-form-app">
+                        <h4 style="font-size:0.9rem; margin-bottom:0.5rem;">Deixe sua avaliação</h4>
+                        <div class="star-rating" id="starRatingApp">
+                            <i class="fas fa-star" data-value="1"></i>
+                            <i class="fas fa-star" data-value="2"></i>
+                            <i class="fas fa-star" data-value="3"></i>
+                            <i class="fas fa-star" data-value="4"></i>
+                            <i class="fas fa-star" data-value="5"></i>
+                        </div>
+                        <input type="hidden" id="reviewRatingApp" value="5">
+                        <textarea id="reviewTextApp" placeholder="Compartilhe sua experiência..."></textarea>
+                        <button class="btn btn-primary" style="margin-top:0.5rem;" id="submitReviewApp">Publicar Avaliação <i class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== LOANS ===== -->
+            <div class="page" id="pageLoans">
+                <h2 style="font-size: 1.2rem; margin-bottom: 1rem;">💰 Solicitar Empréstimo</h2>
+                <div class="step-progress" id="stepProgress">
+                    <div class="step-dot active" data-step="1">1<span class="step-label">Dados</span></div>
+                    <div class="step-dot" data-step="2">2<span class="step-label">Documentos</span></div>
+                    <div class="step-dot" data-step="3">3<span class="step-label">Valor</span></div>
+                    <div class="step-dot" data-step="4">4<span class="step-label">Confirmar</span></div>
+                </div>
+
+                <!-- Step 1 -->
+                <div class="step-content active" data-step="1">
+                    <div class="simulator-card">
+                        <div class="form-group">
+                            <label>Nome Completo</label>
+                            <input type="text" id="loanFullName" placeholder="Digite seu nome completo">
+                        </div>
+                        <div class="form-group">
+                            <label>Telefone</label>
+                            <input type="tel" id="loanPhone" placeholder="84 123 4567">
+                        </div>
+                        <div class="form-group">
+                            <label>Método de Recebimento</label>
+                            <div class="payment-methods">
+                                <div class="pm-item active" data-method="M-Pesa"><i class="fas fa-wallet"></i> M-Pesa</div>
+                                <div class="pm-item" data-method="E-Mola"><i class="fas fa-mobile-alt"></i> E-Mola</div>
+                                <div class="pm-item" data-method="Banco"><i class="fas fa-credit-card"></i> Banco</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Número para receber</label>
+                            <input type="text" id="loanReceiver" placeholder="Número M-Pesa/E-Mola ou IBAN">
+                        </div>
+                        <button class="btn btn-primary next-step" data-next="2">Continuar <i class="fas fa-arrow-right"></i></button>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="step-content" data-step="2">
+                    <div class="simulator-card">
+                        <div class="form-group">
+                            <label>Número do BI</label>
+                            <input type="text" id="loanBi" placeholder="Número do Bilhete de Identidade">
+                        </div>
+                        <div class="form-group">
+                            <label>Foto da Frente do BI</label>
+                            <div class="file-input-wrapper">
+                                <div class="file-label"><i class="fas fa-camera"></i> Clique para carregar</div>
+                                <input type="file" id="loanBiFront" accept="image/*">
+                            </div>
+                            <div id="biFrontPreviewApp" class="image-preview"></div>
+                        </div>
+                        <div class="form-group">
+                            <label>Foto do Verso do BI</label>
+                            <div class="file-input-wrapper">
+                                <div class="file-label"><i class="fas fa-camera"></i> Clique para carregar</div>
+                                <input type="file" id="loanBiBack" accept="image/*">
+                            </div>
+                            <div id="biBackPreviewApp" class="image-preview"></div>
+                        </div>
+                        <div style="display: flex; gap: 0.6rem;">
+                            <button class="btn btn-outline prev-step" style="flex:1;" data-prev="1"><i class="fas fa-arrow-left"></i> Voltar</button>
+                            <button class="btn btn-primary next-step" style="flex:2;" data-next="3">Continuar <i class="fas fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="step-content" data-step="3">
+                    <div class="simulator-card">
+                        <div class="form-group">
+                            <label>Valor do Empréstimo</label>
+                            <div class="sim-label"><span>5.000 MZN</span><span id="simAmountDisplay">50.000 MZN</span><span>300.000 MZN</span></div>
+                            <input type="range" id="simAmount" min="5000" max="300000" step="1000" value="50000">
+                        </div>
+                        <div class="form-group">
+                            <label>Prazo (Meses)</label>
+                            <div class="sim-label"><span>4</span><span id="simTermDisplay">6 meses</span><span>12</span></div>
+                            <input type="range" id="simTerm" min="4" max="12" step="1" value="6">
+                        </div>
+                        <div class="sim-results">
+                            <div class="sim-result-item"><div class="sri-label">Parcela Mensal</div><div class="sri-value primary" id="simMonthly">8.917 MZN</div></div>
+                            <div class="sim-result-item"><div class="sri-label">Total a Pagar</div><div class="sri-value" id="simTotal">53.500 MZN</div></div>
+                            <div class="sim-result-item"><div class="sri-label">Juros (7%)</div><div class="sri-value" id="simInterest">3.500 MZN</div></div>
+                            <div class="sim-result-item"><div class="sri-label">Taxa de Inscrição</div><div class="sri-value" id="simFee">1.299 MZN</div></div>
+                        </div>
+                        <div style="display: flex; gap: 0.6rem; margin-top: 1rem;">
+                            <button class="btn btn-outline prev-step" style="flex:1;" data-prev="2"><i class="fas fa-arrow-left"></i> Voltar</button>
+                            <button class="btn btn-primary next-step" style="flex:2;" data-next="4">Confirmar <i class="fas fa-check"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="step-content" data-step="4">
+                    <div class="simulator-card">
+                        <h3 style="font-size: 1rem; margin-bottom: 0.8rem;">📋 Resumo do Pedido</h3>
+                        <div id="loanSummaryApp">
+                            <div style="display: flex; justify-content: space-between; padding: 0.3rem 0; border-bottom: 1px solid var(--gray-light); font-size: 0.85rem;">
+                                <span>Cliente</span><strong id="summaryName">---</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 0.3rem 0; border-bottom: 1px solid var(--gray-light); font-size: 0.85rem;">
+                                <span>Telefone</span><strong id="summaryPhone">---</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 0.3rem 0; border-bottom: 1px solid var(--gray-light); font-size: 0.85rem;">
+                                <span>BI</span><strong id="summaryBi">---</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 0.3rem 0; border-bottom: 1px solid var(--gray-light); font-size: 0.85rem;">
+                                <span>Receber em</span><strong id="summaryReceiver">---</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 0.3rem 0; border-bottom: 1px solid var(--gray-light); font-size: 0.85rem;">
+                                <span>Método</span><strong id="summaryMethod">---</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 0.3rem 0; border-bottom: 1px solid var(--gray-light); font-size: 0.85rem;">
+                                <span>Valor</span><strong id="summaryAmount">---</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 0.3rem 0; border-bottom: 1px solid var(--gray-light); font-size: 0.85rem;">
+                                <span>Prazo</span><strong id="summaryTerm">---</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 0.3rem 0; border-bottom: 1px solid var(--gray-light); font-size: 0.85rem;">
+                                <span>Parcela</span><strong id="summaryMonthly">---</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 0.3rem 0; border-bottom: 2px solid var(--primary); font-size: 0.85rem; font-weight: 700; color: var(--primary);">
+                                <span>Taxa de Inscrição</span><strong id="summaryFee">---</strong>
+                            </div>
+                        </div>
+                        <div style="background: rgba(255,127,0,0.08); border-radius: var(--radius); padding: 0.8rem; margin: 0.8rem 0; font-size: 0.8rem;">
+                            <p><strong>📱 Pagamento da Taxa:</strong></p>
+                            <p style="display: flex; justify-content: space-between; margin: 0.3rem 0;"><span>Número:</span><strong id="payNumberDisplay">876364927</strong> <button class="copy-btn" data-text="876364927" style="background: var(--primary); color: white; border: none; padding: 0.1rem 0.6rem; border-radius: 20px; font-size: 0.6rem; cursor: pointer;">Copiar</button></p>
+                            <p style="display: flex; justify-content: space-between;"><span>Nome:</span><strong>TIOFELO EDSON LUIS JAIELA</strong></p>
+                        </div>
+
+                        <!-- BOTÃO EFETUAR O PAGAMENTO DA TAXA -->
+                        <button class="pay-btn" id="payFeeBtn" style="margin-bottom: 1rem; background: var(--primary-gradient); font-size: 1.1rem; padding: 1rem;">
+                            <i class="fas fa-phone"></i> EFETUAR O PAGAMENTO DA TAXA DE INSCRIÇÃO
+                        </button>
+
+                        <div class="form-group">
+                            <label>Comprovativo de Pagamento</label>
+                            <div class="file-input-wrapper">
+                                <div class="file-label"><i class="fas fa-upload"></i> Carregar comprovativo</div>
+                                <input type="file" id="loanProof" accept="image/*">
+                            </div>
+                            <div id="proofPreviewApp" class="image-preview"></div>
+                        </div>
+                        <div class="form-group">
+                            <label><input type="checkbox" id="loanTerms"> Aceito os <a href="#" style="color: var(--primary);">Termos e Condições</a></label>
+                        </div>
+                        <div style="display: flex; gap: 0.6rem;">
+                            <button class="btn btn-outline prev-step" style="flex:1;" data-prev="3"><i class="fas fa-arrow-left"></i> Voltar</button>
+                            <button class="btn btn-success" style="flex:2;" id="submitLoanApp"><i class="fas fa-paper-plane"></i> ENVIAR A SOLICITAÇÃO</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== HISTORY ===== -->
+            <div class="page" id="pageHistory">
+                <h2 style="font-size: 1.2rem; margin-bottom: 1rem;">📜 Histórico de Empréstimos</h2>
+                <div id="historyList"></div>
+            </div>
+
+            <!-- ===== NOTIFICATIONS ===== -->
+            <div class="page" id="pageNotifications">
+                <h2 style="font-size: 1.2rem; margin-bottom: 1rem;">🔔 Notificações</h2>
+                <div id="notifList"></div>
+            </div>
+
+            <!-- ===== PROFILE ===== -->
+            <div class="page" id="pageProfile">
+                <div class="profile-header">
+                    <div class="profile-avatar-lg" id="profileAvatar">
+                        JD
+                        <div class="avatar-overlay"><i class="fas fa-camera"></i> Alterar</div>
+                    </div>
+                    <div class="profile-name" id="profileName">João Domingos</div>
+                    <div class="profile-phone" id="profilePhone">84 123 4567</div>
+                </div>
+                <div class="profile-menu">
+                    <button class="pm-item" id="profileEditBtn"><i class="fas fa-user-edit"></i> Editar Perfil <span class="pm-arrow"><i class="fas fa-chevron-right"></i></span></button>
+                    <button class="pm-item" id="profileSecurityBtn"><i class="fas fa-shield-alt"></i> Segurança <span class="pm-arrow"><i class="fas fa-chevron-right"></i></span></button>
+                    <button class="pm-item" id="profileHelpBtn"><i class="fas fa-question-circle"></i> Ajuda & Suporte <span class="pm-arrow"><i class="fas fa-chevron-right"></i></span></button>
+                    <button class="pm-item" id="profileAboutBtn"><i class="fas fa-info-circle"></i> Sobre a NOVACASH <span class="pm-arrow"><i class="fas fa-chevron-right"></i></span></button>
+                    <button class="pm-item danger" id="profileLogoutBtn"><i class="fas fa-sign-out-alt"></i> Sair <span class="pm-arrow"><i class="fas fa-chevron-right"></i></span></button>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- Bottom Nav -->
+        <nav class="bottom-nav">
+            <button class="nav-item active" data-page="pageDashboard"><i class="fas fa-home"></i><span class="nav-label">Início</span></button>
+            <button class="nav-item" data-page="pageLoans"><i class="fas fa-hand-holding-usd"></i><span class="nav-label">Empréstimos</span></button>
+            <button class="nav-item" data-page="pageHistory"><i class="fas fa-clock"></i><span class="nav-label">Histórico</span></button>
+            <button class="nav-item" data-page="pageNotifications"><i class="fas fa-bell"></i><span class="nav-label">Notificações</span><span class="nav-badge" id="navNotifBadge">0</span></button>
+            <button class="nav-item" data-page="pageProfile"><i class="fas fa-user"></i><span class="nav-label">Perfil</span></button>
+        </nav>
+
+        <!-- Chat FAB -->
+        <button class="chat-fab" id="chatFab"><i class="fas fa-comment-dots"></i></button>
+
+        <!-- Chat Window -->
+        <div class="chat-window-app" id="chatWindowApp">
+            <div class="chat-header-app">
+                <div class="chat-title"><span class="online-dot"></span> Central de Ajuda</div>
+                <button class="chat-close" id="chatCloseApp">&times;</button>
+            </div>
+            <div class="chat-messages-app" id="chatMessagesApp">
+                <div class="msg bot"><span class="msg-sender">🤖 NOVACASH</span>Olá! Como posso ajudar você hoje?</div>
+            </div>
+            <div class="chat-faq-app" id="chatFaqApp">
+                <span class="faq-chip" data-question="Quanto tempo demora?">⏱️ Tempo</span>
+                <span class="faq-chip" data-question="Taxa de inscrição?">💰 Taxa</span>
+                <span class="faq-chip" data-question="Localização?">📍 Endereço</span>
+                <span class="faq-chip" data-question="Documentos necessários?">📄 Documentos</span>
+                <span class="faq-chip" data-question="Número para pagamento?">📱 Pagamento</span>
+            </div>
+            <div class="chat-input-app">
+                <input type="text" id="chatInputApp" placeholder="Digite sua mensagem...">
+                <button id="chatSendApp"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
     </div>
-</div>
 
-<script>
-function updateCountdown() {
-    const now = new Date();
+    <!-- ===== FUNDS MODAL ===== -->
+    <div class="funds-modal-overlay" id="fundsModal">
+        <div class="funds-modal">
+            <div class="funds-modal-header">
+                <div class="funds-modal-title"><i class="fas fa-coins"></i> Fundos Disponíveis</div>
+                <button class="funds-modal-close" id="fundsModalClose">&times;</button>
+            </div>
+            <div class="funds-modal-body">
+                <div class="funds-warning" id="fundsWarning"><i class="fas fa-exclamation-triangle"></i> <span>⚠️ Fundos em baixa</span></div>
+                <div class="funds-balance-item">
+                    <span class="funds-balance-label">Saldo em Meticais</span>
+                    <span class="funds-balance-value mzn" id="fundsBalanceMZN">16.000.000 MT</span>
+                </div>
+                <div class="funds-balance-item">
+                    <span class="funds-balance-label">Saldo em Dólares</span>
+                    <span class="funds-balance-value usd" id="fundsBalanceUSD">$ 250.000</span>
+                </div>
+                <div class="funds-modal-footer">
+                    <span class="funds-total-label">💼 Fundo de Empréstimos</span>
+                    <span class="funds-last-update" id="fundsLastUpdate">Atualizado agora</span>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    let target = new Date();
-    target.setHours(16);
-    target.setMinutes(20);
-    target.setSeconds(0);
+    <!-- ===== MODAL ===== -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Título</h3>
+                <button class="modal-close" id="modalClose">&times;</button>
+            </div>
+            <div id="modalBody"></div>
+        </div>
+    </div>
 
-    if (now > target) {
-        document.querySelector(".status").innerHTML =
-            "✅ Plataforma disponível!";
-        document.getElementById("hours").innerHTML = "00";
-        document.getElementById("minutes").innerHTML = "00";
-        document.getElementById("seconds").innerHTML = "00";
-        return;
-    }
+    <style>
+        /* Funds Modal */
+        .funds-modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(8px);
+            z-index: 20000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem;
+        }
+        .funds-modal-overlay.active { display: flex; }
+        .funds-modal {
+            background: linear-gradient(145deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: var(--radius-xl);
+            max-width: 420px;
+            width: 100%;
+            padding: 2rem;
+            border: 1px solid rgba(255,255,255,0.12);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+            position: relative;
+            overflow: hidden;
+            animation: modalFadeIn 0.4s ease;
+        }
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: scale(0.9) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .funds-modal::before {
+            content: '';
+            position: absolute;
+            top: -40%;
+            right: -30%;
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(255,215,0,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        .funds-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 2;
+        }
+        .funds-modal-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .funds-modal-title i { color: #FFD700; }
+        .funds-modal-close {
+            background: rgba(255,255,255,0.08);
+            border: none;
+            color: rgba(255,255,255,0.5);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .funds-modal-close:hover { background: rgba(255,255,255,0.15); color: white; }
+        .funds-modal-body {
+            position: relative;
+            z-index: 2;
+        }
+        .funds-balance-item {
+            background: rgba(255,255,255,0.06);
+            border-radius: var(--radius);
+            padding: 1rem 1.2rem;
+            margin-bottom: 0.8rem;
+            border: 1px solid rgba(255,255,255,0.06);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .funds-balance-label { color: rgba(255,255,255,0.5); font-size: 0.8rem; font-weight: 500; }
+        .funds-balance-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: white;
+            transition: color 0.3s ease;
+        }
+        .funds-balance-value.mzn { color: #FFD700; }
+        .funds-balance-value.mzn.low { color: #FF6B35; }
+        .funds-balance-value.mzn.critical { color: #FF1744; }
+        .funds-balance-value.usd { color: #A7F3D0; }
+        .funds-balance-value.usd.low { color: #FF6B35; }
+        .funds-balance-value.usd.critical { color: #FF1744; }
+        .funds-modal-footer {
+            margin-top: 1rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.3rem;
+        }
+        .funds-last-update { color: rgba(255,255,255,0.3); font-size: 0.6rem; }
+        .funds-total-label { color: rgba(255,255,255,0.4); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .funds-warning {
+            background: rgba(255,107,53,0.12);
+            border: 1px solid rgba(255,107,53,0.2);
+            border-radius: var(--radius);
+            padding: 0.6rem 1rem;
+            margin-bottom: 0.8rem;
+            display: none;
+            align-items: center;
+            gap: 8px;
+            color: #FF6B35;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+        .funds-warning.show { display: flex; }
+        .funds-warning i { font-size: 1rem; }
+        .funds-warning.critical {
+            background: rgba(255,23,68,0.12);
+            border-color: rgba(255,23,68,0.2);
+            color: #FF1744;
+        }
+    </style>
 
-    const diff = target - now;
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
 
-    const hours = Math.floor(diff / (1000 * 60 * 60));
-    const minutes = Math.floor(
-        (diff % (1000 * 60 * 60)) / (1000 * 60)
-    );
-    const seconds = Math.floor(
-        (diff % (1000 * 60)) / 1000
-    );
+        // ============================================================
+        // SOUND NOTIFICATION
+        // ============================================================
+        function playNotificationSound() {
+            try {
+                const audioCtx = new(window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
 
-    document.getElementById("hours").innerHTML =
-        String(hours).padStart(2, "0");
+                oscillator.frequency.value = 880;
+                oscillator.type = 'sine';
 
-    document.getElementById("minutes").innerHTML =
-        String(minutes).padStart(2, "0");
+                gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
 
-    document.getElementById("seconds").innerHTML =
-        String(seconds).padStart(2, "0");
-}
+                oscillator.start(audioCtx.currentTime);
+                oscillator.stop(audioCtx.currentTime + 0.3);
 
-updateCountdown();
-setInterval(updateCountdown, 1000);
-</script>
+                setTimeout(() => {
+                    const osc2 = audioCtx.createOscillator();
+                    const gain2 = audioCtx.createGain();
+                    osc2.connect(gain2);
+                    gain2.connect(audioCtx.destination);
+                    osc2.frequency.value = 1100;
+                    osc2.type = 'sine';
+                    gain2.gain.setValueAtTime(0.25, audioCtx.currentTime);
+                    gain2.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+                    osc2.start(audioCtx.currentTime);
+                    osc2.stop(audioCtx.currentTime + 0.2);
+                }, 150);
+            } catch (e) { /* silent */ }
+        }
 
+        // ============================================================
+        // TOAST SYSTEM
+        // ============================================================
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            const icons = { success: '✅', error: '❌', info: 'ℹ️' };
+            toast.innerHTML = `${icons[type] || 'ℹ️'} ${message}`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(-10px)';
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        // ============================================================
+        // LOADING OVERLAY
+        // ============================================================
+        function showLoading(text = 'Processando...') {
+            const overlay = document.getElementById('loadingOverlayApp');
+            const textEl = document.getElementById('loaderText');
+            const fill = document.getElementById('loaderFill');
+            overlay.classList.add('active');
+            if (text) textEl.textContent = text;
+            fill.style.width = '0%';
+            return function updateProgress(percent, msg) {
+                fill.style.width = Math.min(percent, 100) + '%';
+                if (msg) textEl.textContent = msg;
+            };
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlayApp').classList.remove('active');
+            document.getElementById('loaderFill').style.width = '0%';
+            document.getElementById('loaderText').textContent = 'Processando...';
+        }
+
+        // ============================================================
+        // STATUS BAR TIME
+        // ============================================================
+        function updateStatusTime() {
+            const now = new Date();
+            document.getElementById('statusTime').textContent =
+                now.getHours().toString().padStart(2, '0') + ':' +
+                now.getMinutes().toString().padStart(2, '0');
+        }
+        updateStatusTime();
+        setInterval(updateStatusTime, 30000);
+
+        // ============================================================
+        // NAVIGATION
+        // ============================================================
+        const navItems = document.querySelectorAll('.bottom-nav .nav-item');
+
+        function navigateTo(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            const target = document.getElementById(pageId);
+            if (target) target.classList.add('active');
+            navItems.forEach(item => {
+                item.classList.toggle('active', item.dataset.page === pageId);
+            });
+            document.getElementById('appContent').scrollTop = 0;
+        }
+
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                navigateTo(item.dataset.page);
+            });
+        });
+
+        // ============================================================
+        // LOGIN / REGISTER
+        // ============================================================
+        let users = JSON.parse(localStorage.getItem('novacash_users')) || [];
+        let currentUser = null;
+
+        function saveUsers() {
+            localStorage.setItem('novacash_users', JSON.stringify(users));
+        }
+
+        const savedSession = sessionStorage.getItem('novacash_session');
+        if (savedSession) {
+            try {
+                currentUser = JSON.parse(savedSession);
+                document.getElementById('loginScreen').classList.add('hide');
+                document.getElementById('registerScreen').classList.remove('active');
+                document.getElementById('app').classList.add('active');
+                updateDashboard(currentUser);
+            } catch (e) {
+                sessionStorage.removeItem('novacash_session');
+            }
+        }
+
+        // Login with 25s loading with animations
+        document.getElementById('loginFormApp').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const name = document.getElementById('loginNameApp').value.trim();
+            const phone = document.getElementById('loginPhoneApp').value.trim();
+            const password = document.getElementById('loginPasswordApp').value;
+
+            if (!name || !phone || !password) {
+                showToast('Preencha todos os campos', 'error');
+                return;
+            }
+            if (password.length < 4 || password.length > 6) {
+                showToast('A senha deve ter 4-6 dígitos', 'error');
+                return;
+            }
+
+            const user = users.find(u => u.phone === phone && u.password === password);
+            if (!user) {
+                showToast('Telefone ou senha incorretos', 'error');
+                return;
+            }
+
+            // DESABILITAR O BOTÃO PARA EVITAR MÚLTIPLOS CLIQUES
+            const btn = document.getElementById('loginBtnSubmit');
+            btn.disabled = true;
+            btn.innerHTML = 'Processando...';
+
+            // 25 segundos de loading com animações
+            const updateProgress = showLoading('Verificando dados...');
+            let progress = 0;
+            const messages = [
+                { p: 8, msg: 'Verificando dados...' },
+                { p: 25, msg: 'Validando informações...' },
+                { p: 45, msg: 'Confirmando segurança da conta...' },
+                { p: 65, msg: 'Preparando o seu painel...' },
+                { p: 85, msg: 'Acesso autorizado...' }
+            ];
+            let msgIdx = 0;
+
+            const interval = setInterval(() => {
+                progress += 4;
+                updateProgress(Math.min(progress, 100));
+
+                for (let i = messages.length - 1; i >= 0; i--) {
+                    if (progress >= messages[i].p) {
+                        if (msgIdx !== i) {
+                            msgIdx = i;
+                            document.getElementById('loaderText').textContent = messages[i].msg;
+                        }
+                        break;
+                    }
+                }
+
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        hideLoading();
+                        btn.disabled = false;
+                        btn.innerHTML = 'Entrar <i class="fas fa-arrow-right"></i>';
+
+                        currentUser = user;
+                        sessionStorage.setItem('novacash_session', JSON.stringify(user));
+                        document.getElementById('loginScreen').classList.add('hide');
+                        document.getElementById('registerScreen').classList.remove('active');
+                        document.getElementById('app').classList.add('active');
+                        updateDashboard(user);
+                        showToast('Bem-vindo de volta, ' + user.fullName + '!', 'success');
+                    }, 400);
+                }
+            }, 100);
+        });
+
+        // Register
+        document.getElementById('registerFormApp').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const fullName = document.getElementById('regNameApp').value.trim();
+            const phone = document.getElementById('regPhoneApp').value.trim();
+            const password = document.getElementById('regPassApp').value;
+            const confirm = document.getElementById('regConfirmApp').value;
+
+            if (!fullName || !phone || !password || !confirm) {
+                showToast('Preencha todos os campos', 'error');
+                return;
+            }
+            if (password !== confirm) {
+                showToast('As senhas não coincidem', 'error');
+                return;
+            }
+            if (password.length < 4 || password.length > 6) {
+                showToast('A senha deve ter 4-6 dígitos', 'error');
+                return;
+            }
+            if (users.find(u => u.phone === phone)) {
+                showToast('Este telefone já está cadastrado', 'error');
+                return;
+            }
+
+            const newUser = { fullName, phone, password, loans: [], reviews: [], notifs: [], createdAt: new Date().toISOString() };
+            users.push(newUser);
+            saveUsers();
+            showToast('Conta criada com sucesso! Faça login.', 'success');
+            document.getElementById('registerScreen').classList.remove('active');
+            document.getElementById('loginScreen').classList.remove('hide');
+            document.getElementById('loginPhoneApp').value = phone;
+            document.getElementById('loginNameApp').value = fullName;
+        });
+
+        // Switch screens
+        document.getElementById('showRegisterApp').addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('loginScreen').classList.add('hide');
+            document.getElementById('registerScreen').classList.add('active');
+        });
+
+        document.getElementById('backToLoginApp').addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('registerScreen').classList.remove('active');
+            document.getElementById('loginScreen').classList.remove('hide');
+        });
+
+        // Logout
+        document.getElementById('profileLogoutBtn').addEventListener('click', () => {
+            sessionStorage.removeItem('novacash_session');
+            currentUser = null;
+            document.getElementById('app').classList.remove('active');
+            document.getElementById('loginScreen').classList.remove('hide');
+            showToast('Sessão encerrada', 'info');
+        });
+
+        // ============================================================
+        // DASHBOARD UPDATE
+        // ============================================================
+        function updateDashboard(user) {
+            if (!user) return;
+            const nameParts = user.fullName.split(' ');
+            const initials = nameParts.map(n => n[0]).join('').toUpperCase().slice(0, 2);
+
+            document.getElementById('dashName').textContent = nameParts[0] || 'Usuário';
+
+            // Card
+            document.getElementById('cardUserName').textContent = user.fullName;
+            document.getElementById('cardUserPhone').textContent = user.phone;
+            document.getElementById('cardAvatar').textContent = initials;
+            document.getElementById('cardAvatar').innerHTML = initials;
+
+            // Header avatar
+            const headerAvatar = document.getElementById('headerAvatar');
+            if (user.profileImage) {
+                headerAvatar.innerHTML = `<img src="${user.profileImage}" alt="Perfil">`;
+            } else {
+                headerAvatar.textContent = initials;
+            }
+
+            // Profile
+            document.getElementById('profileAvatar').innerHTML = user.profileImage ?
+                `<img src="${user.profileImage}" alt="Perfil"><div class="avatar-overlay"><i class="fas fa-camera"></i> Alterar</div>` :
+                initials + `<div class="avatar-overlay"><i class="fas fa-camera"></i> Alterar</div>`;
+            document.getElementById('profileName').textContent = user.fullName;
+            document.getElementById('profilePhone').textContent = user.phone;
+
+            // Pre-fill loan form
+            document.getElementById('loanFullName').value = user.fullName;
+            document.getElementById('loanPhone').value = user.phone;
+
+            // Stats
+            const loans = user.loans || [];
+            const approved = loans.filter(l => l.status === 'approved');
+            document.getElementById('statLoansDash').textContent = loans.length;
+            document.getElementById('statApprovedDash').textContent = approved.length;
+            document.getElementById('statRateDash').textContent = loans.length > 0 ? Math.round((approved.length / loans.length) * 100) + '%' : '0%';
+
+            // Date
+            const now = new Date();
+            const options = { weekday: 'long', day: 'numeric', month: 'long' };
+            document.getElementById('dashDate').textContent = now.toLocaleDateString('pt-MZ', options);
+
+            // Update history
+            updateHistory();
+            updateNotifications();
+            renderReviews();
+        }
+
+        // ============================================================
+        // REVIEWS SYSTEM
+        // ============================================================
+        const REVIEWS_KEY = 'novacash_reviews';
+        let allReviews = JSON.parse(localStorage.getItem(REVIEWS_KEY)) || [];
+
+        const defaultReviews = [
+            { name: 'João Matola', rating: 5, text: 'Excelente serviço! Recebi o meu empréstimo em menos de 20 minutos. Recomendo a todos!', date: '2025-01-15' },
+            { name: 'Carla Mucavele', rating: 5, text: 'Fui muito bem atendida, processo simples e transparente. Nota 10!', date: '2025-01-18' },
+            { name: 'Ernesto Macamo', rating: 4, text: 'Gostei muito da experiência. O suporte é rápido e as condições são justas.', date: '2025-01-20' }
+        ];
+
+        if (allReviews.length === 0) {
+            allReviews = [...defaultReviews];
+            localStorage.setItem(REVIEWS_KEY, JSON.stringify(allReviews));
+        }
+
+        function renderReviews() {
+            const container = document.getElementById('reviewsListApp');
+            if (!container) return;
+            container.innerHTML = '';
+            allReviews.slice().reverse().forEach(review => {
+                const card = document.createElement('div');
+                card.className = 'review-card-app';
+                const stars = '★'.repeat(Math.floor(review.rating)) + '☆'.repeat(5 - Math.floor(review.rating));
+                card.innerHTML = `
+                    <div class="review-header">
+                        <span class="review-name">${review.name}</span>
+                        <span class="review-stars">${stars}</span>
+                    </div>
+                    <div class="review-text">${review.text}</div>
+                    <span class="review-date">${review.date || new Date().toLocaleDateString('pt-MZ')}</span>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Star rating
+        const starEls = document.querySelectorAll('#starRatingApp i');
+        const ratingInput = document.getElementById('reviewRatingApp');
+
+        starEls.forEach(star => {
+            star.addEventListener('click', function() {
+                const value = parseInt(this.dataset.value);
+                ratingInput.value = value;
+                starEls.forEach(s => {
+                    s.classList.toggle('active', parseInt(s.dataset.value) <= value);
+                });
+            });
+            star.addEventListener('mouseenter', function() {
+                const value = parseInt(this.dataset.value);
+                starEls.forEach(s => {
+                    s.classList.toggle('hover', parseInt(s.dataset.value) <= value);
+                });
+            });
+            star.addEventListener('mouseleave', () => {
+                starEls.forEach(s => s.classList.remove('hover'));
+            });
+        });
+        ratingInput.value = 5;
+        starEls.forEach(s => {
+            if (parseInt(s.dataset.value) <= 5) s.classList.add('active');
+        });
+
+        document.getElementById('submitReviewApp').addEventListener('click', function() {
+            if (!currentUser) {
+                showToast('Faça login para avaliar', 'error');
+                return;
+            }
+            const text = document.getElementById('reviewTextApp').value.trim();
+            if (!text) {
+                showToast('Escreva um comentário', 'error');
+                return;
+            }
+            const rating = parseInt(ratingInput.value) || 5;
+            const review = {
+                name: currentUser.fullName,
+                rating: rating,
+                text: text,
+                date: new Date().toLocaleDateString('pt-MZ')
+            };
+            allReviews.push(review);
+            localStorage.setItem(REVIEWS_KEY, JSON.stringify(allReviews));
+            renderReviews();
+            document.getElementById('reviewTextApp').value = '';
+            showToast('✅ Avaliação publicada com sucesso!', 'success');
+        });
+
+        renderReviews();
+
+        // ============================================================
+        // LOAN SIMULATOR
+        // ============================================================
+        const simAmount = document.getElementById('simAmount');
+        const simTerm = document.getElementById('simTerm');
+
+        function calcFee(amount) {
+            if (amount <= 8999) return 514;
+            if (amount <= 12999) return 699;
+            if (amount <= 16999) return 799;
+            if (amount <= 21999) return 899;
+            if (amount <= 29999) return 999;
+            if (amount <= 40999) return 1299;
+            if (amount <= 60999) return 1499;
+            if (amount <= 90999) return 1799;
+            if (amount <= 139999) return 2099;
+            if (amount <= 199999) return 2499;
+            if (amount <= 259999) return 2799;
+            return 3099;
+        }
+
+        function updateSimulator() {
+            const amount = parseInt(simAmount.value);
+            const term = parseInt(simTerm.value);
+            const interest = amount * 0.07;
+            const total = amount + interest;
+            const monthly = total / term;
+            const fee = calcFee(amount);
+
+            document.getElementById('simAmountDisplay').textContent = amount.toLocaleString('pt-MZ') + ' MZN';
+            document.getElementById('simTermDisplay').textContent = term + ' meses';
+            document.getElementById('simMonthly').textContent = Math.round(monthly).toLocaleString('pt-MZ') + ' MZN';
+            document.getElementById('simTotal').textContent = Math.round(total).toLocaleString('pt-MZ') + ' MZN';
+            document.getElementById('simInterest').textContent = Math.round(interest).toLocaleString('pt-MZ') + ' MZN';
+            document.getElementById('simFee').textContent = fee.toLocaleString('pt-MZ') + ' MZN';
+        }
+
+        simAmount.addEventListener('input', updateSimulator);
+        simTerm.addEventListener('input', updateSimulator);
+        updateSimulator();
+
+        // ============================================================
+        // STEP NAVIGATION
+        // ============================================================
+        let currentStep = 1;
+        const stepDots = document.querySelectorAll('.step-dot');
+        const stepContents = document.querySelectorAll('.step-content');
+
+        function goToStep(step) {
+            currentStep = step;
+            stepDots.forEach((dot, index) => {
+                const num = index + 1;
+                dot.classList.remove('active', 'done');
+                if (num === step) dot.classList.add('active');
+                else if (num < step) dot.classList.add('done');
+            });
+            stepContents.forEach((content, index) => {
+                content.classList.toggle('active', index + 1 === step);
+            });
+            document.getElementById('appContent').scrollTop = 0;
+            if (step === 4) {
+                updateSummary();
+            }
+        }
+
+        document.querySelectorAll('.next-step').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const next = parseInt(btn.dataset.next);
+                if (next && next <= 4) goToStep(next);
+            });
+        });
+
+        document.querySelectorAll('.prev-step').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const prev = parseInt(btn.dataset.prev);
+                if (prev && prev >= 1) goToStep(prev);
+            });
+        });
+
+        // Payment method selection
+        document.querySelectorAll('.pm-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.pm-item').forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // File previews
+        function previewFile(input, containerId) {
+            const container = document.getElementById(containerId);
+            if (!container || !input.files || !input.files[0]) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                container.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+
+        document.getElementById('loanBiFront').addEventListener('change', function() {
+            previewFile(this, 'biFrontPreviewApp');
+        });
+        document.getElementById('loanBiBack').addEventListener('change', function() {
+            previewFile(this, 'biBackPreviewApp');
+        });
+        document.getElementById('loanProof').addEventListener('change', function() {
+            previewFile(this, 'proofPreviewApp');
+        });
+
+        // ============================================================
+        // UPDATE SUMMARY (Step 4)
+        // ============================================================
+        function updateSummary() {
+            const name = document.getElementById('loanFullName').value.trim() || '---';
+            const phone = document.getElementById('loanPhone').value.trim() || '---';
+            const bi = document.getElementById('loanBi').value.trim() || '---';
+            const receiver = document.getElementById('loanReceiver').value.trim() || '---';
+            const method = document.querySelector('.pm-item.active')?.dataset.method || 'M-Pesa';
+            const amount = parseInt(simAmount.value) || 0;
+            const term = parseInt(simTerm.value) || 6;
+            const fee = calcFee(amount);
+            const interest = amount * 0.07;
+            const total = amount + interest;
+            const monthly = total / term;
+
+            document.getElementById('summaryName').textContent = name;
+            document.getElementById('summaryPhone').textContent = phone;
+            document.getElementById('summaryBi').textContent = bi;
+            document.getElementById('summaryReceiver').textContent = receiver;
+            document.getElementById('summaryMethod').textContent = method;
+            document.getElementById('summaryAmount').textContent = amount.toLocaleString('pt-MZ') + ' MZN';
+            document.getElementById('summaryTerm').textContent = term + ' meses';
+            document.getElementById('summaryMonthly').textContent = Math.round(monthly).toLocaleString('pt-MZ') + ' MZN';
+            document.getElementById('summaryFee').textContent = fee.toLocaleString('pt-MZ') + ' MZN';
+        }
+
+        document.getElementById('loanFullName').addEventListener('input', updateSummary);
+        document.getElementById('loanPhone').addEventListener('input', updateSummary);
+        document.getElementById('loanBi').addEventListener('input', updateSummary);
+        document.getElementById('loanReceiver').addEventListener('input', updateSummary);
+        document.querySelectorAll('.pm-item').forEach(item => {
+            item.addEventListener('click', updateSummary);
+        });
+        simAmount.addEventListener('input', updateSummary);
+        simTerm.addEventListener('input', updateSummary);
+
+        // ============================================================
+        // BOTÃO EFETUAR O PAGAMENTO DA TAXA
+        // ============================================================
+        document.getElementById('payFeeBtn').addEventListener('click', function() {
+            const method = document.querySelector('.pm-item.active')?.dataset.method || 'M-Pesa';
+            const code = method === 'E-Mola' ? '*898#' : '*150#';
+            window.location.href = 'tel:' + code;
+        });
+
+        // ============================================================
+        // NOTIFICAÇÕES DE EMPRÉSTIMOS APROVADOS (15-20 segundos)
+        // ============================================================
+        const firstNames = ['João', 'Carla', 'Ernesto', 'Marta', 'António', 'Filomena', 'Carlos', 'Ana', 'Paulo', 'Rosa',
+            'José', 'Lúcia', 'Manuel', 'Isabel', 'Fernando'
+        ];
+        const lastNames = ['Matola', 'Mucavele', 'Macamo', 'Chongo', 'Sitoe', 'Langa', 'Nhaca', 'Munguambe', 'Chicava',
+            'Zandamela'
+        ];
+        const loanAmounts = [5000, 10000, 25000, 50000, 100000, 150000, 200000, 300000];
+
+        function addActivityItem(name, amount, method) {
+            const container = document.getElementById('activityList');
+            if (!container) return;
+            const item = document.createElement('div');
+            item.className = 'activity-item';
+            item.innerHTML = `
+                <div class="activity-icon green"><i class="fas fa-check"></i></div>
+                <div class="activity-info"><div class="act-title">${name}</div><div class="act-desc">${amount.toLocaleString('pt-MZ')} MZN via ${method}</div></div>
+                <div class="activity-amount positive">+${amount.toLocaleString('pt-MZ')} MZN</div>
+            `;
+            container.insertBefore(item, container.firstChild);
+            while (container.children.length > 10) {
+                container.removeChild(container.lastChild);
+            }
+        }
+
+        function showLoanNotification() {
+            const name = firstNames[Math.floor(Math.random() * firstNames.length)] + ' ' + lastNames[Math.floor(Math.random() * lastNames.length)];
+            const amount = loanAmounts[Math.floor(Math.random() * loanAmounts.length)];
+            const methods = ['M-Pesa', 'E-Mola', 'Banco'];
+            const method = methods[Math.floor(Math.random() * 3)];
+
+            playNotificationSound();
+            showToast(`💰 ${name} recebeu ${amount.toLocaleString('pt-MZ')} MZN via ${method}`, 'success');
+            addActivityItem(name, amount, method);
+        }
+
+        // Start notifications every 15-20 seconds
+        setInterval(() => {
+            showLoanNotification();
+        }, 15000 + Math.random() * 5000);
+
+        // Initial notifications
+        setTimeout(showLoanNotification, 3000);
+        setTimeout(showLoanNotification, 8000);
+
+        // ============================================================
+        // SUBMIT LOAN (with 30s processing)
+        // ============================================================
+        document.getElementById('submitLoanApp').addEventListener('click', function() {
+            if (!currentUser) {
+                showToast('Faça login para solicitar', 'error');
+                return;
+            }
+
+            const name = document.getElementById('loanFullName').value.trim();
+            const phone = document.getElementById('loanPhone').value.trim();
+            const receiver = document.getElementById('loanReceiver').value.trim();
+            const bi = document.getElementById('loanBi').value.trim();
+            const frontFile = document.getElementById('loanBiFront').files[0];
+            const backFile = document.getElementById('loanBiBack').files[0];
+            const proofFile = document.getElementById('loanProof').files[0];
+            const terms = document.getElementById('loanTerms').checked;
+
+            if (!name || !phone || !receiver || !bi) {
+                showToast('Preencha todos os dados', 'error');
+                return;
+            }
+            if (!frontFile || !backFile) {
+                showToast('Carregue os dois lados do BI', 'error');
+                return;
+            }
+            if (!proofFile) {
+                showToast('Carregue o comprovativo de pagamento', 'error');
+                return;
+            }
+            if (!terms) {
+                showToast('Aceite os Termos e Condições', 'error');
+                return;
+            }
+
+            const amount = parseInt(simAmount.value);
+            const term = parseInt(simTerm.value);
+            const fee = calcFee(amount);
+            const method = document.querySelector('.pm-item.active')?.dataset.method || 'M-Pesa';
+
+            // DESABILITAR O BOTÃO
+            const btn = document.getElementById('submitLoanApp');
+            btn.disabled = true;
+            btn.innerHTML = 'Processando...';
+
+            // 30 seconds processing with animations
+            const updateProgress = showLoading('Analisando comprovativo...');
+            let progress = 0;
+            const messages = [
+                { p: 8, msg: 'Analisando comprovativo...' },
+                { p: 25, msg: 'Validando autenticidade do documento...' },
+                { p: 45, msg: 'Verificando dados de pagamento...' },
+                { p: 65, msg: 'Processando solicitação...' },
+                { p: 82, msg: 'Finalizando análise...' },
+                { p: 92, msg: 'Concluindo verificação...' }
+            ];
+            let msgIdx = 0;
+
+            const interval = setInterval(() => {
+                progress += 3.33;
+                updateProgress(Math.min(progress, 100));
+
+                for (let i = messages.length - 1; i >= 0; i--) {
+                    if (progress >= messages[i].p) {
+                        if (msgIdx !== i) {
+                            msgIdx = i;
+                            document.getElementById('loaderText').textContent = messages[i].msg;
+                        }
+                        break;
+                    }
+                }
+
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        hideLoading();
+                        btn.disabled = false;
+                        btn.innerHTML = '<i class="fas fa-paper-plane"></i> ENVIAR A SOLICITAÇÃO';
+
+                        // Show error popup
+                        const errorMsg = 'ERRO NA SUA IMAGEM DE COMPROVATIVO DE PAGAMENTO DA TAXA DE INSCRIÇÃO, por favor pague a taxa e volte a tentar NOVAMENTE.';
+                        showPopup(errorMsg);
+
+                        // Add notification
+                        addNotif(currentUser, '❌ ERRO NO COMPROVATIVO',
+                            'Por favor, pague a taxa de inscrição e tente novamente.', 'error', 'fa-exclamation-triangle');
+
+                        // Show error modal with payment details
+                        const errorModalHTML = `
+                            <div style="text-align:center;margin-bottom:1rem;">
+                                <i class="fas fa-exclamation-triangle" style="font-size:2.5rem;color:var(--error);"></i>
+                                <p style="margin-top:0.5rem;font-weight:600;">ERRO NA SUA IMAGEM DE COMPROVATIVO</p>
+                                <p style="color:var(--gray);font-size:0.85rem;">Por favor, pague a taxa e tente novamente.</p>
+                            </div>
+                            <div style="background:#f8f4f0;border-radius:16px;padding:0.8rem;margin:0.6rem 0;">
+                                <div style="font-size:0.75rem;color:var(--gray);">Dados para pagamento:</div>
+                                <div style="display:flex;justify-content:space-between;font-weight:600;">
+                                    <span>876364927</span>
+                                    <span>TIOFELO EDSON LUIS JAIELA</span>
+                                </div>
+                            </div>
+                            <button class="pay-btn" id="understoodBtn" style="background:var(--primary);">ENTENDI, VOU PAGAR</button>
+                        `;
+                        openModal('Pagamento da Taxa', errorModalHTML);
+
+                        document.getElementById('understoodBtn')?.addEventListener('click', function() {
+                            document.getElementById('modalOverlay').classList.remove('active');
+                        });
+
+                    }, 400);
+                }
+            }, 100);
+        });
+
+        // ============================================================
+        // HISTORY
+        // ============================================================
+        function updateHistory() {
+            const container = document.getElementById('historyList');
+            if (!currentUser || !currentUser.loans || currentUser.loans.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 2rem; color: var(--gray);">
+                        <i class="fas fa-inbox" style="font-size: 2rem; display: block; margin-bottom: 0.5rem;"></i>
+                        <p>Nenhum empréstimo solicitado ainda</p>
+                    </div>
+                `;
+                return;
+            }
+            container.innerHTML = '';
+            currentUser.loans.slice().reverse().forEach(loan => {
+                const div = document.createElement('div');
+                div.className = 'history-item';
+                const statusMap = {
+                    pending: '<span class="hi-status pending">Em análise</span>',
+                    approved: '<span class="hi-status approved">Aprovado</span>',
+                    rejected: '<span class="hi-status rejected">Recusado</span>'
+                };
+                const date = new Date(loan.date);
+                div.innerHTML = `
+                    <div class="hi-left">
+                        <div class="hi-amount">${loan.amount.toLocaleString('pt-MZ')} MZN</div>
+                        <div class="hi-date">${date.toLocaleDateString('pt-MZ')} • ${loan.term} meses</div>
+                    </div>
+                    ${statusMap[loan.status] || '<span class="hi-status pending">Em análise</span>'}
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // ============================================================
+        // NOTIFICATIONS
+        // ============================================================
+        function updateNotifications() {
+            const container = document.getElementById('notifList');
+            const notifs = currentUser?.notifs || [];
+
+            if (notifs.length === 0) {
+                container.innerHTML = '<div style="text-align:center;color:var(--gray);padding:1rem;">Nenhuma notificação</div>';
+                return;
+            }
+
+            container.innerHTML = '';
+            notifs.forEach(n => {
+                const div = document.createElement('div');
+                div.className = `notif-item ${n.type === 'error' ? 'error' : ''}`;
+                div.innerHTML = `
+                    <div class="notif-icon"><i class="fas ${n.icon || 'fa-bell'}"></i></div>
+                    <div class="notif-content">
+                        <div class="notif-title">${n.title}</div>
+                        <div class="notif-desc">${n.body}</div>
+                        <span class="notif-time">${new Date().toLocaleString('pt-MZ')}</span>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+
+            const unreadCount = notifs.filter(n => n.unread !== false).length;
+            document.getElementById('notifBadge').textContent = unreadCount;
+            document.getElementById('navNotifBadge').textContent = unreadCount;
+        }
+
+        function addNotif(user, title, body, type = 'info', icon = 'fa-bell') {
+            if (!user.notifs) user.notifs = [];
+            user.notifs.unshift({ title, body, type, icon, unread: true });
+            if (user.notifs.length > 20) user.notifs.pop();
+            const idx = users.findIndex(u => u.phone === user.phone);
+            if (idx !== -1) users[idx] = user;
+            saveUsers();
+            sessionStorage.setItem('novacash_session', JSON.stringify(user));
+            updateNotifications();
+        }
+
+        // ============================================================
+        // POPUP
+        // ============================================================
+        function showPopup(text) {
+            const popup = document.getElementById('notifPopup');
+            document.getElementById('popupText').textContent = text;
+            popup.classList.add('show');
+            setTimeout(() => popup.classList.remove('show'), 6000);
+        }
+        document.getElementById('popupClose').addEventListener('click', function() {
+            document.getElementById('notifPopup').classList.remove('show');
+        });
+
+        // ============================================================
+        // CHAT SYSTEM
+        // ============================================================
+        const chatFab = document.getElementById('chatFab');
+        const chatWindow = document.getElementById('chatWindowApp');
+        const chatClose = document.getElementById('chatCloseApp');
+        const chatInput = document.getElementById('chatInputApp');
+        const chatSend = document.getElementById('chatSendApp');
+        const chatMessages = document.getElementById('chatMessagesApp');
+
+        chatFab.addEventListener('click', () => {
+            chatWindow.classList.toggle('active');
+            if (chatWindow.classList.contains('active')) {
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+        });
+
+        chatClose.addEventListener('click', () => {
+            chatWindow.classList.remove('active');
+        });
+
+        function addChatMessage(text, isUser = false) {
+            const msg = document.createElement('div');
+            msg.className = `msg ${isUser ? 'user' : 'bot'}`;
+            if (!isUser) {
+                msg.innerHTML = `<span class="msg-sender">🤖 NOVACASH</span>${text}`;
+            } else {
+                msg.textContent = text;
+            }
+            chatMessages.appendChild(msg);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function chatBotResponse(input) {
+            const lower = input.toLowerCase();
+            if (lower.includes('tempo') || lower.includes('demora') || lower.includes('receber')) {
+                return 'O tempo de recebimento do empréstimo varia entre 8 e 30 minutos após a conclusão das etapas necessárias.';
+            }
+            if (lower.includes('taxa') || lower.includes('inscrição')) {
+                return 'A taxa de inscrição varia entre 514 MT e 3.099 MT, dependendo do valor. Pagamento para o número 876364927, nome TIOFELO EDSON LUIS JAIELA.';
+            }
+            if (lower.includes('localização') || lower.includes('sede') || lower.includes('endereço')) {
+                return 'Estamos localizados em Maputo, Baixa da Cidade, Avenida Julius Nyerere, Prédio 22 Andares.';
+            }
+            if (lower.includes('documento') || lower.includes('bi')) {
+                return 'É necessário apresentar um documento de identificação válido (BI, Passaporte ou NUIT).';
+            }
+            if (lower.includes('pagamento') || lower.includes('número')) {
+                return '📱 Número: 876364927\n👤 Nome: TIOFELO EDSON LUIS JAIELA';
+            }
+            return 'Para mais informações, consulte nossas FAQs ou entre em contato com o suporte. 💙';
+        }
+
+        function sendChatMessage() {
+            const text = chatInput.value.trim();
+            if (!text) return;
+            addChatMessage(text, true);
+            chatInput.value = '';
+
+            const typing = document.createElement('div');
+            typing.className = 'msg bot';
+            typing.innerHTML = `<span class="msg-sender">🤖 NOVACASH</span><div class="typing-dots"><span></span><span></span><span></span></div>`;
+            chatMessages.appendChild(typing);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            setTimeout(() => {
+                typing.remove();
+                const reply = chatBotResponse(text);
+                addChatMessage(reply, false);
+            }, 1500 + Math.random() * 1000);
+        }
+
+        chatSend.addEventListener('click', sendChatMessage);
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendChatMessage();
+        });
+
+        document.querySelectorAll('.faq-chip').forEach(chip => {
+            chip.addEventListener('click', function() {
+                const question = this.dataset.question;
+                if (question) {
+                    addChatMessage(question, true);
+                    setTimeout(() => {
+                        const reply = chatBotResponse(question);
+                        addChatMessage(reply, false);
+                    }, 800);
+                }
+            });
+        });
+
+        // ============================================================
+        // FUNDS MODAL
+        // ============================================================
+        document.getElementById('fundsBtnCard').addEventListener('click', function(e) {
+            e.stopPropagation();
+            updateFundsDisplay();
+            document.getElementById('fundsModal').classList.add('active');
+        });
+
+        document.getElementById('fundsModalClose').addEventListener('click', function() {
+            document.getElementById('fundsModal').classList.remove('active');
+        });
+
+        document.getElementById('fundsModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('active');
+            }
+        });
+
+        function updateFundsDisplay() {
+            // Placeholder - funds system kept for compatibility
+        }
+
+        // ============================================================
+        // NAVIGATION SHORTCUTS
+        // ============================================================
+        document.getElementById('seeAllActivity').addEventListener('click', () => {
+            navigateTo('pageHistory');
+            updateHistory();
+        });
+
+        document.getElementById('notifHeaderBtn').addEventListener('click', () => {
+            navigateTo('pageNotifications');
+            updateNotifications();
+        });
+
+        document.getElementById('loanBtnMain').addEventListener('click', () => {
+            navigateTo('pageLoans');
+        });
+
+        document.querySelectorAll('.copy-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const text = this.dataset.text;
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(text).then(() => {
+                        showToast('Número copiado!', 'success');
+                    });
+                } else {
+                    const input = document.createElement('input');
+                    input.value = text;
+                    document.body.appendChild(input);
+                    input.select();
+                    document.execCommand('copy');
+                    input.remove();
+                    showToast('Número copiado!', 'success');
+                }
+            });
+        });
+
+        // ============================================================
+        // MODAL SYSTEM
+        // ============================================================
+        const modalOverlay = document.getElementById('modalOverlay');
+        const modalClose = document.getElementById('modalClose');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalBody = document.getElementById('modalBody');
+
+        function openModal(title, content) {
+            modalTitle.textContent = title;
+            modalBody.innerHTML = content;
+            modalOverlay.classList.add('active');
+        }
+
+        modalClose.addEventListener('click', () => modalOverlay.classList.remove('active'));
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) modalOverlay.classList.remove('active');
+        });
+
+        // Profile menu actions
+        document.getElementById('profileEditBtn').addEventListener('click', () => {
+            openModal('Editar Perfil', `
+                <div class="form-group">
+                    <label>Nome Completo</label>
+                    <input type="text" id="editName" value="${currentUser?.fullName || ''}">
+                </div>
+                <div class="form-group">
+                    <label>Telefone</label>
+                    <input type="tel" id="editPhone" value="${currentUser?.phone || ''}" disabled>
+                </div>
+                <div class="form-group">
+                    <label>Foto de Perfil</label>
+                    <div class="file-input-wrapper">
+                        <div class="file-label"><i class="fas fa-camera"></i> Carregar nova foto</div>
+                        <input type="file" id="editProfileImage" accept="image/*">
+                    </div>
+                    <div id="editProfilePreview" class="image-preview"></div>
+                </div>
+                <button class="btn btn-primary" id="saveProfileBtn">Salvar Alterações</button>
+            `);
+
+            document.getElementById('editProfileImage')?.addEventListener('change', function() {
+                const container = document.getElementById('editProfilePreview');
+                if (this.files && this.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        container.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+                    };
+                    reader.readAsDataURL(this.files[0]);
+                }
+            });
+
+            document.getElementById('saveProfileBtn')?.addEventListener('click', function() {
+                const newName = document.getElementById('editName').value.trim();
+                const fileInput = document.getElementById('editProfileImage');
+
+                if (newName && currentUser) {
+                    currentUser.fullName = newName;
+
+                    if (fileInput && fileInput.files && fileInput.files[0]) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            currentUser.profileImage = e.target.result;
+                            const idx = users.findIndex(u => u.phone === currentUser.phone);
+                            if (idx !== -1) users[idx] = currentUser;
+                            saveUsers();
+                            sessionStorage.setItem('novacash_session', JSON.stringify(currentUser));
+                            updateDashboard(currentUser);
+                            modalOverlay.classList.remove('active');
+                            showToast('Perfil atualizado com sucesso!', 'success');
+                        };
+                        reader.readAsDataURL(fileInput.files[0]);
+                    } else {
+                        const idx = users.findIndex(u => u.phone === currentUser.phone);
+                        if (idx !== -1) users[idx] = currentUser;
+                        saveUsers();
+                        sessionStorage.setItem('novacash_session', JSON.stringify(currentUser));
+                        updateDashboard(currentUser);
+                        modalOverlay.classList.remove('active');
+                        showToast('Perfil atualizado!', 'success');
+                    }
+                }
+            });
+        });
+
+        document.getElementById('profileSecurityBtn').addEventListener('click', () => {
+            openModal('Segurança', `
+                <p style="color: var(--gray); margin-bottom: 1rem;">Altere sua senha de acesso</p>
+                <div class="form-group">
+                    <label>Nova Senha (4-6 dígitos)</label>
+                    <input type="password" id="newPass" maxlength="6" placeholder="Digite a nova senha">
+                </div>
+                <div class="form-group">
+                    <label>Confirmar Senha</label>
+                    <input type="password" id="confirmPass" maxlength="6" placeholder="Confirme a nova senha">
+                </div>
+                <button class="btn btn-primary" id="changePassBtn">Alterar Senha</button>
+            `);
+            document.getElementById('changePassBtn')?.addEventListener('click', function() {
+                const newPass = document.getElementById('newPass').value;
+                const confirmPass = document.getElementById('confirmPass').value;
+                if (!newPass || newPass.length < 4 || newPass.length > 6) {
+                    showToast('A senha deve ter 4-6 dígitos', 'error');
+                    return;
+                }
+                if (newPass !== confirmPass) {
+                    showToast('As senhas não coincidem', 'error');
+                    return;
+                }
+                if (currentUser) {
+                    currentUser.password = newPass;
+                    const idx = users.findIndex(u => u.phone === currentUser.phone);
+                    if (idx !== -1) users[idx] = currentUser;
+                    saveUsers();
+                    sessionStorage.setItem('novacash_session', JSON.stringify(currentUser));
+                    modalOverlay.classList.remove('active');
+                    showToast('Senha alterada com sucesso!', 'success');
+                }
+            });
+        });
+
+        document.getElementById('profileHelpBtn').addEventListener('click', () => {
+            openModal('Ajuda & Suporte', `
+                <p style="color: var(--gray);">Entre em contato conosco:</p>
+                <div style="margin: 1rem 0;">
+                    <p><strong>📧 Email:</strong> info@novacash.mz</p>
+                    <p><strong>📱 Telefone:</strong> +258 84 123 4567</p>
+                    <p><strong>💬 Chat:</strong> Disponível 24h no site</p>
+                    <p><strong>📍 Endereço:</strong> Maputo, Baixa da Cidade, Avenida Julius Nyerere</p>
+                </div>
+                <button class="btn btn-primary" id="helpChatBtn">Abrir Chat</button>
+            `);
+            document.getElementById('helpChatBtn')?.addEventListener('click', () => {
+                modalOverlay.classList.remove('active');
+                chatWindow.classList.add('active');
+            });
+        });
+
+        document.getElementById('profileAboutBtn').addEventListener('click', () => {
+            openModal('Sobre a NOVACASH', `
+                <div style="text-align: center; padding: 0.5rem 0;">
+                    <h2 style="font-size: 1.5rem; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">💰 NOVACASH.MZ</h2>
+                    <p style="color: var(--gray);">Empréstimos rápidos e seguros em Moçambique</p>
+                    <hr style="margin: 1rem 0; border-color: var(--gray-light);">
+                    <p style="text-align: left; font-size: 0.85rem; line-height: 1.6; color: var(--gray);">
+                        <strong>Missão:</strong> Oferecer soluções financeiras acessíveis e transparentes para todos os moçambicanos.<br><br>
+                        <strong>Visão:</strong> Ser a fintech mais confiável e inovadora de Moçambique.<br><br>
+                        <strong>Valores:</strong> Transparência, Rapidez, Segurança e Inovação.
+                    </p>
+                </div>
+            `);
+        });
+
+        document.getElementById('forgotPassBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            openModal('Recuperar Senha', `
+                <p style="color: var(--gray); margin-bottom: 1rem;">Digite seu número de telefone</p>
+                <div class="form-group">
+                    <label>Telefone</label>
+                    <input type="tel" id="forgotPhone" placeholder="84 123 4567">
+                </div>
+                <button class="btn btn-primary" id="forgotSubmitBtn">Recuperar</button>
+            `);
+            document.getElementById('forgotSubmitBtn')?.addEventListener('click', function() {
+                const phone = document.getElementById('forgotPhone').value.trim();
+                const user = users.find(u => u.phone === phone);
+                if (user) {
+                    showToast(`Sua senha é: ${user.password}`, 'info');
+                    modalOverlay.classList.remove('active');
+                } else {
+                    showToast('Telefone não encontrado', 'error');
+                }
+            });
+        });
+
+        // ============================================================
+        // SPLASH
+        // ============================================================
+        setTimeout(() => {
+            document.getElementById('splashScreen').classList.add('hide');
+            setTimeout(() => {
+                document.getElementById('splashScreen').style.display = 'none';
+                if (currentUser) {
+                    document.getElementById('app').classList.add('active');
+                }
+            }, 600);
+        }, 1800);
+
+        // ============================================================
+        // INIT
+        // ============================================================
+        if (currentUser) {
+            updateDashboard(currentUser);
+            updateHistory();
+            updateNotifications();
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                modalOverlay.classList.remove('active');
+                chatWindow.classList.remove('active');
+                document.getElementById('fundsModal').classList.remove('active');
+            }
+        });
+
+    });
+    </script>
 </body>
 </html>
-```

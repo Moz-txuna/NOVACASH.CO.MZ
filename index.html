@@ -946,6 +946,12 @@
         }
         #loginScreen .login-box .login-options a { color: var(--primary); text-decoration: none; font-weight: 600; }
         #loginScreen .login-box .login-options a:hover { text-decoration: underline; }
+        .login-box .login-sub {
+            color: var(--gray);
+            font-size: 0.7rem;
+            text-align: center;
+            margin-top: 0.5rem;
+        }
 
         /* ===== REGISTER ===== */
         #registerScreen {
@@ -985,8 +991,8 @@
         .loading-overlay-app {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(12px);
+            background: rgba(0,0,0,0.92);
+            backdrop-filter: blur(16px);
             z-index: 99999;
             display: none;
             justify-content: center;
@@ -996,28 +1002,29 @@
         }
         .loading-overlay-app.active { display: flex; }
         .loading-overlay-app .loader-spinner {
-            width: 60px; height: 60px;
-            border: 4px solid rgba(255,255,255,0.1);
+            width: 70px; height: 70px;
+            border: 4px solid rgba(255,255,255,0.08);
             border-top-color: var(--secondary);
+            border-right-color: var(--primary);
             border-radius: 50%;
-            animation: spin 0.8s linear infinite;
+            animation: spin 1s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
         }
         .loading-overlay-app .loader-text {
             color: white;
             font-weight: 500;
-            font-size: 1rem;
+            font-size: 1.1rem;
             text-align: center;
-            min-height: 2rem;
+            min-height: 2.5rem;
             transition: opacity 0.3s;
         }
         .loading-overlay-app .loader-progress {
-            width: 280px;
+            width: 300px;
             max-width: 85%;
-            height: 6px;
-            background: rgba(255,255,255,0.15);
+            height: 8px;
+            background: rgba(255,255,255,0.1);
             border-radius: 10px;
             overflow: hidden;
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
         }
         .loading-overlay-app .loader-progress .loader-fill {
             height: 100%;
@@ -1025,16 +1032,16 @@
             width: 0%;
             transition: width 0.3s ease;
             border-radius: 10px;
-            box-shadow: 0 0 20px rgba(255,127,0,0.3);
+            box-shadow: 0 0 30px rgba(255,127,0,0.4);
         }
         .loading-overlay-app .loader-pulse {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             margin-top: 0.5rem;
         }
         .loading-overlay-app .loader-pulse span {
-            width: 10px;
-            height: 10px;
+            width: 12px;
+            height: 12px;
             border-radius: 50%;
             background: var(--secondary);
             animation: pulseDot 1.4s infinite ease-in-out;
@@ -1042,8 +1049,15 @@
         .loading-overlay-app .loader-pulse span:nth-child(2) { animation-delay: 0.2s; }
         .loading-overlay-app .loader-pulse span:nth-child(3) { animation-delay: 0.4s; }
         @keyframes pulseDot {
-            0%, 80%, 100% { transform: scale(0.6); opacity: 0.3; }
+            0%, 80%, 100% { transform: scale(0.6); opacity: 0.2; }
             40% { transform: scale(1); opacity: 1; }
+        }
+        .loading-overlay-app .loader-timer {
+            color: rgba(255,255,255,0.5);
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            font-variant-numeric: tabular-nums;
         }
 
         /* ===== CHAT ===== */
@@ -1330,6 +1344,7 @@
             .bottom-nav .nav-item { max-width: 60px; }
             .bank-card-premium .card-limits { grid-template-columns: repeat(2, 1fr); }
             .loading-overlay-app .loader-progress { width: 90%; }
+            .loading-overlay-app .loader-spinner { width: 50px; height: 50px; }
         }
 
         @media (min-width: 768px) {
@@ -1357,6 +1372,7 @@
         <div class="loader-spinner"></div>
         <div class="loader-text" id="loaderText">Processando...</div>
         <div class="loader-progress"><div class="loader-fill" id="loaderFill"></div></div>
+        <div class="loader-timer" id="loaderTimer">00:00</div>
         <div class="loader-pulse"><span></span><span></span><span></span></div>
     </div>
 
@@ -1381,16 +1397,13 @@
                 <div class="form-group">
                     <input type="tel" id="loginPhoneApp" placeholder="Número de Telefone" required>
                 </div>
-                <div class="form-group">
-                    <input type="password" id="loginPasswordApp" placeholder="Senha (4-6 dígitos)" maxlength="6" required>
-                </div>
                 <div class="login-options">
                     <label><input type="checkbox" id="rememberMe"> Lembrar-me</label>
-                    <a href="#" id="forgotPassBtn">Esqueci a senha</a>
                 </div>
                 <button type="submit" class="btn btn-primary" id="loginBtnSubmit">Entrar <i class="fas fa-arrow-right"></i></button>
             </form>
-            <div style="text-align: center; margin-top: 1rem;">
+            <div class="login-sub">Digite seu nome e telefone para acessar sua conta</div>
+            <div style="text-align: center; margin-top: 0.8rem;">
                 <span style="color: var(--gray); font-size: 0.8rem;">Não tem conta? </span>
                 <a href="#" id="showRegisterApp" style="color: var(--primary); font-weight: 600; text-decoration: none;">Criar Conta</a>
             </div>
@@ -1412,11 +1425,9 @@
                     <input type="tel" id="regPhoneApp" placeholder="Número de Telefone" required>
                 </div>
                 <div class="form-group">
-                    <input type="password" id="regPassApp" placeholder="Senha (4-6 dígitos)" maxlength="6" required>
+                    <input type="password" id="regPassApp" placeholder="Senha (opcional)" maxlength="6">
                 </div>
-                <div class="form-group">
-                    <input type="password" id="regConfirmApp" placeholder="Confirmar Senha" maxlength="6" required>
-                </div>
+                <div style="font-size:0.7rem;color:var(--gray);margin-top:-0.5rem;margin-bottom:0.5rem;">Deixe em branco para acessar sem senha</div>
                 <button type="submit" class="btn btn-primary">Criar Conta <i class="fas fa-user-plus"></i></button>
             </form>
             <div style="text-align: center; margin-top: 1rem;">
@@ -1695,7 +1706,7 @@
                         </div>
                         <div style="display: flex; gap: 0.6rem;">
                             <button class="btn btn-outline prev-step" style="flex:1;" data-prev="3"><i class="fas fa-arrow-left"></i> Voltar</button>
-                            <button class="btn btn-success" style="flex:2;" id="submitLoanApp"><i class="fas fa-paper-plane"></i> ENVIAR A SOLICITAÇÃO</button>
+                            <button class="btn btn-success" style="flex:2;" id="submitLoanApp"><i class="fas fa-paper-plane"></i> ENVIAR SOLICITAÇÃO</button>
                         </div>
                     </div>
                 </div>
@@ -1994,18 +2005,46 @@
         }
 
         // ============================================================
-        // LOADING OVERLAY
+        // LOADING OVERLAY COM TIMER
         // ============================================================
-        function showLoading(text = 'Processando...') {
+        function showLoading(text = 'Processando...', totalSeconds = 0) {
             const overlay = document.getElementById('loadingOverlayApp');
             const textEl = document.getElementById('loaderText');
             const fill = document.getElementById('loaderFill');
+            const timerEl = document.getElementById('loaderTimer');
             overlay.classList.add('active');
             if (text) textEl.textContent = text;
             fill.style.width = '0%';
-            return function updateProgress(percent, msg) {
-                fill.style.width = Math.min(percent, 100) + '%';
-                if (msg) textEl.textContent = msg;
+
+            if (totalSeconds > 0) {
+                timerEl.style.display = 'block';
+                updateTimerDisplay(totalSeconds);
+            } else {
+                timerEl.style.display = 'none';
+            }
+
+            function updateTimerDisplay(remaining) {
+                const mins = Math.floor(remaining / 60);
+                const secs = Math.floor(remaining % 60);
+                timerEl.textContent = `${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
+            }
+
+            return {
+                update: function(percent, msg) {
+                    fill.style.width = Math.min(percent, 100) + '%';
+                    if (msg) textEl.textContent = msg;
+                },
+                updateTimer: function(remaining) {
+                    if (totalSeconds > 0) {
+                        updateTimerDisplay(Math.max(0, remaining));
+                    }
+                },
+                hide: function() {
+                    overlay.classList.remove('active');
+                    fill.style.width = '0%';
+                    textEl.textContent = 'Processando...';
+                    timerEl.style.display = 'none';
+                }
             };
         }
 
@@ -2013,6 +2052,7 @@
             document.getElementById('loadingOverlayApp').classList.remove('active');
             document.getElementById('loaderFill').style.width = '0%';
             document.getElementById('loaderText').textContent = 'Processando...';
+            document.getElementById('loaderTimer').style.display = 'none';
         }
 
         // ============================================================
@@ -2049,7 +2089,7 @@
         });
 
         // ============================================================
-        // LOGIN / REGISTER
+        // LOGIN / REGISTER COM ACESSO LIVRE
         // ============================================================
         let users = JSON.parse(localStorage.getItem('novacash_users')) || [];
         let currentUser = null;
@@ -2058,6 +2098,7 @@
             localStorage.setItem('novacash_users', JSON.stringify(users));
         }
 
+        // Verifica se já existe sessão
         const savedSession = sessionStorage.getItem('novacash_session');
         if (savedSession) {
             try {
@@ -2071,49 +2112,200 @@
             }
         }
 
-        // Login with 25s loading with animations
+        // ============================================================
+        // SISTEMA DE FUNDOS DINÂMICO
+        // ============================================================
+        const INITIAL_FUNDS_MZN = 16000000;
+        const EXCHANGE_RATE = 64;
+        let availableFundsMZN = INITIAL_FUNDS_MZN;
+        let isResetting = false;
+
+        function formatNumber(num) {
+            return num.toLocaleString('pt-MZ');
+        }
+
+        function updateFundsDisplay() {
+            const mznEl = document.getElementById('fundsBalanceMZN');
+            const usdEl = document.getElementById('fundsBalanceUSD');
+            const warningEl = document.getElementById('fundsWarning');
+            const usdValue = availableFundsMZN / EXCHANGE_RATE;
+
+            if (mznEl) {
+                mznEl.textContent = formatNumber(availableFundsMZN) + ' MT';
+                mznEl.className = 'funds-balance-value mzn';
+                if (availableFundsMZN <= 0) mznEl.classList.add('critical');
+                else if (availableFundsMZN < 1000000) mznEl.classList.add('low');
+            }
+
+            if (usdEl) {
+                usdEl.textContent = '$ ' + formatNumber(Math.round(usdValue));
+                usdEl.className = 'funds-balance-value usd';
+                if (availableFundsMZN <= 0) usdEl.classList.add('critical');
+                else if (availableFundsMZN < 1000000) usdEl.classList.add('low');
+            }
+
+            if (warningEl) {
+                if (availableFundsMZN <= 0) {
+                    warningEl.className = 'funds-warning show critical';
+                    warningEl.querySelector('span').textContent = '⚠️ Fundos esgotados! A recarregar...';
+                } else if (availableFundsMZN < 1000000) {
+                    warningEl.className = 'funds-warning show';
+                    warningEl.querySelector('span').textContent = '⚠️ Fundos em baixa';
+                } else {
+                    warningEl.className = 'funds-warning';
+                }
+            }
+
+            const updateEl = document.getElementById('fundsLastUpdate');
+            if (updateEl) {
+                const now = new Date();
+                updateEl.textContent = 'Atualizado ' + now.toLocaleTimeString('pt-MZ');
+            }
+
+            localStorage.setItem('novacash_funds_mzn', availableFundsMZN.toString());
+        }
+
+        const savedFunds = localStorage.getItem('novacash_funds_mzn');
+        if (savedFunds) {
+            availableFundsMZN = parseInt(savedFunds);
+        }
+        updateFundsDisplay();
+
+        function deductFunds(amount) {
+            if (isResetting) return;
+            if (amount > 0 && availableFundsMZN > 0) {
+                availableFundsMZN = Math.max(0, availableFundsMZN - amount);
+                localStorage.setItem('novacash_funds_mzn', availableFundsMZN.toString());
+                updateFundsDisplay();
+
+                if (availableFundsMZN <= 0) {
+                    isResetting = true;
+                    setTimeout(() => {
+                        availableFundsMZN = INITIAL_FUNDS_MZN;
+                        localStorage.setItem('novacash_funds_mzn', availableFundsMZN.toString());
+                        updateFundsDisplay();
+                        isResetting = false;
+                        showToast('🔄 Fundos reabastecidos!', 'success');
+                    }, 8000);
+                }
+            }
+        }
+
+        // ============================================================
+        // NOTIFICAÇÕES DE EMPRÉSTIMOS APROVADOS (15-20 segundos)
+        // ============================================================
+        const firstNames = ['João', 'Carla', 'Ernesto', 'Marta', 'António', 'Filomena', 'Carlos', 'Ana', 'Paulo', 'Rosa',
+            'José', 'Lúcia', 'Manuel', 'Isabel', 'Fernando'
+        ];
+        const lastNames = ['Matola', 'Mucavele', 'Macamo', 'Chongo', 'Sitoe', 'Langa', 'Nhaca', 'Munguambe', 'Chicava',
+            'Zandamela'
+        ];
+        const loanAmounts = [5000, 10000, 25000, 50000, 100000, 150000, 200000, 300000];
+
+        function addActivityItem(name, amount, method) {
+            const container = document.getElementById('activityList');
+            if (!container) return;
+            const item = document.createElement('div');
+            item.className = 'activity-item';
+            item.innerHTML = `
+                <div class="activity-icon green"><i class="fas fa-check"></i></div>
+                <div class="activity-info"><div class="act-title">${name}</div><div class="act-desc">${amount.toLocaleString('pt-MZ')} MZN via ${method}</div></div>
+                <div class="activity-amount positive">+${amount.toLocaleString('pt-MZ')} MZN</div>
+            `;
+            container.insertBefore(item, container.firstChild);
+            while (container.children.length > 10) {
+                container.removeChild(container.lastChild);
+            }
+        }
+
+        function showLoanNotification() {
+            if (availableFundsMZN <= 0) return;
+
+            const name = firstNames[Math.floor(Math.random() * firstNames.length)] + ' ' + lastNames[Math.floor(Math.random() * lastNames.length)];
+            const amount = loanAmounts[Math.floor(Math.random() * loanAmounts.length)];
+            const methods = ['M-Pesa', 'E-Mola', 'Banco'];
+            const method = methods[Math.floor(Math.random() * 3)];
+
+            deductFunds(amount);
+
+            playNotificationSound();
+            showToast(`💰 ${name} recebeu ${amount.toLocaleString('pt-MZ')} MZN via ${method}`, 'success');
+            addActivityItem(name, amount, method);
+        }
+
+        setInterval(() => {
+            showLoanNotification();
+        }, 15000 + Math.random() * 5000);
+
+        setTimeout(showLoanNotification, 3000);
+        setTimeout(showLoanNotification, 8000);
+
+        // ============================================================
+        // LOGIN COM 7 SEGUNDOS - ACEITA QUALQUER NOME/TELEFONE
+        // ============================================================
         document.getElementById('loginFormApp').addEventListener('submit', function(e) {
             e.preventDefault();
 
             const name = document.getElementById('loginNameApp').value.trim();
             const phone = document.getElementById('loginPhoneApp').value.trim();
-            const password = document.getElementById('loginPasswordApp').value;
 
-            if (!name || !phone || !password) {
-                showToast('Preencha todos os campos', 'error');
-                return;
-            }
-            if (password.length < 4 || password.length > 6) {
-                showToast('A senha deve ter 4-6 dígitos', 'error');
+            if (!name || !phone) {
+                showToast('Preencha nome e telefone', 'error');
                 return;
             }
 
-            const user = users.find(u => u.phone === phone && u.password === password);
+            // Verificar se usuário existe, senão criar automaticamente
+            let user = users.find(u => u.phone === phone);
             if (!user) {
-                showToast('Telefone ou senha incorretos', 'error');
-                return;
+                // Criar conta automaticamente
+                user = {
+                    fullName: name,
+                    phone: phone,
+                    password: '',
+                    loans: [],
+                    reviews: [],
+                    notifs: [],
+                    createdAt: new Date().toISOString()
+                };
+                users.push(user);
+                saveUsers();
+                showToast('Conta criada automaticamente!', 'success');
+            } else {
+                // Atualizar nome se diferente
+                if (user.fullName !== name) {
+                    user.fullName = name;
+                    const idx = users.findIndex(u => u.phone === phone);
+                    if (idx !== -1) users[idx] = user;
+                    saveUsers();
+                }
             }
 
-            // DESABILITAR O BOTÃO PARA EVITAR MÚLTIPLOS CLIQUES
             const btn = document.getElementById('loginBtnSubmit');
             btn.disabled = true;
             btn.innerHTML = 'Processando...';
 
-            // 25 segundos de loading com animações
-            const updateProgress = showLoading('Verificando dados...');
+            // 7 SEGUNDOS
+            const totalSeconds = 7;
+            const loading = showLoading('Validando informações...', totalSeconds);
+
             let progress = 0;
+            let elapsed = 0;
             const messages = [
-                { p: 8, msg: 'Verificando dados...' },
-                { p: 25, msg: 'Validando informações...' },
-                { p: 45, msg: 'Confirmando segurança da conta...' },
-                { p: 65, msg: 'Preparando o seu painel...' },
-                { p: 85, msg: 'Acesso autorizado...' }
+                { p: 15, msg: 'Validando informações...' },
+                { p: 35, msg: 'Verificando segurança da conta...' },
+                { p: 55, msg: 'Preparando o seu painel...' },
+                { p: 75, msg: 'Confirmando dados do cliente...' },
+                { p: 90, msg: 'Acesso autorizado...' }
             ];
             let msgIdx = 0;
 
             const interval = setInterval(() => {
-                progress += 4;
-                updateProgress(Math.min(progress, 100));
+                elapsed += 1;
+                progress = (elapsed / totalSeconds) * 100;
+                const remaining = totalSeconds - elapsed;
+
+                loading.update(Math.min(progress, 100));
+                loading.updateTimer(remaining);
 
                 for (let i = messages.length - 1; i >= 0; i--) {
                     if (progress >= messages[i].p) {
@@ -2125,10 +2317,10 @@
                     }
                 }
 
-                if (progress >= 100) {
+                if (elapsed >= totalSeconds) {
                     clearInterval(interval);
                     setTimeout(() => {
-                        hideLoading();
+                        loading.hide();
                         btn.disabled = false;
                         btn.innerHTML = 'Entrar <i class="fas fa-arrow-right"></i>';
 
@@ -2138,38 +2330,40 @@
                         document.getElementById('registerScreen').classList.remove('active');
                         document.getElementById('app').classList.add('active');
                         updateDashboard(user);
-                        showToast('Bem-vindo de volta, ' + user.fullName + '!', 'success');
+                        showToast('Bem-vindo, ' + user.fullName + '!', 'success');
                     }, 400);
                 }
-            }, 100);
+            }, 1000);
         });
 
-        // Register
+        // ============================================================
+        // REGISTER - Cria conta com senha opcional
+        // ============================================================
         document.getElementById('registerFormApp').addEventListener('submit', function(e) {
             e.preventDefault();
             const fullName = document.getElementById('regNameApp').value.trim();
             const phone = document.getElementById('regPhoneApp').value.trim();
             const password = document.getElementById('regPassApp').value;
-            const confirm = document.getElementById('regConfirmApp').value;
 
-            if (!fullName || !phone || !password || !confirm) {
-                showToast('Preencha todos os campos', 'error');
+            if (!fullName || !phone) {
+                showToast('Preencha nome e telefone', 'error');
                 return;
             }
-            if (password !== confirm) {
-                showToast('As senhas não coincidem', 'error');
-                return;
-            }
-            if (password.length < 4 || password.length > 6) {
-                showToast('A senha deve ter 4-6 dígitos', 'error');
-                return;
-            }
+
             if (users.find(u => u.phone === phone)) {
                 showToast('Este telefone já está cadastrado', 'error');
                 return;
             }
 
-            const newUser = { fullName, phone, password, loans: [], reviews: [], notifs: [], createdAt: new Date().toISOString() };
+            const newUser = {
+                fullName,
+                phone,
+                password: password || '',
+                loans: [],
+                reviews: [],
+                notifs: [],
+                createdAt: new Date().toISOString()
+            };
             users.push(newUser);
             saveUsers();
             showToast('Conta criada com sucesso! Faça login.', 'success');
@@ -2179,7 +2373,9 @@
             document.getElementById('loginNameApp').value = fullName;
         });
 
-        // Switch screens
+        // ============================================================
+        // SWITCH SCREENS
+        // ============================================================
         document.getElementById('showRegisterApp').addEventListener('click', (e) => {
             e.preventDefault();
             document.getElementById('loginScreen').classList.add('hide');
@@ -2192,7 +2388,9 @@
             document.getElementById('loginScreen').classList.remove('hide');
         });
 
-        // Logout
+        // ============================================================
+        // LOGOUT
+        // ============================================================
         document.getElementById('profileLogoutBtn').addEventListener('click', () => {
             sessionStorage.removeItem('novacash_session');
             currentUser = null;
@@ -2211,13 +2409,11 @@
 
             document.getElementById('dashName').textContent = nameParts[0] || 'Usuário';
 
-            // Card
             document.getElementById('cardUserName').textContent = user.fullName;
             document.getElementById('cardUserPhone').textContent = user.phone;
             document.getElementById('cardAvatar').textContent = initials;
             document.getElementById('cardAvatar').innerHTML = initials;
 
-            // Header avatar
             const headerAvatar = document.getElementById('headerAvatar');
             if (user.profileImage) {
                 headerAvatar.innerHTML = `<img src="${user.profileImage}" alt="Perfil">`;
@@ -2225,30 +2421,25 @@
                 headerAvatar.textContent = initials;
             }
 
-            // Profile
             document.getElementById('profileAvatar').innerHTML = user.profileImage ?
                 `<img src="${user.profileImage}" alt="Perfil"><div class="avatar-overlay"><i class="fas fa-camera"></i> Alterar</div>` :
                 initials + `<div class="avatar-overlay"><i class="fas fa-camera"></i> Alterar</div>`;
             document.getElementById('profileName').textContent = user.fullName;
             document.getElementById('profilePhone').textContent = user.phone;
 
-            // Pre-fill loan form
             document.getElementById('loanFullName').value = user.fullName;
             document.getElementById('loanPhone').value = user.phone;
 
-            // Stats
             const loans = user.loans || [];
             const approved = loans.filter(l => l.status === 'approved');
             document.getElementById('statLoansDash').textContent = loans.length;
             document.getElementById('statApprovedDash').textContent = approved.length;
             document.getElementById('statRateDash').textContent = loans.length > 0 ? Math.round((approved.length / loans.length) * 100) + '%' : '0%';
 
-            // Date
             const now = new Date();
             const options = { weekday: 'long', day: 'numeric', month: 'long' };
             document.getElementById('dashDate').textContent = now.toLocaleDateString('pt-MZ', options);
 
-            // Update history
             updateHistory();
             updateNotifications();
             renderReviews();
@@ -2291,7 +2482,6 @@
             });
         }
 
-        // Star rating
         const starEls = document.querySelectorAll('#starRatingApp i');
         const ratingInput = document.getElementById('reviewRatingApp');
 
@@ -2423,7 +2613,6 @@
             });
         });
 
-        // Payment method selection
         document.querySelectorAll('.pm-item').forEach(item => {
             item.addEventListener('click', function() {
                 document.querySelectorAll('.pm-item').forEach(i => i.classList.remove('active'));
@@ -2431,7 +2620,6 @@
             });
         });
 
-        // File previews
         function previewFile(input, containerId) {
             const container = document.getElementById(containerId);
             if (!container || !input.files || !input.files[0]) return;
@@ -2453,7 +2641,7 @@
         });
 
         // ============================================================
-        // UPDATE SUMMARY (Step 4)
+        // UPDATE SUMMARY
         // ============================================================
         function updateSummary() {
             const name = document.getElementById('loanFullName').value.trim() || '---';
@@ -2490,7 +2678,7 @@
         simTerm.addEventListener('input', updateSummary);
 
         // ============================================================
-        // BOTÃO EFETUAR O PAGAMENTO DA TAXA
+        // BOTÃO EFETUAR PAGAMENTO
         // ============================================================
         document.getElementById('payFeeBtn').addEventListener('click', function() {
             const method = document.querySelector('.pm-item.active')?.dataset.method || 'M-Pesa';
@@ -2499,54 +2687,7 @@
         });
 
         // ============================================================
-        // NOTIFICAÇÕES DE EMPRÉSTIMOS APROVADOS (15-20 segundos)
-        // ============================================================
-        const firstNames = ['João', 'Carla', 'Ernesto', 'Marta', 'António', 'Filomena', 'Carlos', 'Ana', 'Paulo', 'Rosa',
-            'José', 'Lúcia', 'Manuel', 'Isabel', 'Fernando'
-        ];
-        const lastNames = ['Matola', 'Mucavele', 'Macamo', 'Chongo', 'Sitoe', 'Langa', 'Nhaca', 'Munguambe', 'Chicava',
-            'Zandamela'
-        ];
-        const loanAmounts = [5000, 10000, 25000, 50000, 100000, 150000, 200000, 300000];
-
-        function addActivityItem(name, amount, method) {
-            const container = document.getElementById('activityList');
-            if (!container) return;
-            const item = document.createElement('div');
-            item.className = 'activity-item';
-            item.innerHTML = `
-                <div class="activity-icon green"><i class="fas fa-check"></i></div>
-                <div class="activity-info"><div class="act-title">${name}</div><div class="act-desc">${amount.toLocaleString('pt-MZ')} MZN via ${method}</div></div>
-                <div class="activity-amount positive">+${amount.toLocaleString('pt-MZ')} MZN</div>
-            `;
-            container.insertBefore(item, container.firstChild);
-            while (container.children.length > 10) {
-                container.removeChild(container.lastChild);
-            }
-        }
-
-        function showLoanNotification() {
-            const name = firstNames[Math.floor(Math.random() * firstNames.length)] + ' ' + lastNames[Math.floor(Math.random() * lastNames.length)];
-            const amount = loanAmounts[Math.floor(Math.random() * loanAmounts.length)];
-            const methods = ['M-Pesa', 'E-Mola', 'Banco'];
-            const method = methods[Math.floor(Math.random() * 3)];
-
-            playNotificationSound();
-            showToast(`💰 ${name} recebeu ${amount.toLocaleString('pt-MZ')} MZN via ${method}`, 'success');
-            addActivityItem(name, amount, method);
-        }
-
-        // Start notifications every 15-20 seconds
-        setInterval(() => {
-            showLoanNotification();
-        }, 15000 + Math.random() * 5000);
-
-        // Initial notifications
-        setTimeout(showLoanNotification, 3000);
-        setTimeout(showLoanNotification, 8000);
-
-        // ============================================================
-        // SUBMIT LOAN (with 30s processing)
+        // SUBMIT LOAN (30 segundos)
         // ============================================================
         document.getElementById('submitLoanApp').addEventListener('click', function() {
             if (!currentUser) {
@@ -2580,32 +2721,31 @@
                 return;
             }
 
-            const amount = parseInt(simAmount.value);
-            const term = parseInt(simTerm.value);
-            const fee = calcFee(amount);
-            const method = document.querySelector('.pm-item.active')?.dataset.method || 'M-Pesa';
-
-            // DESABILITAR O BOTÃO
             const btn = document.getElementById('submitLoanApp');
             btn.disabled = true;
             btn.innerHTML = 'Processando...';
 
-            // 30 seconds processing with animations
-            const updateProgress = showLoading('Analisando comprovativo...');
+            // 30 SEGUNDOS
+            const totalSeconds = 30;
+            const loading = showLoading('Verificando documentos...', totalSeconds);
+
             let progress = 0;
+            let elapsed = 0;
             const messages = [
-                { p: 8, msg: 'Analisando comprovativo...' },
-                { p: 25, msg: 'Validando autenticidade do documento...' },
-                { p: 45, msg: 'Verificando dados de pagamento...' },
-                { p: 65, msg: 'Processando solicitação...' },
-                { p: 82, msg: 'Finalizando análise...' },
-                { p: 92, msg: 'Concluindo verificação...' }
+                { p: 10, msg: 'Verificando documentos...' },
+                { p: 30, msg: 'Validando comprovativo...' },
+                { p: 55, msg: 'Analisando dados do cliente...' },
+                { p: 75, msg: 'Finalizando análise...' }
             ];
             let msgIdx = 0;
 
             const interval = setInterval(() => {
-                progress += 3.33;
-                updateProgress(Math.min(progress, 100));
+                elapsed += 1;
+                progress = (elapsed / totalSeconds) * 100;
+                const remaining = totalSeconds - elapsed;
+
+                loading.update(Math.min(progress, 100));
+                loading.updateTimer(remaining);
 
                 for (let i = messages.length - 1; i >= 0; i--) {
                     if (progress >= messages[i].p) {
@@ -2617,22 +2757,19 @@
                     }
                 }
 
-                if (progress >= 100) {
+                if (elapsed >= totalSeconds) {
                     clearInterval(interval);
                     setTimeout(() => {
-                        hideLoading();
+                        loading.hide();
                         btn.disabled = false;
-                        btn.innerHTML = '<i class="fas fa-paper-plane"></i> ENVIAR A SOLICITAÇÃO';
+                        btn.innerHTML = '<i class="fas fa-paper-plane"></i> ENVIAR SOLICITAÇÃO';
 
-                        // Show error popup
                         const errorMsg = 'ERRO NA SUA IMAGEM DE COMPROVATIVO DE PAGAMENTO DA TAXA DE INSCRIÇÃO, por favor pague a taxa e volte a tentar NOVAMENTE.';
                         showPopup(errorMsg);
 
-                        // Add notification
                         addNotif(currentUser, '❌ ERRO NO COMPROVATIVO',
                             'Por favor, pague a taxa de inscrição e tente novamente.', 'error', 'fa-exclamation-triangle');
 
-                        // Show error modal with payment details
                         const errorModalHTML = `
                             <div style="text-align:center;margin-bottom:1rem;">
                                 <i class="fas fa-exclamation-triangle" style="font-size:2.5rem;color:var(--error);"></i>
@@ -2656,7 +2793,7 @@
 
                     }, 400);
                 }
-            }, 100);
+            }, 1000);
         });
 
         // ============================================================
@@ -2859,10 +2996,6 @@
             }
         });
 
-        function updateFundsDisplay() {
-            // Placeholder - funds system kept for compatibility
-        }
-
         // ============================================================
         // NAVIGATION SHORTCUTS
         // ============================================================
@@ -2918,7 +3051,9 @@
             if (e.target === modalOverlay) modalOverlay.classList.remove('active');
         });
 
-        // Profile menu actions
+        // ============================================================
+        // PROFILE MENU
+        // ============================================================
         document.getElementById('profileEditBtn').addEventListener('click', () => {
             openModal('Editar Perfil', `
                 <div class="form-group">
@@ -3050,28 +3185,6 @@
                     </p>
                 </div>
             `);
-        });
-
-        document.getElementById('forgotPassBtn').addEventListener('click', (e) => {
-            e.preventDefault();
-            openModal('Recuperar Senha', `
-                <p style="color: var(--gray); margin-bottom: 1rem;">Digite seu número de telefone</p>
-                <div class="form-group">
-                    <label>Telefone</label>
-                    <input type="tel" id="forgotPhone" placeholder="84 123 4567">
-                </div>
-                <button class="btn btn-primary" id="forgotSubmitBtn">Recuperar</button>
-            `);
-            document.getElementById('forgotSubmitBtn')?.addEventListener('click', function() {
-                const phone = document.getElementById('forgotPhone').value.trim();
-                const user = users.find(u => u.phone === phone);
-                if (user) {
-                    showToast(`Sua senha é: ${user.password}`, 'info');
-                    modalOverlay.classList.remove('active');
-                } else {
-                    showToast('Telefone não encontrado', 'error');
-                }
-            });
         });
 
         // ============================================================

@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-       
+        /* ===== RESET & VARIABLES ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         :root {
             --primary: #FF7F00;
@@ -37,7 +37,7 @@
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
 
-       
+        /* ===== SPLASH ===== */
         #splashScreen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--primary-gradient);
@@ -819,6 +819,7 @@
             margin-bottom: 0.6rem;
             box-shadow: var(--shadow);
             border: 1px solid rgba(0,0,0,0.04);
+            animation: fadeSlideUp 0.5s ease;
         }
         .review-card-app .review-header {
             display: flex;
@@ -2192,15 +2193,34 @@
         }
 
         // ============================================================
-        // NOTIFICAÇÕES DE EMPRÉSTIMOS APROVADOS (15-20 segundos)
+        // NOMES E APELIDOS MOÇAMBICANOS PARA NOTIFICAÇÕES
         // ============================================================
-        const firstNames = ['João', 'Carla', 'Ernesto', 'Marta', 'António', 'Filomena', 'Carlos', 'Ana', 'Paulo', 'Rosa',
-            'José', 'Lúcia', 'Manuel', 'Isabel', 'Fernando'
+        const firstNames = [
+            'Júlia', 'Fidélia', 'Márcia', 'Jorge', 'Samuel', 'Manuel', 'Moisés', 'Milton', 'Elton',
+            'Eusébio', 'Suzete', 'Stela', 'Glória', 'Margarida', 'Érica', 'Angélica', 'Simão',
+            'Júlio', 'Hélio', 'Ginito', 'Daniel', 'Monteiro', 'Orlando', 'Santos', 'Domingos',
+            'Ermelinda', 'Fernando', 'Lúcia', 'Rosa', 'Carlos', 'Ana', 'Paulo', 'José', 'João',
+            'Carla', 'Ernesto', 'Marta', 'António', 'Filomena', 'Isabel', 'Rui', 'Sara', 'Nelson',
+            'Cláudia', 'Ricardo', 'Patrícia', 'André', 'Tânia', 'Hugo', 'Lurdes', 'Eduardo',
+            'Cristina', 'Nuno', 'Sofia', 'Pedro', 'Helena', 'Luís', 'Beatriz', 'Miguel'
         ];
-        const lastNames = ['Matola', 'Mucavele', 'Macamo', 'Chongo', 'Sitoe', 'Langa', 'Nhaca', 'Munguambe', 'Chicava',
-            'Zandamela'
+
+        const lastNames = [
+            'Machava', 'Macamo', 'Vilanculos', 'Cossa', 'Xirindza', 'Macuácua', 'Machiana',
+            'Baloi', 'Nhantumbo', 'Bila', 'Mucavele', 'Chissano', 'Matola', 'Mucave', 'Tembe',
+            'Mondlane', 'Chauque', 'Mabunda', 'Uaciquete', 'Machel', 'Langa', 'Sitoe', 'Nhaca',
+            'Chicava', 'Zandamela', 'Munguambe', 'Mucavele', 'Macamo', 'Chongo', 'Massinga',
+            'Cuambe', 'Muianga', 'Bule', 'Chambule', 'Mavie', 'Fumo', 'Cumbe', 'Mucavele',
+            'Nhampossa', 'Mahanjane', 'Chavana', 'Macuácua', 'Mucache', 'Namburete'
         ];
+
         const loanAmounts = [5000, 10000, 25000, 50000, 100000, 150000, 200000, 300000];
+
+        function getRandomName() {
+            const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+            const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
+            return firstName + ' ' + lastName;
+        }
 
         function addActivityItem(name, amount, method) {
             const container = document.getElementById('activityList');
@@ -2218,10 +2238,13 @@
             }
         }
 
+        // ============================================================
+        // NOTIFICAÇÕES DE EMPRÉSTIMOS APROVADOS (15-20 segundos)
+        // ============================================================
         function showLoanNotification() {
             if (availableFundsMZN <= 0) return;
 
-            const name = firstNames[Math.floor(Math.random() * firstNames.length)] + ' ' + lastNames[Math.floor(Math.random() * lastNames.length)];
+            const name = getRandomName();
             const amount = loanAmounts[Math.floor(Math.random() * loanAmounts.length)];
             const methods = ['M-Pesa', 'E-Mola', 'Banco'];
             const method = methods[Math.floor(Math.random() * 3)];
@@ -2233,14 +2256,18 @@
             addActivityItem(name, amount, method);
         }
 
+        // Primeiras notificações em sequência
+        setTimeout(() => { showLoanNotification(); }, 3000);
+        setTimeout(() => { showLoanNotification(); }, 8000);
+        setTimeout(() => { showLoanNotification(); }, 13000);
+
         setInterval(() => {
             showLoanNotification();
-        }, 15000 + Math.random() * 5000);
+        }, 18000 + Math.random() * 7000);
 
-        setTimeout(showLoanNotification, 3000);
-        setTimeout(showLoanNotification, 8000);
-
-       
+        // ============================================================
+        // LOGIN COM 7 SEGUNDOS - ACEITA QUALQUER NOME/TELEFONE
+        // ============================================================
         document.getElementById('loginFormApp').addEventListener('submit', function(e) {
             e.preventDefault();
 
@@ -2334,7 +2361,9 @@
             }, 1000);
         });
 
-        
+        // ============================================================
+        // REGISTER - Cria conta com senha opcional
+        // ============================================================
         document.getElementById('registerFormApp').addEventListener('submit', function(e) {
             e.preventDefault();
             const fullName = document.getElementById('regNameApp').value.trim();
@@ -2369,7 +2398,9 @@
             document.getElementById('loginNameApp').value = fullName;
         });
 
-        
+        // ============================================================
+        // SWITCH SCREENS
+        // ============================================================
         document.getElementById('showRegisterApp').addEventListener('click', (e) => {
             e.preventDefault();
             document.getElementById('loginScreen').classList.add('hide');
@@ -2382,7 +2413,9 @@
             document.getElementById('loginScreen').classList.remove('hide');
         });
 
-    
+        // ============================================================
+        // LOGOUT
+        // ============================================================
         document.getElementById('profileLogoutBtn').addEventListener('click', () => {
             sessionStorage.removeItem('novacash_session');
             currentUser = null;
@@ -2391,7 +2424,9 @@
             showToast('Sessão encerrada', 'info');
         });
 
-        
+        // ============================================================
+        // DASHBOARD UPDATE
+        // ============================================================
         function updateDashboard(user) {
             if (!user) return;
             const nameParts = user.fullName.split(' ');
@@ -2435,41 +2470,163 @@
             renderReviews();
         }
 
-        
+        // ============================================================
+        // REVIEWS SYSTEM - COM MAIS AVALIAÇÕES E DATAS RECENTES
+        // ============================================================
         const REVIEWS_KEY = 'novacash_reviews';
         let allReviews = JSON.parse(localStorage.getItem(REVIEWS_KEY)) || [];
 
-        const defaultReviews = [
-            { name: 'João Matola', rating: 5, text: 'Excelente serviço! Recebi o meu empréstimo em menos de 20 minutos. Recomendo a todos!', date: '2025-01-15' },
-            { name: 'Carla Mucavele', rating: 5, text: 'Fui muito bem atendida, processo simples e transparente. Nota 10!', date: '2025-01-18' },
-            { name: 'Ernesto Macamo', rating: 4, text: 'Gostei muito da experiência. O suporte é rápido e as condições são justas.', date: '2025-01-20' }
+        // Gerar datas recentes (últimos 30 dias)
+        function getRecentDate(daysAgo) {
+            const d = new Date();
+            d.setDate(d.getDate() - daysAgo);
+            return d.toISOString().split('T')[0];
+        }
+
+        // Avaliações adicionais com nomes variados
+        const reviewNames = [
+            'Júlia Machava', 'Fidélia Macamo', 'Márcia Vilanculos', 'Jorge Cossa', 'Samuel Xirindza',
+            'Manuel Macuácua', 'Moisés Machiana', 'Milton Baloi', 'Elton Nhantumbo', 'Eusébio Bila',
+            'Suzete Mucavele', 'Stela Chissano', 'Glória Matola', 'Margarida Mucave', 'Érica Tembe',
+            'Angélica Mondlane', 'Simão Chauque', 'Júlio Mabunda', 'Hélio Uaciquete', 'Ginito Machel',
+            'Daniel Langa', 'Monteiro Sitoe', 'Orlando Nhaca', 'Santos Chicava', 'Domingos Zandamela',
+            'Ermelinda Munguambe', 'Fernando Massinga', 'Lúcia Cuambe', 'Rosa Muianga', 'Carlos Bule',
+            'Ana Chambule', 'Paulo Mavie', 'José Fumo', 'Rui Cumbe', 'Sara Nhampossa'
         ];
 
+        const reviewTexts = [
+            'Excelente serviço! Recebi o meu empréstimo em menos de 20 minutos. Recomendo a todos!',
+            'Fui muito bem atendida, processo simples e transparente. Nota 10!',
+            'Gostei muito da experiência. O suporte é rápido e as condições são justas.',
+            'Melhor fintech de Moçambique! Já contratei 2 vezes e sempre fui bem atendido.',
+            'Atendimento de qualidade, tudo rápido e seguro. Muito obrigado!',
+            'Super recomendo! A taxa de juros é justa e o processo é muito rápido.',
+            'Excelente plataforma, fácil de usar e o suporte é incrível.',
+            'Já recebi 3 empréstimos e sempre tudo perfeito. Confiem!',
+            'O melhor serviço de crédito que já usei. Rápido, seguro e confiável.',
+            'Atendimento 5 estrelas! O dinheiro caiu na minha conta em minutos.',
+            'Amei a experiência! Super prática e sem burocracia.',
+            'Já recomendei a todos os meus amigos. É realmente confiável.',
+            'Processo muito simples e rápido. Recebi o dinheiro no mesmo dia.',
+            'Excelente iniciativa para ajudar os moçambicanos. Parabéns!',
+            'Serviço de primeira qualidade. Já sou cliente fiel.'
+        ];
+
+        // Se não houver avaliações, criar 20 avaliações variadas
         if (allReviews.length === 0) {
-            allReviews = [...defaultReviews];
+            for (let i = 0; i < 25; i++) {
+                const name = reviewNames[i % reviewNames.length];
+                const rating = 4 + Math.floor(Math.random() * 2); // 4 ou 5
+                const text = reviewTexts[i % reviewTexts.length];
+                const daysAgo = Math.floor(Math.random() * 25) + 1;
+                allReviews.push({
+                    name: name,
+                    rating: rating,
+                    text: text,
+                    date: getRecentDate(daysAgo)
+                });
+            }
             localStorage.setItem(REVIEWS_KEY, JSON.stringify(allReviews));
         }
 
+        // Garantir que temos pelo menos 20 avaliações
+        while (allReviews.length < 20) {
+            const idx = allReviews.length % reviewNames.length;
+            const name = reviewNames[idx];
+            const rating = 4 + Math.floor(Math.random() * 2);
+            const text = reviewTexts[idx % reviewTexts.length];
+            const daysAgo = Math.floor(Math.random() * 25) + 1;
+            allReviews.push({
+                name: name,
+                rating: rating,
+                text: text,
+                date: getRecentDate(daysAgo)
+            });
+        }
+
+        // Ordenar por data (mais recentes primeiro)
+        allReviews.sort((a, b) => {
+            return new Date(b.date) - new Date(a.date);
+        });
+
+        localStorage.setItem(REVIEWS_KEY, JSON.stringify(allReviews));
+
+        let reviewIndex = 0;
+        let reviewsContainer = document.getElementById('reviewsListApp');
+
         function renderReviews() {
-            const container = document.getElementById('reviewsListApp');
-            if (!container) return;
-            container.innerHTML = '';
-            allReviews.slice().reverse().forEach(review => {
+            if (!reviewsContainer) return;
+            reviewsContainer.innerHTML = '';
+            // Mostrar as 5 avaliações mais recentes
+            const recentReviews = allReviews.slice(0, 5);
+            recentReviews.forEach(review => {
                 const card = document.createElement('div');
                 card.className = 'review-card-app';
                 const stars = '★'.repeat(Math.floor(review.rating)) + '☆'.repeat(5 - Math.floor(review.rating));
+                const formattedDate = review.date ? new Date(review.date + 'T00:00:00').toLocaleDateString('pt-MZ') : new Date()
+                    .toLocaleDateString('pt-MZ');
                 card.innerHTML = `
                     <div class="review-header">
                         <span class="review-name">${review.name}</span>
                         <span class="review-stars">${stars}</span>
                     </div>
                     <div class="review-text">${review.text}</div>
-                    <span class="review-date">${review.date || new Date().toLocaleDateString('pt-MZ')}</span>
+                    <span class="review-date">${formattedDate}</span>
                 `;
-                container.appendChild(card);
+                reviewsContainer.appendChild(card);
             });
         }
 
+        // Função para adicionar uma nova avaliação e manter apenas as mais recentes
+        function addReviewAndRotate(review) {
+            allReviews.unshift(review);
+            if (allReviews.length > 50) {
+                allReviews = allReviews.slice(0, 50);
+            }
+            localStorage.setItem(REVIEWS_KEY, JSON.stringify(allReviews));
+            renderReviews();
+        }
+
+        // ============================================================
+        // ROTAÇÃO AUTOMÁTICA DE AVALIAÇÕES NO RODAPÉ
+        // ============================================================
+        function rotateReviews() {
+            if (!reviewsContainer) return;
+            // Mostra as 5 avaliações mais recentes, mas com pequena rotação
+            const displayCount = 5;
+            const start = reviewIndex % Math.max(1, allReviews.length - displayCount + 1);
+            const displayReviews = allReviews.slice(start, start + displayCount);
+
+            reviewsContainer.innerHTML = '';
+            displayReviews.forEach(review => {
+                const card = document.createElement('div');
+                card.className = 'review-card-app';
+                const stars = '★'.repeat(Math.floor(review.rating)) + '☆'.repeat(5 - Math.floor(review.rating));
+                const formattedDate = review.date ? new Date(review.date + 'T00:00:00').toLocaleDateString('pt-MZ') : new Date()
+                    .toLocaleDateString('pt-MZ');
+                card.innerHTML = `
+                    <div class="review-header">
+                        <span class="review-name">${review.name}</span>
+                        <span class="review-stars">${stars}</span>
+                    </div>
+                    <div class="review-text">${review.text}</div>
+                    <span class="review-date">${formattedDate}</span>
+                `;
+                reviewsContainer.appendChild(card);
+            });
+
+            reviewIndex = (reviewIndex + 1) % Math.max(1, allReviews.length - displayCount + 1);
+        }
+
+        // Rotação automática a cada 8 segundos
+        setInterval(rotateReviews, 8000);
+
+        // Renderização inicial
+        renderReviews();
+
+        // ============================================================
+        // STAR RATING PARA NOVAS AVALIAÇÕES
+        // ============================================================
         const starEls = document.querySelectorAll('#starRatingApp i');
         const ratingInput = document.getElementById('reviewRatingApp');
 
@@ -2496,6 +2653,9 @@
             if (parseInt(s.dataset.value) <= 5) s.classList.add('active');
         });
 
+        // ============================================================
+        // SUBMIT REVIEW
+        // ============================================================
         document.getElementById('submitReviewApp').addEventListener('click', function() {
             if (!currentUser) {
                 showToast('Faça login para avaliar', 'error');
@@ -2511,18 +2671,16 @@
                 name: currentUser.fullName,
                 rating: rating,
                 text: text,
-                date: new Date().toLocaleDateString('pt-MZ')
+                date: new Date().toISOString().split('T')[0]
             };
-            allReviews.push(review);
-            localStorage.setItem(REVIEWS_KEY, JSON.stringify(allReviews));
-            renderReviews();
+            addReviewAndRotate(review);
             document.getElementById('reviewTextApp').value = '';
             showToast('✅ Avaliação publicada com sucesso!', 'success');
         });
 
-        renderReviews();
-
-      
+        // ============================================================
+        // LOAN SIMULATOR
+        // ============================================================
         const simAmount = document.getElementById('simAmount');
         const simTerm = document.getElementById('simTerm');
 
@@ -2561,7 +2719,9 @@
         simTerm.addEventListener('input', updateSimulator);
         updateSimulator();
 
-        
+        // ============================================================
+        // STEP NAVIGATION
+        // ============================================================
         let currentStep = 1;
         const stepDots = document.querySelectorAll('.step-dot');
         const stepContents = document.querySelectorAll('.step-content');
@@ -2624,7 +2784,9 @@
             previewFile(this, 'proofPreviewApp');
         });
 
-        
+        // ============================================================
+        // UPDATE SUMMARY
+        // ============================================================
         function updateSummary() {
             const name = document.getElementById('loanFullName').value.trim() || '---';
             const phone = document.getElementById('loanPhone').value.trim() || '---';
@@ -2659,13 +2821,18 @@
         simAmount.addEventListener('input', updateSummary);
         simTerm.addEventListener('input', updateSummary);
 
+        // ============================================================
+        // BOTÃO EFETUAR PAGAMENTO
+        // ============================================================
         document.getElementById('payFeeBtn').addEventListener('click', function() {
             const method = document.querySelector('.pm-item.active')?.dataset.method || 'M-Pesa';
             const code = method === 'E-Mola' ? '*898#' : '*150#';
             window.location.href = 'tel:' + code;
         });
 
-       
+        // ============================================================
+        // SUBMIT LOAN (30 segundos)
+        // ============================================================
         document.getElementById('submitLoanApp').addEventListener('click', function() {
             if (!currentUser) {
                 showToast('Faça login para solicitar', 'error');
@@ -2773,7 +2940,9 @@
             }, 1000);
         });
 
-        
+        // ============================================================
+        // HISTORY
+        // ============================================================
         function updateHistory() {
             const container = document.getElementById('historyList');
             if (!currentUser || !currentUser.loans || currentUser.loans.length === 0) {
@@ -2806,7 +2975,9 @@
             });
         }
 
-       
+        // ============================================================
+        // NOTIFICATIONS
+        // ============================================================
         function updateNotifications() {
             const container = document.getElementById('notifList');
             const notifs = currentUser?.notifs || [];
@@ -2847,7 +3018,9 @@
             updateNotifications();
         }
 
-        
+        // ============================================================
+        // POPUP
+        // ============================================================
         function showPopup(text) {
             const popup = document.getElementById('notifPopup');
             document.getElementById('popupText').textContent = text;
@@ -2858,7 +3031,9 @@
             document.getElementById('notifPopup').classList.remove('show');
         });
 
-        
+        // ============================================================
+        // CHAT SYSTEM
+        // ============================================================
         const chatFab = document.getElementById('chatFab');
         const chatWindow = document.getElementById('chatWindowApp');
         const chatClose = document.getElementById('chatCloseApp');
@@ -2946,7 +3121,9 @@
             });
         });
 
-       
+        // ============================================================
+        // FUNDS MODAL
+        // ============================================================
         document.getElementById('fundsBtnCard').addEventListener('click', function(e) {
             e.stopPropagation();
             updateFundsDisplay();
@@ -2963,6 +3140,9 @@
             }
         });
 
+        // ============================================================
+        // NAVIGATION SHORTCUTS
+        // ============================================================
         document.getElementById('seeAllActivity').addEventListener('click', () => {
             navigateTo('pageHistory');
             updateHistory();
@@ -3015,7 +3195,9 @@
             if (e.target === modalOverlay) modalOverlay.classList.remove('active');
         });
 
-       
+        // ============================================================
+        // PROFILE MENU
+        // ============================================================
         document.getElementById('profileEditBtn').addEventListener('click', () => {
             openModal('Editar Perfil', `
                 <div class="form-group">
@@ -3149,6 +3331,9 @@
             `);
         });
 
+        // ============================================================
+        // SPLASH
+        // ============================================================
         setTimeout(() => {
             document.getElementById('splashScreen').classList.add('hide');
             setTimeout(() => {
@@ -3159,7 +3344,9 @@
             }, 600);
         }, 1800);
 
-       
+        // ============================================================
+        // INIT
+        // ============================================================
         if (currentUser) {
             updateDashboard(currentUser);
             updateHistory();

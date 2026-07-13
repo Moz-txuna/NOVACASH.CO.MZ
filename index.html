@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        /* ===== RESET & VARIABLES (mantido) ===== */
+        /* ===== RESET & VARIABLES ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         :root {
             --primary: #FF7F00;
@@ -37,7 +37,7 @@
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
 
-        /* ===== SPLASH (mantido) ===== */
+        /* ===== SPLASH ===== */
         #splashScreen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--primary-gradient);
@@ -53,11 +53,11 @@
         #splashScreen .loader-splash { margin-top: 2rem; width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.2); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* ===== APP SHELL (mantido) ===== */
+        /* ===== APP SHELL ===== */
         #app { display: none; height: 100vh; max-height: 100vh; overflow: hidden; background: var(--light); }
         #app.active { display: flex; flex-direction: column; }
 
-        /* ===== STATUS BAR (mantido) ===== */
+        /* ===== STATUS BAR ===== */
         .status-bar {
             background: var(--primary-gradient);
             padding: 0.5rem 1.2rem 0.3rem;
@@ -72,7 +72,7 @@
         .status-bar .time { color: white; font-weight: 700; }
         .status-bar .icons { display: flex; gap: 6px; font-size: 0.7rem; }
 
-        /* ===== HEADER (mantido) ===== */
+        /* ===== HEADER ===== */
         .app-header {
             background: var(--white);
             padding: 0.8rem 1.2rem;
@@ -129,7 +129,7 @@
         .app-header .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
         .app-header .profile-avatar:hover { transform: scale(1.05); }
 
-        /* ===== BOTTOM NAV (mantido) ===== */
+        /* ===== BOTTOM NAV ===== */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -177,7 +177,7 @@
         }
         .bottom-nav .nav-item .nav-label { font-size: 0.55rem; }
 
-        /* ===== PAGES (mantido) ===== */
+        /* ===== PAGES ===== */
         .page { display: none; animation: fadeSlideUp 0.3s ease; }
         .page.active { display: block; }
         @keyframes fadeSlideUp {
@@ -193,13 +193,13 @@
         }
         .app-content::-webkit-scrollbar { width: 0; }
 
-        /* ===== GREETING (mantido) ===== */
+        /* ===== GREETING ===== */
         .greeting-section { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem; }
         .greeting-section h1 { font-size: 1.3rem; font-weight: 700; }
         .greeting-section h1 span { color: var(--primary); }
         .greeting-section p { color: var(--gray); font-size: 0.8rem; margin-top: 0.1rem; }
 
-        /* ===== PREMIUM BANK CARD (mantido) ===== */
+        /* ===== PREMIUM BANK CARD ===== */
         .bank-card-premium {
             background: linear-gradient(145deg, #1a1a2e 0%, #16213e 100%);
             border-radius: var(--radius-lg);
@@ -265,6 +265,7 @@
             justify-content: center;
             font-weight: 700;
             font-size: 1.2rem;
+            color: white;
         }
         .bank-card-premium .card-user-row .user-avatar-card img { width: 100%; height: 100%; object-fit: cover; }
         .bank-card-premium .card-user-row .user-info .user-name { font-size: 1.1rem; font-weight: 700; }
@@ -349,7 +350,7 @@
             color: var(--primary-light);
         }
 
-        /* ===== LOAN BUTTON (mantido) ===== */
+        /* ===== LOAN BUTTON ===== */
         .loan-btn-main {
             width: 100%;
             padding: 1rem;
@@ -391,7 +392,7 @@
         }
         .loan-btn-main i { font-size: 1.2rem; }
 
-        /* ===== QUICK STATS (mantido) ===== */
+        /* ===== QUICK STATS ===== */
         .quick-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; margin-bottom: 1.2rem; }
         .quick-stat {
             background: var(--white);
@@ -405,7 +406,7 @@
         .quick-stat .stat-value { font-size: 1rem; font-weight: 700; }
         .quick-stat .stat-label { font-size: 0.6rem; color: var(--gray); }
 
-        /* ===== ACTIVITY (mantido) ===== */
+        /* ===== ACTIVITY ===== */
         .section-title {
             font-size: 0.9rem;
             font-weight: 700;
@@ -460,7 +461,7 @@
         .activity-item .activity-amount { font-weight: 700; font-size: 0.8rem; }
         .activity-item .activity-amount.positive { color: var(--success); }
 
-        /* ===== LOAN SIMULATOR (mantido) ===== */
+        /* ===== LOAN SIMULATOR ===== */
         .simulator-card {
             background: var(--white);
             border-radius: var(--radius-lg);
@@ -517,7 +518,7 @@
         .sim-results .sim-result-item .sri-value { font-size: 0.85rem; font-weight: 700; margin-top: 0.1rem; }
         .sim-results .sim-result-item .sri-value.primary { color: var(--primary); }
 
-        /* ===== STEPS (mantido) ===== */
+        /* ===== STEPS ===== */
         .step-progress {
             display: flex;
             justify-content: space-between;
@@ -575,7 +576,7 @@
         .step-content { display: none; animation: fadeSlideUp 0.3s ease; }
         .step-content.active { display: block; }
 
-        /* ===== FORM (mantido) ===== */
+        /* ===== FORM ===== */
         .form-group { margin-bottom: 1rem; }
         .form-group label { display: block; font-weight: 600; font-size: 0.8rem; margin-bottom: 0.3rem; color: var(--dark); }
         .form-group input, .form-group select {
@@ -685,7 +686,7 @@
         }
         .payment-methods .pm-item.active i { color: var(--primary); }
 
-        /* ===== PROFILE (mantido) ===== */
+        /* ===== PROFILE ===== */
         .profile-header {
             text-align: center;
             padding: 1rem 0;
@@ -757,33 +758,62 @@
         .profile-menu .pm-item.danger { color: var(--error); }
         .profile-menu .pm-item.danger i { color: var(--error); }
 
-        /* ===== NOTIFICATIONS (mantido) ===== */
+        /* ===== NOTIFICATIONS ===== */
         .notif-item {
             background: var(--white);
             border-radius: var(--radius);
-            padding: 0.8rem 1rem;
-            margin-bottom: 0.6rem;
+            padding: 1rem 1.2rem;
+            margin-bottom: 0.8rem;
             box-shadow: var(--shadow);
-            border-left: 3px solid var(--primary);
+            border-left: 4px solid var(--primary);
             display: flex;
             gap: 0.8rem;
             align-items: flex-start;
             animation: slideInNotif 0.4s ease;
+            transition: var(--transition);
         }
+        .notif-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
         @keyframes slideInNotif {
             from { opacity: 0; transform: translateX(-20px); }
             to { opacity: 1; transform: translateX(0); }
         }
-        .notif-item .notif-icon { font-size: 1.2rem; color: var(--primary); flex-shrink: 0; margin-top: 0.1rem; }
-        .notif-item .notif-content { flex: 1; }
-        .notif-item .notif-content .notif-title { font-weight: 600; font-size: 0.85rem; }
-        .notif-item .notif-content .notif-desc { font-size: 0.75rem; color: var(--gray); }
-        .notif-item .notif-content .notif-time { font-size: 0.6rem; color: var(--gray); margin-top: 0.2rem; display: block; }
-        .notif-item.unread { background: rgba(255,127,0,0.04); }
+        .notif-item .notif-icon {
+            font-size: 1.3rem;
+            flex-shrink: 0;
+            margin-top: 0.1rem;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,127,0,0.08);
+            color: var(--primary);
+        }
+        .notif-item .notif-icon.error { background: rgba(239,68,68,0.08); color: var(--error); }
+        .notif-item .notif-icon.success { background: rgba(16,185,129,0.08); color: var(--success); }
+        .notif-item .notif-content { flex: 1; min-width: 0; }
+        .notif-item .notif-content .notif-title { font-weight: 700; font-size: 0.9rem; color: var(--dark); }
+        .notif-item .notif-content .notif-desc { font-size: 0.8rem; color: var(--gray); margin-top: 0.1rem; line-height: 1.4; }
+        .notif-item .notif-content .notif-time {
+            font-size: 0.65rem;
+            color: var(--gray);
+            margin-top: 0.4rem;
+            display: block;
+            opacity: 0.7;
+            font-weight: 500;
+        }
+        .notif-item.unread {
+            background: rgba(255,127,0,0.04);
+            border-left-color: var(--primary);
+        }
+        .notif-item.unread .notif-title { color: var(--primary-dark); }
         .notif-item.error { border-left-color: var(--error); }
-        .notif-item.error .notif-icon { color: var(--error); }
+        .notif-item.error .notif-icon { background: rgba(239,68,68,0.08); color: var(--error); }
+        .notif-item.success { border-left-color: var(--success); }
+        .notif-item.success .notif-icon { background: rgba(16,185,129,0.08); color: var(--success); }
 
-        /* ===== HISTORY (mantido) ===== */
+        /* ===== HISTORY ===== */
         .history-item {
             background: var(--white);
             border-radius: var(--radius);
@@ -807,7 +837,7 @@
         .history-item .hi-status.rejected { background: rgba(239,68,68,0.12); color: var(--error); }
 
         /* ============================================================
-           ===== SEÇÃO DE AVALIAÇÕES PREMIUM (com formulário integrado) =====
+           ===== SEÇÃO DE AVALIAÇÕES PREMIUM - REFORMULADA =====
            ============================================================ */
         .reviews-section-app {
             margin-top: 2rem;
@@ -815,7 +845,6 @@
             border-top: 1px solid rgba(0,0,0,0.06);
         }
 
-        /* Cabeçalho com média */
         .reviews-header-premium {
             display: flex;
             flex-wrap: wrap;
@@ -894,12 +923,12 @@
             font-size: 0.7rem;
         }
 
-        /* Slider / Carrossel */
+        /* ===== CARROSSEL DE DESTAQUE ===== */
         .reviews-slider-wrapper {
             position: relative;
             overflow: hidden;
             border-radius: var(--radius-lg);
-            margin: 0 -0.2rem;
+            margin: 0 -0.2rem 1.8rem;
         }
         .reviews-slider-track {
             display: flex;
@@ -987,13 +1016,13 @@
             margin-top: 0.2rem;
         }
 
-        /* Controles do slider */
         .slider-controls {
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 0.8rem;
-            margin-top: 1.2rem;
+            margin-top: 0.6rem;
+            margin-bottom: 1.8rem;
         }
         .slider-controls button {
             background: var(--white);
@@ -1036,7 +1065,100 @@
             border-radius: 6px;
         }
 
-        /* ===== FORMULÁRIO DE AVALIAÇÃO (NOVO) ===== */
+        /* ===== LISTA DE TODAS AS AVALIAÇÕES ===== */
+        .all-reviews-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin: 1.5rem 0 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .all-reviews-title i {
+            color: var(--primary);
+        }
+        .all-reviews-title .count-badge {
+            background: var(--gray-light);
+            padding: 0.1rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--gray);
+        }
+        .all-reviews-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+        .review-list-item {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 1rem 1.2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(0,0,0,0.04);
+            transition: var(--transition);
+            animation: fadeSlideUp 0.4s ease;
+        }
+        .review-list-item:hover {
+            transform: translateX(4px);
+            box-shadow: var(--shadow-lg);
+        }
+        .review-list-item .user-row {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            margin-bottom: 0.3rem;
+        }
+        .review-list-item .user-row .user-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 0.8rem;
+            flex-shrink: 0;
+        }
+        .review-list-item .user-row .user-info .name {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--dark);
+        }
+        .review-list-item .user-row .user-info .city {
+            font-size: 0.65rem;
+            color: var(--gray);
+            display: flex;
+            align-items: center;
+            gap: 0.2rem;
+        }
+        .review-list-item .user-row .user-info .city i {
+            font-size: 0.5rem;
+            color: var(--primary);
+        }
+        .review-list-item .stars {
+            color: #FFD700;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            margin: 0.1rem 0 0.2rem;
+        }
+        .review-list-item .comment {
+            font-size: 0.85rem;
+            line-height: 1.5;
+            color: var(--dark);
+        }
+        .review-list-item .date {
+            font-size: 0.6rem;
+            color: var(--gray);
+            opacity: 0.6;
+            margin-top: 0.3rem;
+            display: block;
+            text-align: right;
+        }
+
+        /* ===== FORMULÁRIO DE AVALIAÇÃO ===== */
         .review-form-premium {
             background: var(--white);
             border-radius: var(--radius-lg);
@@ -1163,7 +1285,7 @@
             color: var(--error);
         }
 
-        /* ===== TOAST (mantido) ===== */
+        /* ===== TOAST ===== */
         .toast-container {
             position: fixed;
             top: 1rem;
@@ -1198,7 +1320,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* ===== LOGIN (mantido) ===== */
+        /* ===== LOGIN ===== */
         #loginScreen {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -1254,7 +1376,7 @@
             margin-top: 0.5rem;
         }
 
-        /* ===== REGISTER (mantido) ===== */
+        /* ===== REGISTER ===== */
         #registerScreen {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -1288,7 +1410,7 @@
         }
         #registerScreen .register-box .register-logo p { color: var(--gray); font-size: 0.8rem; }
 
-        /* ===== LOADING OVERLAY (mantido) ===== */
+        /* ===== LOADING OVERLAY ===== */
         .loading-overlay-app {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -1361,7 +1483,7 @@
             font-variant-numeric: tabular-nums;
         }
 
-        /* ===== CHAT (mantido) ===== */
+        /* ===== CHAT ===== */
         .chat-fab {
             position: fixed;
             bottom: 5.5rem;
@@ -1515,7 +1637,7 @@
         }
         .chat-faq-app .faq-chip:hover { border-color: var(--primary); color: var(--primary); }
 
-        /* ===== MODAL (mantido) ===== */
+        /* ===== MODAL ===== */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -1561,7 +1683,7 @@
         .image-preview { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.5rem; }
         .image-preview img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 2px solid var(--primary); }
 
-        /* ===== PAYMENT SUMMARY (mantido) ===== */
+        /* ===== PAYMENT SUMMARY ===== */
         .summary-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -1608,7 +1730,7 @@
             box-shadow: none;
         }
 
-        /* ===== NOTIFICATION POPUP (mantido) ===== */
+        /* ===== NOTIFICATION POPUP ===== */
         .notif-popup {
             position: fixed;
             bottom: 80px;
@@ -1632,7 +1754,7 @@
         .notif-popup .text { flex: 1; font-size: 0.85rem; font-weight: 500; }
         .notif-popup .close-popup { background: none; border: none; font-size: 1.2rem; color: var(--gray); cursor: pointer; }
 
-        /* ===== FUNDS MODAL (mantido) ===== */
+        /* ===== FUNDS MODAL ===== */
         .funds-modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -1763,7 +1885,7 @@
             color: #FF1744;
         }
 
-        /* ===== RESPONSIVE (mantido + ajustes) ===== */
+        /* ===== RESPONSIVE ===== */
         @media (max-width: 480px) {
             .app-content { padding: 0.8rem 0.8rem 5rem; }
             .bank-card-premium .card-amount { font-size: 1.8rem; }
@@ -1801,6 +1923,14 @@
             .review-form-premium .star-rating-input { font-size: 1.5rem; }
             .review-form-premium .form-actions { flex-direction: column; align-items: stretch; }
             .review-form-premium .form-actions .btn-submit-review { justify-content: center; }
+            .review-list-item { padding: 0.8rem 1rem; }
+            .review-list-item .user-row .user-icon { width: 30px; height: 30px; font-size: 0.7rem; }
+            .review-list-item .user-row .user-info .name { font-size: 0.8rem; }
+            .review-list-item .comment { font-size: 0.8rem; }
+            .notif-item { padding: 0.8rem 1rem; }
+            .notif-item .notif-icon { width: 30px; height: 30px; font-size: 1rem; }
+            .notif-item .notif-content .notif-title { font-size: 0.8rem; }
+            .notif-item .notif-content .notif-desc { font-size: 0.75rem; }
         }
 
         @media (min-width: 768px) {
@@ -1818,17 +1948,17 @@
 </head>
 <body>
 
-    <!-- ===== SPLASH (mantido) ===== -->
+    <!-- ===== SPLASH ===== -->
     <div id="splashScreen">
         <div class="logo-splash">NOVA<span>CASH</span></div>
         <div class="sub-splash">Empréstimos Rápidos • Moçambique</div>
         <div class="loader-splash"></div>
     </div>
 
-    <!-- ===== TOAST (mantido) ===== -->
+    <!-- ===== TOAST ===== -->
     <div class="toast-container" id="toastContainer"></div>
 
-    <!-- ===== LOADING (mantido) ===== -->
+    <!-- ===== LOADING ===== -->
     <div class="loading-overlay-app" id="loadingOverlayApp">
         <div class="loader-spinner"></div>
         <div class="loader-text" id="loaderText">Processando...</div>
@@ -1837,14 +1967,14 @@
         <div class="loader-pulse"><span></span><span></span><span></span></div>
     </div>
 
-    <!-- ===== NOTIFICATION POPUP (mantido) ===== -->
+    <!-- ===== NOTIFICATION POPUP ===== -->
     <div class="notif-popup" id="notifPopup">
         <div class="icon"><i class="fas fa-exclamation-triangle"></i></div>
         <div class="text" id="popupText">ERRO NA SUA FOTO DE COMPROVATIVO</div>
         <button class="close-popup" id="popupClose">&times;</button>
     </div>
 
-    <!-- ===== LOGIN (mantido) ===== -->
+    <!-- ===== LOGIN ===== -->
     <div id="loginScreen">
         <div class="login-box">
             <div class="login-logo">
@@ -1871,7 +2001,7 @@
         </div>
     </div>
 
-    <!-- ===== REGISTER (mantido) ===== -->
+    <!-- ===== REGISTER ===== -->
     <div id="registerScreen">
         <div class="register-box">
             <div class="register-logo">
@@ -1997,14 +2127,14 @@
                     </div>
                 </div>
 
-                <!-- ===== SEÇÃO DE AVALIAÇÕES PREMIUM COM FORMULÁRIO ===== -->
+                <!-- ===== SEÇÃO DE AVALIAÇÕES PREMIUM REFORMULADA ===== -->
                 <div class="reviews-section-app" id="reviewsPremiumSection">
-                    <!-- Cabeçalho com média -->
+                    <!-- Cabeçalho com estatísticas -->
                     <div class="reviews-header-premium" id="reviewsHeader">
                         <div class="avg-box">
                             <div class="big-score" id="avgScore">4.9 <span>/ 5</span></div>
                             <div class="stars-big" id="avgStars">★★★★★</div>
-                            <div class="total-reviews" id="totalReviews">Baseado em mais de 8.000 avaliações</div>
+                            <div class="total-reviews" id="totalReviews">Baseado em mais de 8.000 avaliações verificadas</div>
                         </div>
                         <div class="bars-box" id="barsBox">
                             <div class="bar-row"><span class="bar-label">5★</span><div class="bar-track"><div class="bar-fill" style="width:95%"></div></div><span class="bar-percent">95%</span></div>
@@ -2015,21 +2145,30 @@
                         </div>
                     </div>
 
-                    <!-- Slider / Carrossel -->
+                    <!-- Carrossel de destaque -->
                     <div class="reviews-slider-wrapper" id="reviewsSliderWrapper">
                         <div class="reviews-slider-track" id="reviewsSliderTrack">
                             <!-- Os cards serão inseridos via JS -->
                         </div>
                     </div>
 
-                    <!-- Controles -->
+                    <!-- Controles do carrossel -->
                     <div class="slider-controls" id="sliderControls">
                         <button id="sliderPrev"><i class="fas fa-chevron-left"></i></button>
                         <div class="dots" id="sliderDots"></div>
                         <button id="sliderNext"><i class="fas fa-chevron-right"></i></button>
                     </div>
 
-                    <!-- ===== FORMULÁRIO DE AVALIAÇÃO (NOVO) ===== -->
+                    <!-- Todas as avaliações -->
+                    <div class="all-reviews-title">
+                        <i class="fas fa-list-ul"></i> Todas as avaliações dos nossos clientes
+                        <span class="count-badge" id="reviewCountBadge">0</span>
+                    </div>
+                    <div class="all-reviews-list" id="allReviewsList">
+                        <!-- Inserido via JS -->
+                    </div>
+
+                    <!-- Formulário de avaliação -->
                     <div class="review-form-premium" id="reviewFormPremium">
                         <div class="form-title"><i class="fas fa-star"></i> Deixe sua avaliação</div>
                         <div class="form-subtitle">Sua opinião ajuda outros clientes a tomarem a melhor decisão.</div>
@@ -2062,7 +2201,7 @@
 
             </div>
 
-            <!-- ===== LOANS (mantido) ===== -->
+            <!-- ===== LOANS ===== -->
             <div class="page" id="pageLoans">
                 <h2 style="font-size: 1.2rem; margin-bottom: 1rem;">💰 Solicitar Empréstimo</h2>
                 <div class="step-progress" id="stepProgress">
@@ -2218,19 +2357,19 @@
                 </div>
             </div>
 
-            <!-- ===== HISTORY (mantido) ===== -->
+            <!-- ===== HISTORY ===== -->
             <div class="page" id="pageHistory">
                 <h2 style="font-size: 1.2rem; margin-bottom: 1rem;">📜 Histórico de Empréstimos</h2>
                 <div id="historyList"></div>
             </div>
 
-            <!-- ===== NOTIFICATIONS (mantido) ===== -->
+            <!-- ===== NOTIFICATIONS ===== -->
             <div class="page" id="pageNotifications">
                 <h2 style="font-size: 1.2rem; margin-bottom: 1rem;">🔔 Notificações</h2>
                 <div id="notifList"></div>
             </div>
 
-            <!-- ===== PROFILE (mantido) ===== -->
+            <!-- ===== PROFILE ===== -->
             <div class="page" id="pageProfile">
                 <div class="profile-header">
                     <div class="profile-avatar-lg" id="profileAvatar">
@@ -2286,7 +2425,7 @@
         </div>
     </div>
 
-    <!-- ===== FUNDS MODAL (mantido) ===== -->
+    <!-- ===== FUNDS MODAL ===== -->
     <div class="funds-modal-overlay" id="fundsModal">
         <div class="funds-modal">
             <div class="funds-modal-header">
@@ -2311,7 +2450,7 @@
         </div>
     </div>
 
-    <!-- ===== MODAL (mantido) ===== -->
+    <!-- ===== MODAL ===== -->
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal-content">
             <div class="modal-header">
@@ -2326,7 +2465,7 @@
     document.addEventListener('DOMContentLoaded', function() {
 
         // ============================================================
-        // SOUND NOTIFICATION (mantido)
+        // SOUND NOTIFICATION
         // ============================================================
         function playNotificationSound() {
             try {
@@ -2357,7 +2496,7 @@
         }
 
         // ============================================================
-        // TOAST SYSTEM (mantido)
+        // TOAST SYSTEM
         // ============================================================
         function showToast(message, type = 'info') {
             const container = document.getElementById('toastContainer');
@@ -2374,7 +2513,7 @@
         }
 
         // ============================================================
-        // LOADING OVERLAY COM TIMER (mantido)
+        // LOADING OVERLAY COM TIMER
         // ============================================================
         function showLoading(text = 'Processando...', totalSeconds = 0) {
             const overlay = document.getElementById('loadingOverlayApp');
@@ -2425,7 +2564,7 @@
         }
 
         // ============================================================
-        // STATUS BAR TIME (mantido)
+        // STATUS BAR TIME
         // ============================================================
         function updateStatusTime() {
             const now = new Date();
@@ -2437,7 +2576,7 @@
         setInterval(updateStatusTime, 30000);
 
         // ============================================================
-        // NAVIGATION (mantido)
+        // NAVIGATION
         // ============================================================
         const navItems = document.querySelectorAll('.bottom-nav .nav-item');
 
@@ -2458,7 +2597,7 @@
         });
 
         // ============================================================
-        // LOGIN / REGISTER COM ACESSO LIVRE (mantido)
+        // LOGIN / REGISTER COM ACESSO LIVRE
         // ============================================================
         let users = JSON.parse(localStorage.getItem('novacash_users')) || [];
         let currentUser = null;
@@ -2481,7 +2620,7 @@
         }
 
         // ============================================================
-        // SISTEMA DE FUNDOS DINÂMICO (mantido)
+        // SISTEMA DE FUNDOS DINÂMICO
         // ============================================================
         const INITIAL_FUNDS_MZN = 16000000;
         const EXCHANGE_RATE = 64;
@@ -2560,7 +2699,7 @@
         }
 
         // ============================================================
-        // NOTIFICAÇÕES DE EMPRÉSTIMOS APROVADOS (mantido)
+        // NOTIFICAÇÕES DE EMPRÉSTIMOS APROVADOS
         // ============================================================
         const firstNames = ['João', 'Carla', 'Ernesto', 'Marta', 'António', 'Filomena', 'Carlos', 'Ana', 'Paulo', 'Rosa',
             'José', 'Lúcia', 'Manuel', 'Isabel', 'Fernando'
@@ -2606,7 +2745,7 @@
         setTimeout(showLoanNotification, 8000);
 
         // ============================================================
-        // LOGIN COM 7 SEGUNDOS (mantido)
+        // LOGIN COM 7 SEGUNDOS
         // ============================================================
         document.getElementById('loginFormApp').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -2625,6 +2764,7 @@
                     loans: [],
                     reviews: [],
                     notifs: [],
+                    profileImage: null,
                     createdAt: new Date().toISOString()
                 };
                 users.push(user);
@@ -2687,7 +2827,7 @@
         });
 
         // ============================================================
-        // REGISTER (mantido)
+        // REGISTER
         // ============================================================
         document.getElementById('registerFormApp').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -2709,6 +2849,7 @@
                 loans: [],
                 reviews: [],
                 notifs: [],
+                profileImage: null,
                 createdAt: new Date().toISOString()
             };
             users.push(newUser);
@@ -2733,7 +2874,7 @@
         });
 
         // ============================================================
-        // LOGOUT (mantido)
+        // LOGOUT
         // ============================================================
         document.getElementById('profileLogoutBtn').addEventListener('click', () => {
             sessionStorage.removeItem('novacash_session');
@@ -2744,7 +2885,7 @@
         });
 
         // ============================================================
-        // DASHBOARD UPDATE (mantido)
+        // DASHBOARD UPDATE
         // ============================================================
         function updateDashboard(user) {
             if (!user) return;
@@ -2753,17 +2894,10 @@
             document.getElementById('dashName').textContent = nameParts[0] || 'Usuário';
             document.getElementById('cardUserName').textContent = user.fullName;
             document.getElementById('cardUserPhone').textContent = user.phone;
-            document.getElementById('cardAvatar').textContent = initials;
-            document.getElementById('cardAvatar').innerHTML = initials;
-            const headerAvatar = document.getElementById('headerAvatar');
-            if (user.profileImage) {
-                headerAvatar.innerHTML = `<img src="${user.profileImage}" alt="Perfil">`;
-            } else {
-                headerAvatar.textContent = initials;
-            }
-            document.getElementById('profileAvatar').innerHTML = user.profileImage ?
-                `<img src="${user.profileImage}" alt="Perfil"><div class="avatar-overlay"><i class="fas fa-camera"></i> Alterar</div>` :
-                initials + `<div class="avatar-overlay"><i class="fas fa-camera"></i> Alterar</div>`;
+            
+            // Atualizar avatar em todos os lugares
+            updateAllAvatars(user);
+            
             document.getElementById('profileName').textContent = user.fullName;
             document.getElementById('profilePhone').textContent = user.phone;
             document.getElementById('loanFullName').value = user.fullName;
@@ -2781,7 +2915,139 @@
         }
 
         // ============================================================
-        // HISTORY (mantido)
+        // SISTEMA DE FOTO DE PERFIL - ATUALIZAÇÃO EM TODOS OS LUGARES
+        // ============================================================
+        function updateAllAvatars(user) {
+            const initials = user.fullName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+            const profileImage = user.profileImage || null;
+
+            // Header Avatar
+            const headerAvatar = document.getElementById('headerAvatar');
+            if (profileImage) {
+                headerAvatar.innerHTML = `<img src="${profileImage}" alt="Perfil">`;
+            } else {
+                headerAvatar.textContent = initials;
+                headerAvatar.style.background = 'var(--primary-gradient)';
+            }
+
+            // Card Avatar
+            const cardAvatar = document.getElementById('cardAvatar');
+            if (profileImage) {
+                cardAvatar.innerHTML = `<img src="${profileImage}" alt="Perfil">`;
+            } else {
+                cardAvatar.textContent = initials;
+                cardAvatar.style.background = 'var(--primary-gradient)';
+                cardAvatar.style.color = 'white';
+            }
+
+            // Profile Avatar
+            const profileAvatar = document.getElementById('profileAvatar');
+            if (profileImage) {
+                profileAvatar.innerHTML = `<img src="${profileImage}" alt="Perfil"><div class="avatar-overlay"><i class="fas fa-camera"></i> Alterar</div>`;
+            } else {
+                profileAvatar.innerHTML = initials + `<div class="avatar-overlay"><i class="fas fa-camera"></i> Alterar</div>`;
+                profileAvatar.style.background = 'var(--primary-gradient)';
+                profileAvatar.style.color = 'white';
+            }
+        }
+
+        // ============================================================
+        // EDITAR PERFIL COM FOTO
+        // ============================================================
+        document.getElementById('profileEditBtn').addEventListener('click', () => {
+            const hasImage = currentUser?.profileImage || null;
+            const previewHtml = hasImage ? `<img src="${hasImage}" alt="Preview">` : '';
+            
+            openModal('Editar Perfil', `
+                <div class="form-group">
+                    <label>Nome Completo</label>
+                    <input type="text" id="editName" value="${currentUser?.fullName || ''}">
+                </div>
+                <div class="form-group">
+                    <label>Telefone</label>
+                    <input type="tel" id="editPhone" value="${currentUser?.phone || ''}" disabled>
+                </div>
+                <div class="form-group">
+                    <label>Foto de Perfil</label>
+                    <div class="file-input-wrapper">
+                        <div class="file-label"><i class="fas fa-camera"></i> Carregar nova foto</div>
+                        <input type="file" id="editProfileImage" accept="image/*">
+                    </div>
+                    <div id="editProfilePreview" class="image-preview">${previewHtml}</div>
+                    ${hasImage ? `<button class="btn btn-outline" id="removeProfileImageBtn" style="margin-top:0.5rem;padding:0.4rem;"><i class="fas fa-trash"></i> Remover foto</button>` : ''}
+                </div>
+                <button class="btn btn-primary" id="saveProfileBtn">Salvar Alterações</button>
+            `);
+            
+            document.getElementById('editProfileImage')?.addEventListener('change', function() {
+                const container = document.getElementById('editProfilePreview');
+                if (this.files && this.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        container.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+                        // Adicionar botão de remover se não existir
+                        if (!document.getElementById('removeProfileImageBtn')) {
+                            const removeBtn = document.createElement('button');
+                            removeBtn.id = 'removeProfileImageBtn';
+                            removeBtn.className = 'btn btn-outline';
+                            removeBtn.style.marginTop = '0.5rem';
+                            removeBtn.style.padding = '0.4rem';
+                            removeBtn.innerHTML = '<i class="fas fa-trash"></i> Remover foto';
+                            removeBtn.addEventListener('click', function() {
+                                document.getElementById('editProfilePreview').innerHTML = '';
+                                document.getElementById('editProfileImage').value = '';
+                                this.remove();
+                            });
+                            container.parentNode.appendChild(removeBtn);
+                        }
+                    };
+                    reader.readAsDataURL(this.files[0]);
+                }
+            });
+
+            document.getElementById('removeProfileImageBtn')?.addEventListener('click', function() {
+                document.getElementById('editProfilePreview').innerHTML = '';
+                document.getElementById('editProfileImage').value = '';
+                this.remove();
+            });
+
+            document.getElementById('saveProfileBtn')?.addEventListener('click', function() {
+                const newName = document.getElementById('editName').value.trim();
+                const fileInput = document.getElementById('editProfileImage');
+                if (newName && currentUser) {
+                    currentUser.fullName = newName;
+                    
+                    // Verificar se há uma nova imagem
+                    if (fileInput && fileInput.files && fileInput.files[0]) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            currentUser.profileImage = e.target.result;
+                            saveUserAndUpdate();
+                        };
+                        reader.readAsDataURL(fileInput.files[0]);
+                    } else if (document.getElementById('editProfilePreview').innerHTML === '') {
+                        // Se o preview está vazio, remover a foto
+                        currentUser.profileImage = null;
+                        saveUserAndUpdate();
+                    } else {
+                        saveUserAndUpdate();
+                    }
+                }
+            });
+
+            function saveUserAndUpdate() {
+                const idx = users.findIndex(u => u.phone === currentUser.phone);
+                if (idx !== -1) users[idx] = currentUser;
+                saveUsers();
+                sessionStorage.setItem('novacash_session', JSON.stringify(currentUser));
+                updateDashboard(currentUser);
+                modalOverlay.classList.remove('active');
+                showToast('Perfil atualizado com sucesso!', 'success');
+            }
+        });
+
+        // ============================================================
+        // HISTORY
         // ============================================================
         function updateHistory() {
             const container = document.getElementById('historyList');
@@ -2816,38 +3082,56 @@
         }
 
         // ============================================================
-        // NOTIFICATIONS (mantido)
+        // NOTIFICATIONS COM DATA E HORA
         // ============================================================
         function updateNotifications() {
             const container = document.getElementById('notifList');
             const notifs = currentUser?.notifs || [];
             if (notifs.length === 0) {
-                container.innerHTML = '<div style="text-align:center;color:var(--gray);padding:1rem;">Nenhuma notificação</div>';
+                container.innerHTML = '<div style="text-align:center;color:var(--gray);padding:2rem;"><i class="fas fa-bell-slash" style="font-size:2rem;display:block;margin-bottom:0.5rem;"></i>Nenhuma notificação</div>';
                 return;
             }
             container.innerHTML = '';
-            notifs.forEach(n => {
+            // Ordenar da mais recente para a mais antiga
+            const sortedNotifs = [...notifs].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            sortedNotifs.forEach(n => {
                 const div = document.createElement('div');
-                div.className = `notif-item ${n.type === 'error' ? 'error' : ''}`;
+                const isUnread = n.unread !== false;
+                const typeClass = n.type === 'error' ? 'error' : n.type === 'success' ? 'success' : '';
+                div.className = `notif-item ${typeClass} ${isUnread ? 'unread' : ''}`;
+                
+                const iconClass = n.type === 'error' ? 'error' : n.type === 'success' ? 'success' : '';
+                const icon = n.icon || 'fa-bell';
+                
+                let dateHtml = '';
+                if (n.timestamp) {
+                    const date = new Date(n.timestamp);
+                    const dateStr = date.toLocaleDateString('pt-MZ', { day: 'numeric', month: 'long', year: 'numeric' });
+                    const timeStr = date.toLocaleTimeString('pt-MZ', { hour: '2-digit', minute: '2-digit' });
+                    dateHtml = `<span class="notif-time">${dateStr} • ${timeStr}</span>`;
+                }
+                
                 div.innerHTML = `
-                    <div class="notif-icon"><i class="fas ${n.icon || 'fa-bell'}"></i></div>
+                    <div class="notif-icon ${iconClass}"><i class="fas ${icon}"></i></div>
                     <div class="notif-content">
                         <div class="notif-title">${n.title}</div>
                         <div class="notif-desc">${n.body}</div>
-                        <span class="notif-time">${new Date().toLocaleString('pt-MZ')}</span>
+                        ${dateHtml}
                     </div>
                 `;
                 container.appendChild(div);
             });
-            const unreadCount = notifs.filter(n => n.unread !== false).length;
+            
+            const unreadCount = sortedNotifs.filter(n => n.unread !== false).length;
             document.getElementById('notifBadge').textContent = unreadCount;
             document.getElementById('navNotifBadge').textContent = unreadCount;
         }
 
         function addNotif(user, title, body, type = 'info', icon = 'fa-bell') {
             if (!user.notifs) user.notifs = [];
-            user.notifs.unshift({ title, body, type, icon, unread: true });
-            if (user.notifs.length > 20) user.notifs.pop();
+            const timestamp = new Date().toISOString();
+            user.notifs.unshift({ title, body, type, icon, unread: true, timestamp });
+            if (user.notifs.length > 30) user.notifs.pop();
             const idx = users.findIndex(u => u.phone === user.phone);
             if (idx !== -1) users[idx] = user;
             saveUsers();
@@ -2856,7 +3140,7 @@
         }
 
         // ============================================================
-        // POPUP (mantido)
+        // POPUP
         // ============================================================
         function showPopup(text) {
             const popup = document.getElementById('notifPopup');
@@ -2869,7 +3153,7 @@
         });
 
         // ============================================================
-        // CHAT SYSTEM (mantido)
+        // CHAT SYSTEM
         // ============================================================
         const chatFab = document.getElementById('chatFab');
         const chatWindow = document.getElementById('chatWindowApp');
@@ -2957,7 +3241,7 @@
         });
 
         // ============================================================
-        // FUNDS MODAL (mantido)
+        // FUNDS MODAL
         // ============================================================
         document.getElementById('fundsBtnCard').addEventListener('click', function(e) {
             e.stopPropagation();
@@ -2976,7 +3260,7 @@
         });
 
         // ============================================================
-        // NAVIGATION SHORTCUTS (mantido)
+        // NAVIGATION SHORTCUTS
         // ============================================================
         document.getElementById('seeAllActivity').addEventListener('click', () => {
             navigateTo('pageHistory');
@@ -3012,7 +3296,7 @@
         });
 
         // ============================================================
-        // MODAL SYSTEM (mantido)
+        // MODAL SYSTEM
         // ============================================================
         const modalOverlay = document.getElementById('modalOverlay');
         const modalClose = document.getElementById('modalClose');
@@ -3031,69 +3315,8 @@
         });
 
         // ============================================================
-        // PROFILE MENU (mantido)
+        // PROFILE MENU (segurança, ajuda, sobre)
         // ============================================================
-        document.getElementById('profileEditBtn').addEventListener('click', () => {
-            openModal('Editar Perfil', `
-                <div class="form-group">
-                    <label>Nome Completo</label>
-                    <input type="text" id="editName" value="${currentUser?.fullName || ''}">
-                </div>
-                <div class="form-group">
-                    <label>Telefone</label>
-                    <input type="tel" id="editPhone" value="${currentUser?.phone || ''}" disabled>
-                </div>
-                <div class="form-group">
-                    <label>Foto de Perfil</label>
-                    <div class="file-input-wrapper">
-                        <div class="file-label"><i class="fas fa-camera"></i> Carregar nova foto</div>
-                        <input type="file" id="editProfileImage" accept="image/*">
-                    </div>
-                    <div id="editProfilePreview" class="image-preview"></div>
-                </div>
-                <button class="btn btn-primary" id="saveProfileBtn">Salvar Alterações</button>
-            `);
-            document.getElementById('editProfileImage')?.addEventListener('change', function() {
-                const container = document.getElementById('editProfilePreview');
-                if (this.files && this.files[0]) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        container.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
-                    };
-                    reader.readAsDataURL(this.files[0]);
-                }
-            });
-            document.getElementById('saveProfileBtn')?.addEventListener('click', function() {
-                const newName = document.getElementById('editName').value.trim();
-                const fileInput = document.getElementById('editProfileImage');
-                if (newName && currentUser) {
-                    currentUser.fullName = newName;
-                    if (fileInput && fileInput.files && fileInput.files[0]) {
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            currentUser.profileImage = e.target.result;
-                            const idx = users.findIndex(u => u.phone === currentUser.phone);
-                            if (idx !== -1) users[idx] = currentUser;
-                            saveUsers();
-                            sessionStorage.setItem('novacash_session', JSON.stringify(currentUser));
-                            updateDashboard(currentUser);
-                            modalOverlay.classList.remove('active');
-                            showToast('Perfil atualizado com sucesso!', 'success');
-                        };
-                        reader.readAsDataURL(fileInput.files[0]);
-                    } else {
-                        const idx = users.findIndex(u => u.phone === currentUser.phone);
-                        if (idx !== -1) users[idx] = currentUser;
-                        saveUsers();
-                        sessionStorage.setItem('novacash_session', JSON.stringify(currentUser));
-                        updateDashboard(currentUser);
-                        modalOverlay.classList.remove('active');
-                        showToast('Perfil atualizado!', 'success');
-                    }
-                }
-            });
-        });
-
         document.getElementById('profileSecurityBtn').addEventListener('click', () => {
             openModal('Segurança', `
                 <p style="color: var(--gray); margin-bottom: 1rem;">Altere sua senha de acesso</p>
@@ -3163,7 +3386,7 @@
         });
 
         // ============================================================
-        // SPLASH (mantido)
+        // SPLASH
         // ============================================================
         setTimeout(() => {
             document.getElementById('splashScreen').classList.add('hide');
@@ -3176,7 +3399,7 @@
         }, 1800);
 
         // ============================================================
-        // INIT (mantido)
+        // INIT
         // ============================================================
         if (currentUser) {
             updateDashboard(currentUser);
@@ -3193,37 +3416,149 @@
         });
 
         // ============================================================
-        // ===== SISTEMA DE AVALIAÇÕES COM PERSISTÊNCIA =====
+        // ===== SISTEMA DE AVALIAÇÕES COM PERSISTÊNCIA E LISTA COMPLETA =====
         // ============================================================
 
-        // Chave para armazenamento no localStorage
         const REVIEWS_STORAGE_KEY = 'novacash_all_reviews';
 
-        // ===== NOVAS AVALIAÇÕES REALISTAS E VARIADAS (2026) =====
-        const defaultReviewsData = [
-            // Avaliações 5 estrelas - entusiásticas
-            { name: 'Júlia M.', city: 'Maputo', rating: 5, text: 'Recebi o meu empréstimo rapidamente. Atendimento excelente.', date: '2026-01-12' },
-            { name: 'Manuel M.', city: 'Beira', rating: 5, text: 'Processo simples, rápido e muito profissional. Recomendo a todos!', date: '2026-02-03' },
-            { name: 'Glória S.', city: 'Nampula', rating: 5, text: 'Foi muito fácil solicitar o empréstimo. A plataforma é intuitiva e o suporte respondeu rápido.', date: '2026-03-18' },
-            { name: 'Samuel C.', city: 'Quelimane', rating: 5, text: 'Atendimento de primeira qualidade. Confiável e ágil. Já indiquei para vários amigos.', date: '2026-04-29' },
-            { name: 'Moisés M.', city: 'Tete', rating: 5, text: 'Superou as minhas expectativas. Aprovado em minutos e o dinheiro caiu na conta no mesmo dia.', date: '2026-05-16' },
-            { name: 'Margarida J.', city: 'Inhambane', rating: 5, text: 'Excelente plataforma, muito intuitiva e segura. Me senti confiante durante todo o processo.', date: '2026-06-09' },
-            { name: 'Euzébio R.', city: 'Lichinga', rating: 5, text: 'A melhor experiência com empréstimos em Moçambique. Transparente e sem letras miúdas.', date: '2026-07-11' },
-            { name: 'Simão C.', city: 'Pemba', rating: 5, text: 'Simples, transparente e sem complicações. Nota 10 para a equipe de suporte.', date: '2026-01-25' },
-            { name: 'Stela F.', city: 'Beira', rating: 5, text: 'Incrível como tudo foi rápido e eficiente. Já estou pensando em solicitar outro empréstimo.', date: '2026-02-14' },
-            { name: 'Suzete N.', city: 'Nampula', rating: 5, text: 'Recomendo a todos. Confiável e seguro. O dinheiro chegou em menos de 30 minutos.', date: '2026-03-02' },
-            { name: 'Elio S.', city: 'Inhambane', rating: 5, text: 'Rápido e confiável. Nota máxima! A melhor fintech que já usei em Moçambique.', date: '2026-05-22' },
-            { name: 'Milton M.', city: 'Maputo', rating: 5, text: 'Profissionalismo e transparência desde o início. Explicaram cada etapa do processo.', date: '2026-06-30' },
+        // ===== 200+ AVALIAÇÕES REALISTAS E VARIADAS COM DATAS 2026 =====
+        function generateReviewDate(month, day) {
+            return `2026-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+        }
 
-            // Avaliações com pequenas críticas iniciais, mas evolução positiva
-            { name: 'Jorge V.', city: 'Maputo', rating: 4, text: 'No início fiquei desconfiado, mas todo o processo foi transparente. Recebi o valor em 20 minutos.', date: '2026-01-19' },
-            { name: 'Erica D.', city: 'Maputo', rating: 4, text: 'Achei que pudesse ser uma burla, mas recebi o empréstimo conforme prometido. Atendimento cordial.', date: '2026-02-27' },
-            { name: 'Fidelia M.', city: 'Tete', rating: 4, text: 'Em Moçambique é difícil confiar em plataformas online, mas esta superou as minhas expectativas. Recomendo.', date: '2026-03-15' },
-            { name: 'Dan C.', city: 'Nampula', rating: 4, text: 'Demorou um pouco para validar os meus documentos, mas depois correu tudo muito bem. O valor chegou certinho.', date: '2026-04-10' },
-            { name: 'Elton J.', city: 'Beira', rating: 4, text: 'No início tive receio, porém o atendimento explicou todo o processo e fiquei satisfeito. Voltarei a usar.', date: '2026-05-05' },
-            { name: 'Angélica R.', city: 'Maputo', rating: 4, text: 'Fiquei insegura no começo, mas a equipe foi muito prestativa e tirou todas as minhas dúvidas. Recomendo!', date: '2026-06-18' },
-            { name: 'Ginito L.', city: 'Lichinga', rating: 4, text: 'Excelente, recebi o valor em minutos. Só achei que a taxa de inscrição poderia ser um pouco mais baixa.', date: '2026-07-04' },
-            { name: 'Márcia P.', city: 'Quelimane', rating: 4, text: 'Boa experiência. Demorou um pouco mais do que o esperado, mas o suporte foi atencioso e tudo deu certo.', date: '2026-01-08' }
+        const defaultReviewsData = [
+            // ===== AVALIAÇÕES 5 ESTRELAS (MAIORIA) =====
+            // Comentários curtos, médios e longos misturados
+            { name: 'Júlia Manjate', city: 'Maputo', rating: 5, text: 'Recebi o meu empréstimo rapidamente. Atendimento excelente e muito profissional. Recomendo a todos os meus amigos.', date: generateReviewDate(1, 12) },
+            { name: 'Manuel Cossa', city: 'Beira', rating: 5, text: 'Processo simples, rápido e muito profissional. A equipe explicou cada passo com clareza. Recomendo a todos!', date: generateReviewDate(2, 3) },
+            { name: 'Glória Mucavele', city: 'Nampula', rating: 5, text: 'Foi muito fácil solicitar o empréstimo. A plataforma é intuitiva e o suporte respondeu rápido. Me senti segura o tempo todo.', date: generateReviewDate(3, 18) },
+            { name: 'Samuel Nhantumbo', city: 'Quelimane', rating: 5, text: 'Atendimento de primeira qualidade. Confiável e ágil. Já indiquei para vários amigos e todos tiveram uma boa experiência.', date: generateReviewDate(4, 29) },
+            { name: 'Moisés Macuácua', city: 'Tete', rating: 5, text: 'Superou as minhas expectativas. Aprovado em minutos e o dinheiro caiu na conta no mesmo dia. Excelente serviço.', date: generateReviewDate(5, 16) },
+            { name: 'Margarida Chissano', city: 'Inhambane', rating: 5, text: 'Excelente plataforma, muito intuitiva e segura. Me senti confiante durante todo o processo. Nota 100!', date: generateReviewDate(6, 9) },
+            { name: 'Euzébio Raimundo', city: 'Lichinga', rating: 5, text: 'A melhor experiência com empréstimos em Moçambique. Transparente e sem letras miúdas. Recomendo fortemente.', date: generateReviewDate(7, 11) },
+            { name: 'Simão Matola', city: 'Pemba', rating: 5, text: 'Simples, transparente e sem complicações. Nota 10 para a equipe de suporte que me atendeu muito bem.', date: generateReviewDate(1, 25) },
+            { name: 'Stela Mahumane', city: 'Beira', rating: 5, text: 'Incrível como tudo foi rápido e eficiente. Já estou pensando em solicitar outro empréstimo para expandir meu negócio.', date: generateReviewDate(2, 14) },
+            { name: 'Suzete Mondlane', city: 'Nampula', rating: 5, text: 'Recomendo a todos. Confiável e seguro. O dinheiro chegou em menos de 30 minutos. Muito obrigado!', date: generateReviewDate(3, 2) },
+            { name: 'Elio Cuambe', city: 'Inhambane', rating: 5, text: 'Rápido e confiável. Nota máxima! A melhor fintech que já usei em Moçambique. Processo muito claro.', date: generateReviewDate(5, 22) },
+            { name: 'Milton Chauque', city: 'Maputo', rating: 5, text: 'Profissionalismo e transparência desde o início. Explicaram cada etapa do processo. Me senti muito bem atendido.', date: generateReviewDate(6, 30) },
+            { name: 'Angélica Machel', city: 'Maputo', rating: 5, text: 'Super recomendado! Processo muito claro e rápido. Recebi o valor em menos de 20 minutos. Excelente.', date: generateReviewDate(1, 17) },
+            { name: 'Dan Mabunda', city: 'Nampula', rating: 5, text: 'Muito bom, atendimento cordial e eficiente. A plataforma é muito fácil de usar. Recomendo a todos.', date: generateReviewDate(3, 25) },
+            { name: 'Fidelia Uamusse', city: 'Tete', rating: 5, text: 'Muito satisfeita com o serviço. Voltarei a usar com certeza. Atendimento rápido e sem burocracia.', date: generateReviewDate(6, 14) },
+            { name: 'Carlos Macuácua', city: 'Maputo', rating: 5, text: 'Serviço impecável! Recebi o empréstimo em menos de 15 minutos. A equipe é muito atenciosa.', date: generateReviewDate(1, 30) },
+            { name: 'Maria Nhaca', city: 'Beira', rating: 5, text: 'Facilidade e rapidez. Exatamente o que eu precisava para resolver meus compromissos financeiros.', date: generateReviewDate(3, 10) },
+            { name: 'José Langa', city: 'Nampula', rating: 5, text: 'Muito bom! O atendimento foi rápido e o processo de aprovação foi tranquilo. Recomendo sem reservas.', date: generateReviewDate(5, 18) },
+            { name: 'Ana Sitoe', city: 'Tete', rating: 5, text: 'Excelente serviço! Consegui o empréstimo em poucos minutos. A plataforma é muito fácil de usar.', date: generateReviewDate(6, 22) },
+            { name: 'Paulo Zandamela', city: 'Inhambane', rating: 5, text: 'Atendimento de primeira. Explicaram tudo direitinho e o dinheiro caiu na conta no mesmo dia.', date: generateReviewDate(7, 9) },
+            { name: 'Rosa Munguambe', city: 'Maputo', rating: 5, text: 'A melhor experiência financeira que já tive. Recomendo a todos que precisam de um empréstimo rápido.', date: generateReviewDate(2, 10) },
+            { name: 'Isabel Chongo', city: 'Pemba', rating: 5, text: 'Simples e rápido. A plataforma é muito intuitiva. Já indiquei para vários colegas de trabalho.', date: generateReviewDate(6, 7) },
+            { name: 'Manuel Nhaca', city: 'Maputo', rating: 5, text: 'Profissionais competentes e atenciosos. Recomendo a NOVACASH para todos que precisam de um empréstimo.', date: generateReviewDate(7, 15) },
+            { name: 'Ernesto Chongo', city: 'Nampula', rating: 5, text: 'Excelente plataforma! Muito fácil de usar e o suporte respondeu todas as minhas dúvidas rapidamente.', date: generateReviewDate(4, 18) },
+            { name: 'Marta Nhaca', city: 'Maputo', rating: 5, text: 'Recomendo a todos! Processo transparente e rápido. O dinheiro caiu na conta em menos de 30 minutos.', date: generateReviewDate(6, 25) },
+            // Mais comentários 5 estrelas variados
+            { name: 'Celso Zandamela', city: 'Maputo', rating: 5, text: 'Rápido e seguro. Já solicitei duas vezes e sempre correu tudo bem.', date: generateReviewDate(1, 5) },
+            { name: 'Dércia Munguambe', city: 'Beira', rating: 5, text: 'Aprovado em 10 minutos! Nunca vi um serviço tão rápido em Moçambique.', date: generateReviewDate(2, 28) },
+            { name: 'Edmundo Nhaca', city: 'Nampula', rating: 5, text: 'Transparente desde o início. Explicaram todas as taxas e juros antes de eu assinar.', date: generateReviewDate(3, 12) },
+            { name: 'Felismina Chongo', city: 'Tete', rating: 5, text: 'Atendimento excelente. A equipe foi muito paciente com todas as minhas perguntas.', date: generateReviewDate(4, 5) },
+            { name: 'Gildo Macamo', city: 'Inhambane', rating: 5, text: 'Muito bom, recomendo a todos. Processo simples e direto.', date: generateReviewDate(5, 29) },
+            { name: 'Helena Sitoe', city: 'Quelimane', rating: 5, text: 'Fiquei impressionada com a rapidez. Em menos de 30 minutos o dinheiro já estava na minha conta.', date: generateReviewDate(6, 11) },
+            { name: 'Isac Mucavele', city: 'Pemba', rating: 5, text: 'Excelente plataforma. Muito intuitiva e fácil de usar. A minha experiência foi ótima.', date: generateReviewDate(7, 2) },
+            { name: 'Jacinta Langa', city: 'Maputo', rating: 5, text: 'Já recomendei a vários amigos. Todos tiveram uma boa experiência também.', date: generateReviewDate(1, 20) },
+            { name: 'Lázaro Matola', city: 'Beira', rating: 5, text: 'O suporte respondeu rapidamente e esclareceu todas as minhas dúvidas.', date: generateReviewDate(2, 17) },
+            { name: 'Lúcia Macuácua', city: 'Nampula', rating: 5, text: 'Muito segura. A plataforma tem todas as medidas de segurança necessárias.', date: generateReviewDate(3, 8) },
+            { name: 'Mário Nhantumbo', city: 'Tete', rating: 5, text: 'Simples, rápido e muito profissional. Recomendo a todos.', date: generateReviewDate(4, 22) },
+            { name: 'Natércia Cossa', city: 'Inhambane', rating: 5, text: 'A melhor decisão que tomei. O empréstimo ajudou-me a resolver os meus problemas financeiros.', date: generateReviewDate(5, 14) },
+            { name: 'Orlando Mahumane', city: 'Quelimane', rating: 5, text: 'Atendimento de excelência. Profissionais muito capacitados.', date: generateReviewDate(6, 3) },
+            { name: 'Quitéria Mondlane', city: 'Pemba', rating: 5, text: 'Muito obrigado pela atenção e pelo profissionalismo. Recomendo.', date: generateReviewDate(7, 20) },
+            { name: 'Rogério Chissano', city: 'Maputo', rating: 5, text: 'Já usei outras plataformas, mas esta é a melhor. Muito rápida e confiável.', date: generateReviewDate(1, 9) },
+            { name: 'Salomé Raimundo', city: 'Beira', rating: 5, text: 'Excelente, a minha experiência foi muito positiva. Não tenho nada a apontar.', date: generateReviewDate(2, 24) },
+            { name: 'Teodorico Macamo', city: 'Nampula', rating: 5, text: 'Recomendo a todos que precisam de um empréstimo rápido e seguro.', date: generateReviewDate(3, 30) },
+            { name: 'Ubaldo Cuambe', city: 'Tete', rating: 5, text: 'Profissionalismo e transparência. Tudo correu conforme prometido.', date: generateReviewDate(4, 12) },
+            { name: 'Valter Macuácua', city: 'Inhambane', rating: 5, text: 'Muito bom. O dinheiro caiu na conta em menos de 20 minutos.', date: generateReviewDate(5, 25) },
+            { name: 'Zacarias Nhaca', city: 'Quelimane', rating: 5, text: 'Excelente plataforma. Já estou a pensar em solicitar outro empréstimo.', date: generateReviewDate(6, 18) },
+
+            // ===== AVALIAÇÕES 4 ESTRELAS COM RECEIO INICIAL (CRUCIAIS PARA TRANSMITIR CONFIANÇA) =====
+            { name: 'Jorge Bila', city: 'Maputo', rating: 4, text: 'No início fiquei desconfiado, porque hoje em dia existem muitas burlas. Mas resolvi arriscar e, para minha surpresa, recebi o empréstimo em 20 minutos. Estou muito satisfeito.', date: generateReviewDate(1, 19) },
+            { name: 'Erica Macamo', city: 'Maputo', rating: 4, text: 'Confesso que tive muito receio no começo por causa da taxa de inscrição. Fiz o pagamento com medo, mas depois recebi o valor certinho. Hoje recomendo a plataforma a todos.', date: generateReviewDate(2, 27) },
+            { name: 'Fidelia Uamusse', city: 'Tete', rating: 4, text: 'Em Moçambique é difícil confiar em plataformas online. No início pensei que fosse uma burla, mas depois vi que realmente funciona. O atendimento foi muito profissional.', date: generateReviewDate(3, 15) },
+            { name: 'Dan Mabunda', city: 'Nampula', rating: 4, text: 'Fiquei com um pé atrás por causa da taxa de inscrição, mas paguei e correu tudo bem. Demorou um pouco para validar os documentos, mas depois o dinheiro chegou.', date: generateReviewDate(4, 10) },
+            { name: 'Elton José', city: 'Beira', rating: 4, text: 'No início tive receio, porque já fui enganado antes. Mas o atendimento explicou todo o processo e tirei todas as minhas dúvidas. Fiquei satisfeito.', date: generateReviewDate(5, 5) },
+            { name: 'Angélica Machel', city: 'Maputo', rating: 4, text: 'Fiquei insegura no começo, mas a equipe foi muito prestativa e tirou todas as minhas dúvidas antes de eu pagar a taxa. Recomendo!', date: generateReviewDate(6, 18) },
+            { name: 'Ginito Nhaca', city: 'Lichinga', rating: 4, text: 'Desconfiei no início, mas depois percebi que era confiável. Recebi o valor em minutos. Só achei que a taxa de inscrição poderia ser um pouco mais baixa.', date: generateReviewDate(7, 4) },
+            { name: 'Márcia Cumbane', city: 'Quelimane', rating: 4, text: 'Pensei que pudesse ser uma burla, mas depois de ver a plataforma funcionando mudei de opinião. O dinheiro caiu na conta e fiquei muito aliviada.', date: generateReviewDate(1, 8) },
+            { name: 'Jorge Bila', city: 'Maputo', rating: 4, text: 'É difícil encontrar uma plataforma séria em Moçambique, mas esta superou as minhas expectativas. No início fiquei com medo, mas valeu a pena.', date: generateReviewDate(2, 21) },
+            { name: 'Márcia Cumbane', city: 'Quelimane', rating: 4, text: 'As minhas dúvidas desapareceram depois de receber o dinheiro. O atendimento respondeu a todas as minhas perguntas antes do pagamento.', date: generateReviewDate(4, 2) },
+            { name: 'Lúcia Macamo', city: 'Beira', rating: 4, text: 'No começo fiquei com receio, mas o atendimento foi tão bom que minha desconfiança sumiu. Ótimo serviço.', date: generateReviewDate(3, 28) },
+            { name: 'Fernando Mucavele', city: 'Quelimane', rating: 4, text: 'Confesso que desconfiei, mas depois de receber o valor mudei de opinião. Demorou um pouco para aprovar, mas foi tudo certo.', date: generateReviewDate(5, 12) },
+            { name: 'Carla Macamo', city: 'Tete', rating: 4, text: 'No início desconfiei por causa dos golpes que se vê nas redes sociais, mas depois percebi que era confiável. O dinheiro chegou rápido.', date: generateReviewDate(1, 22) },
+            { name: 'António Sitoe', city: 'Beira', rating: 4, text: 'Tive receio no começo, mas resolvi arriscar. A plataforma é séria e o atendimento foi bom. Recomendo.', date: generateReviewDate(7, 1) },
+            { name: 'Aurora Zandamela', city: 'Maputo', rating: 4, text: 'Fiquei com medo por causa da taxa, mas paguei e correu tudo bem. O suporte foi muito educado e paciente.', date: generateReviewDate(3, 22) },
+            { name: 'Bernardo Nhaca', city: 'Nampula', rating: 4, text: 'No princípio pensei que fosse mais uma burla, mas depois vi que a plataforma é séria. Já solicitei um segundo empréstimo.', date: generateReviewDate(5, 8) },
+            { name: 'Custódia Chongo', city: 'Tete', rating: 4, text: 'Demorei a confiar, mas depois de receber o valor fiquei tranquila. O processo é simples e seguro.', date: generateReviewDate(6, 27) },
+            { name: 'Domingos Macuácua', city: 'Beira', rating: 4, text: 'No início fiquei com muitas dúvidas, mas o atendimento esclareceu tudo. Foi uma boa experiência.', date: generateReviewDate(2, 15) },
+            { name: 'Esperança Nhantumbo', city: 'Quelimane', rating: 4, text: 'Tive medo de perder o dinheiro da taxa, mas felizmente correu tudo bem. Recomendo a todos.', date: generateReviewDate(4, 20) },
+            { name: 'Francisco Macamo', city: 'Inhambane', rating: 4, text: 'A minha desconfiança inicial desapareceu quando recebi o dinheiro. Plataforma confiável.', date: generateReviewDate(7, 10) },
+
+            // ===== AVALIAÇÕES 5 ESTRELAS COM MENÇÃO A PONTOS ESPECÍFICOS =====
+            { name: 'Albertina Matola', city: 'Maputo', rating: 5, text: 'Gostei muito da transparência durante todo o processo. Todas as taxas foram explicadas antes de eu assinar.', date: generateReviewDate(1, 15) },
+            { name: 'Benedito Cossa', city: 'Beira', rating: 5, text: 'Rapidez na análise e na aprovação. Em menos de 15 minutos o meu empréstimo foi aprovado.', date: generateReviewDate(2, 11) },
+            { name: 'Celina Mucavele', city: 'Nampula', rating: 5, text: 'Facilidade de utilização do site. Muito intuitivo, não tive dificuldades para preencher os dados.', date: generateReviewDate(3, 5) },
+            { name: 'Dionísio Chongo', city: 'Tete', rating: 5, text: 'Valores elevados disponíveis. Solicitei 200.000 MZN e fui aprovado. Excelente!', date: generateReviewDate(4, 15) },
+            { name: 'Elisa Sitoe', city: 'Inhambane', rating: 5, text: 'Atendimento ao cliente de primeira linha. Responderam rápido e de forma muito educada.', date: generateReviewDate(5, 28) },
+            { name: 'Filimone Nhaca', city: 'Quelimane', rating: 5, text: 'Simplicidade do processo. Não precisei de muitos documentos, tudo foi muito direto.', date: generateReviewDate(6, 12) },
+            { name: 'Graça Macamo', city: 'Pemba', rating: 5, text: 'Profissionalismo e organização. A equipe é muito competente e bem preparada.', date: generateReviewDate(7, 18) },
+            { name: 'Henrique Macuácua', city: 'Maputo', rating: 5, text: 'Já indiquei esta plataforma para familiares e amigos. Todos tiveram uma boa experiência.', date: generateReviewDate(1, 28) },
+            { name: 'Irene Langa', city: 'Beira', rating: 5, text: 'A melhor plataforma de empréstimos em Moçambique. Muito rápida e confiável.', date: generateReviewDate(2, 19) },
+            { name: 'Jeremias Macamo', city: 'Nampula', rating: 5, text: 'Fiquei muito satisfeito com o serviço. O dinheiro chegou no dia seguinte.', date: generateReviewDate(3, 14) },
+            { name: 'Leila Nhantumbo', city: 'Tete', rating: 5, text: 'Recomendo a todos que precisam de um empréstimo rápido e sem burocracia.', date: generateReviewDate(4, 28) },
+            { name: 'Manuelito Cossa', city: 'Inhambane', rating: 5, text: 'Muito bom, o atendimento foi excelente. Todos os meus problemas financeiros foram resolvidos.', date: generateReviewDate(5, 20) },
+            { name: 'Odete Nhaca', city: 'Quelimane', rating: 5, text: 'A plataforma é muito segura. Senti-me confiante durante todo o processo.', date: generateReviewDate(6, 9) },
+            { name: 'Porfírio Macamo', city: 'Pemba', rating: 5, text: 'Serviço impecável. Recomendo a todos os meus amigos e familiares.', date: generateReviewDate(7, 14) },
+            { name: 'Quitéria Mucavele', city: 'Maputo', rating: 5, text: 'Simples, rápido e confiável. Tudo o que eu precisava.', date: generateReviewDate(1, 11) },
+            { name: 'Rosalina Chongo', city: 'Beira', rating: 5, text: 'Excelente atendimento, muito profissionais. O dinheiro chegou rapidamente.', date: generateReviewDate(2, 26) },
+            { name: 'Sidónio Macuácua', city: 'Nampula', rating: 5, text: 'Já solicitei três vezes e sempre correu tudo bem. Plataforma muito confiável.', date: generateReviewDate(3, 20) },
+            { name: 'Teresa Nhantumbo', city: 'Tete', rating: 5, text: 'Muito satisfeita com o serviço. O processo foi simples e rápido.', date: generateReviewDate(4, 8) },
+            { name: 'Valdemiro Macamo', city: 'Inhambane', rating: 5, text: 'Recomendo a todos. Plataforma séria e confiável.', date: generateReviewDate(5, 30) },
+            { name: 'Xavier Cossa', city: 'Quelimane', rating: 5, text: 'Muito bom, a minha experiência foi excelente. O suporte respondeu rápido.', date: generateReviewDate(6, 20) },
+            { name: 'Zélia Nhaca', city: 'Pemba', rating: 5, text: 'A melhor decisão financeira que tomei em 2026. Recomendo a todos.', date: generateReviewDate(7, 25) },
+
+            // ===== AVALIAÇÕES DE CLIENTES QUE TIVERAM DÚVIDAS MAS FICARAM SATISFEITOS =====
+            { name: 'Adélia Macuácua', city: 'Maputo', rating: 5, text: 'No início fiquei com muito medo de ser uma burla, porque nunca tinha usado uma plataforma deste tipo. Mas o atendimento foi tão bom e profissional que mudei de ideia. Recebi o meu empréstimo e estou muito grata.', date: generateReviewDate(2, 8) },
+            { name: 'Belmiro Langa', city: 'Beira', rating: 5, text: 'Confesso que estava desconfiado, principalmente por causa da taxa de inscrição. Mas depois de fazer o pagamento e receber o dinheiro, vi que a plataforma é séria. Já estou a preparar a segunda solicitação.', date: generateReviewDate(4, 25) },
+            { name: 'Cândida Chongo', city: 'Nampula', rating: 5, text: 'O meu irmão recomendou, mas eu estava muito insegura. Demorei alguns dias a decidir, mas valeu a pena. O processo é transparente e o suporte é muito atencioso.', date: generateReviewDate(6, 10) },
+            { name: 'Dário Nhaca', city: 'Tete', rating: 5, text: 'Eu fui daqueles que pensou que era burla. Mas depois de ver vários comentários positivos, resolvi arriscar. Foi a melhor decisão que tomei. O empréstimo caiu na conta em menos de 30 minutos.', date: generateReviewDate(7, 5) },
+            { name: 'Eugénia Macamo', city: 'Inhambane', rating: 5, text: 'Tive muito receio por causa dos golpes que se vê nas redes sociais, mas a NOVACASH provou que é diferente. O atendimento foi excelente e o dinheiro chegou rápido.', date: generateReviewDate(1, 18) },
+            { name: 'Fabião Mucavele', city: 'Quelimane', rating: 5, text: 'Minha esposa ficou com medo quando eu mencionei a taxa de inscrição, mas eu decidi arriscar. No final, tudo correu bem e hoje ambos recomendamos a plataforma.', date: generateReviewDate(3, 16) },
+            { name: 'Gertrudes Nhantumbo', city: 'Pemba', rating: 5, text: 'Fiquei muito tempo a pensar se devia ou não solicitar. Mas depois de conversar com o suporte e ver que explicaram tudo com clareza, tomei coragem. Foi uma excelente experiência.', date: generateReviewDate(5, 24) },
+            { name: 'Hélder Macuácua', city: 'Maputo', rating: 5, text: 'No início pensei que fosse mais uma plataforma que promete e não cumpre. Mas fiquei surpreendido com a rapidez e a transparência. Já solicitei o segundo empréstimo.', date: generateReviewDate(2, 5) },
+            { name: 'Ilda Chongo', city: 'Beira', rating: 5, text: 'Eu desconfiei muito, principalmente por ser online. Mas o atendimento foi tão profissional que me passou confiança. Recebi o valor e estou muito feliz.', date: generateReviewDate(4, 14) },
+            { name: 'João Macamo', city: 'Nampula', rating: 5, text: 'A minha esposa recomendou, mas eu estava relutante. Depois de ver o dinheiro cair na conta, mudei completamente a minha opinião. Muito obrigado!', date: generateReviewDate(6, 28) },
+            { name: 'Laura Nhaca', city: 'Tete', rating: 5, text: 'Confesso que fiquei com medo de perder o dinheiro da taxa, mas decidi confiar. Foi a melhor decisão que tomei. O empréstimo foi aprovado rapidamente.', date: generateReviewDate(7, 12) },
+            { name: 'Manuel Macamo', city: 'Inhambane', rating: 5, text: 'Pensei duas vezes antes de pagar a taxa, porque já fui enganado antes. Mas a NOVACASH é diferente, cumpriu tudo o que prometeu. Recomendo sem reservas.', date: generateReviewDate(1, 26) },
+            { name: 'Natália Mucavele', city: 'Quelimane', rating: 5, text: 'A minha filha recomendou, mas eu estava com muito receio. No entanto, o suporte foi tão atencioso que decidi avançar. Foi a melhor decisão!', date: generateReviewDate(3, 9) },
+            { name: 'Osvaldo Nhantumbo', city: 'Pemba', rating: 5, text: 'Eu não acreditava que funcionava, mas depois de receber o dinheiro mudei de opinião. A plataforma é séria e confiável.', date: generateReviewDate(5, 15) },
+            { name: 'Paulina Macamo', city: 'Maputo', rating: 5, text: 'No início fiquei com o pé atrás, mas depois de ver tantos comentários positivos resolvi experimentar. Foi uma excelente experiência, recomendo a todos.', date: generateReviewDate(7, 22) },
+
+            // ===== AVALIAÇÕES COM PONTOS CONSTRUTIVOS (4 ESTRELAS) =====
+            { name: 'Aires Chongo', city: 'Maputo', rating: 4, text: 'O serviço é bom, mas demorou um pouco mais do que o esperado para a aprovação. No entanto, o suporte foi atencioso e o dinheiro chegou. Recomendo.', date: generateReviewDate(1, 14) },
+            { name: 'Benjamim Nhaca', city: 'Beira', rating: 4, text: 'Plataforma muito boa, mas acho que poderiam reduzir um pouco a taxa de inscrição. De resto, tudo correu bem.', date: generateReviewDate(2, 23) },
+            { name: 'Célia Macamo', city: 'Nampula', rating: 4, text: 'Gostei da experiência, mas tive algumas dificuldades para carregar os documentos. O suporte ajudou e tudo se resolveu.', date: generateReviewDate(3, 11) },
+            { name: 'Delfina Mucavele', city: 'Tete', rating: 4, text: 'Boa plataforma, mas o processo poderia ser um pouco mais rápido. No final, o empréstimo chegou e fiquei satisfeita.', date: generateReviewDate(4, 19) },
+            { name: 'Edson Nhantumbo', city: 'Inhambane', rating: 4, text: 'Serviço confiável, mas a interface poderia ser mais moderna. O importante é que funciona e é seguro.', date: generateReviewDate(5, 10) },
+            { name: 'Filomena Macamo', city: 'Quelimane', rating: 4, text: 'Gostei do atendimento, mas a validação dos documentos poderia ser mais rápida. De resto, tudo ótimo.', date: generateReviewDate(6, 5) },
+            { name: 'Gonçalo Chongo', city: 'Pemba', rating: 4, text: 'Boa experiência, mas acho que as taxas poderiam ser mais acessíveis. No entanto, recomendo a plataforma.', date: generateReviewDate(7, 8) },
+            { name: 'Hortência Nhaca', city: 'Maputo', rating: 4, text: 'A plataforma é boa, mas tive um pequeno problema com o upload dos documentos. O suporte resolveu rapidamente.', date: generateReviewDate(1, 23) },
+            { name: 'Ivo Macamo', city: 'Beira', rating: 4, text: 'Muito bom, mas poderiam melhorar a comunicação sobre o status da aprovação. De resto, tudo perfeito.', date: generateReviewDate(2, 14) },
+            { name: 'Joaquina Mucavele', city: 'Nampula', rating: 4, text: 'Gostei do serviço, mas o prazo de análise poderia ser menor. No final, valeu a pena esperar.', date: generateReviewDate(3, 27) },
+            { name: 'Kenneth Nhantumbo', city: 'Tete', rating: 4, text: 'Boa plataforma, mas acho que poderiam ter mais opções de pagamento. De resto, excelente.', date: generateReviewDate(4, 11) },
+            { name: 'Laurinda Macamo', city: 'Inhambane', rating: 4, text: 'Serviço confiável, mas a experiência poderia ser mais fluida. Recomendo pela segurança.', date: generateReviewDate(5, 21) },
+            { name: 'Mauro Chongo', city: 'Quelimane', rating: 4, text: 'Gostei, mas a taxa de inscrição é um pouco alta. No entanto, o empréstimo chegou rápido.', date: generateReviewDate(6, 15) },
+            { name: 'Neuza Nhaca', city: 'Pemba', rating: 4, text: 'Boa experiência, mas o site poderia ser mais responsivo no celular. De resto, tudo correu bem.', date: generateReviewDate(7, 17) },
+            { name: 'Olívia Macamo', city: 'Maputo', rating: 4, text: 'Gostei do atendimento, mas a validação dos documentos demorou um pouco. O importante é que funcionou.', date: generateReviewDate(1, 29) },
+            { name: 'Pedro Mucavele', city: 'Beira', rating: 4, text: 'Plataforma séria, mas acho que poderiam ter mais informações sobre as taxas. De resto, tudo bom.', date: generateReviewDate(2, 9) },
+            { name: 'Rute Nhantumbo', city: 'Nampula', rating: 4, text: 'Muito boa, mas o processo poderia ser mais simples. No final, valeu a pena.', date: generateReviewDate(3, 24) },
+            { name: 'Sérgio Macamo', city: 'Tete', rating: 4, text: 'Gostei da plataforma, mas a comunicação poderia ser melhor. De resto, tudo excelente.', date: generateReviewDate(4, 30) },
+            { name: 'Tânia Chongo', city: 'Inhambane', rating: 4, text: 'Boa experiência, mas a aprovação demorou mais do que o esperado. O suporte foi atencioso.', date: generateReviewDate(5, 19) },
+            { name: 'Ulisses Nhaca', city: 'Quelimane', rating: 4, text: 'Serviço confiável, mas a plataforma poderia ser mais intuitiva. Recomendo pela seriedade.', date: generateReviewDate(6, 24) }
         ];
 
         // Carregar ou inicializar o array de avaliações
@@ -3240,7 +3575,6 @@
                     }
                 } catch (e) { /* ignore */ }
             }
-            // Se não houver dados válidos, usar os padrões e salvar
             allReviews = [...defaultReviewsData];
             saveReviewsToStorage();
         }
@@ -3249,16 +3583,15 @@
             localStorage.setItem(REVIEWS_STORAGE_KEY, JSON.stringify(allReviews));
         }
 
-        // Carregar dados ao iniciar
         loadReviewsFromStorage();
 
         // ============================================================
-        // SLIDER DE AVALIAÇÕES (integrado com dados persistentes)
+        // SLIDER DE DESTAQUE
         // ============================================================
         let currentIndex = 0;
         let slidesPerView = 1;
         let autoSlideInterval = null;
-        const SLIDER_DELAY = 6500; // Mais lento (6.5 segundos) para leitura confortável
+        const SLIDER_DELAY = 6500;
 
         const track = document.getElementById('reviewsSliderTrack');
         const dotsContainer = document.getElementById('sliderDots');
@@ -3266,26 +3599,36 @@
         const nextBtn = document.getElementById('sliderNext');
         const wrapper = document.getElementById('reviewsSliderWrapper');
 
+        function getFeaturedReviews() {
+            const sorted = [...allReviews].sort((a, b) => new Date(b.date) - new Date(a.date));
+            return sorted.slice(0, 6);
+        }
+
         function getSlidesPerView() {
             if (window.innerWidth >= 1024) return 3;
             if (window.innerWidth >= 768) return 2;
             return 1;
         }
 
-        function renderReviews() {
-            track.innerHTML = '';
-            // Ordenar: mais recentes primeiro
-            const sorted = [...allReviews].sort((a, b) => {
-                return new Date(b.date) - new Date(a.date);
-            });
+        function formatDateDisplay(dateStr) {
+            if (!dateStr) return '';
+            const date = new Date(dateStr);
+            const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+            return `${date.getDate()} de ${meses[date.getMonth()]} de ${date.getFullYear()}`;
+        }
 
-            sorted.forEach(review => {
+        function renderFeaturedReviews() {
+            track.innerHTML = '';
+            const featured = getFeaturedReviews();
+            featured.forEach(review => {
                 const card = document.createElement('div');
                 card.className = 'review-card-premium';
                 const initials = review.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
-                const stars = '★'.repeat(Math.floor(review.rating)) + '☆'.repeat(5 - Math.floor(review.rating));
+                const fullStars = Math.floor(review.rating);
+                const emptyStars = 5 - fullStars;
+                const stars = '★'.repeat(fullStars) + '☆'.repeat(emptyStars);
                 const cityHtml = review.city ? `<div class="city"><i class="fas fa-map-marker-alt"></i> ${review.city}</div>` : '';
-                const dateFormatted = review.date ? new Date(review.date).toLocaleDateString('pt-MZ') : new Date().toLocaleDateString('pt-MZ');
+                const dateFormatted = formatDateDisplay(review.date);
 
                 card.innerHTML = `
                     <div class="card-inner">
@@ -3308,7 +3651,8 @@
         }
 
         function updateDots() {
-            const total = Math.ceil(allReviews.length / getSlidesPerView());
+            const featured = getFeaturedReviews();
+            const total = Math.ceil(featured.length / getSlidesPerView());
             dotsContainer.innerHTML = '';
             for (let i = 0; i < total; i++) {
                 const dot = document.createElement('button');
@@ -3320,7 +3664,8 @@
         }
 
         function goToSlide(index) {
-            const total = Math.ceil(allReviews.length / getSlidesPerView());
+            const featured = getFeaturedReviews();
+            const total = Math.ceil(featured.length / getSlidesPerView());
             if (total === 0) return;
             if (index < 0) index = total - 1;
             if (index >= total) index = 0;
@@ -3333,20 +3678,23 @@
         }
 
         function nextSlide() {
-            const total = Math.ceil(allReviews.length / getSlidesPerView());
+            const featured = getFeaturedReviews();
+            const total = Math.ceil(featured.length / getSlidesPerView());
             if (total === 0) return;
             goToSlide((currentIndex + 1) % total);
         }
 
         function prevSlide() {
-            const total = Math.ceil(allReviews.length / getSlidesPerView());
+            const featured = getFeaturedReviews();
+            const total = Math.ceil(featured.length / getSlidesPerView());
             if (total === 0) return;
             goToSlide((currentIndex - 1 + total) % total);
         }
 
         function startAutoSlide() {
             if (autoSlideInterval) clearInterval(autoSlideInterval);
-            if (allReviews.length === 0) return;
+            const featured = getFeaturedReviews();
+            if (featured.length === 0) return;
             autoSlideInterval = setInterval(nextSlide, SLIDER_DELAY);
         }
 
@@ -3357,40 +3705,21 @@
             }
         }
 
-        // Eventos de controle
-        nextBtn.addEventListener('click', () => {
-            stopAutoSlide();
-            nextSlide();
-            startAutoSlide();
-        });
-
-        prevBtn.addEventListener('click', () => {
-            stopAutoSlide();
-            prevSlide();
-            startAutoSlide();
-        });
+        nextBtn.addEventListener('click', () => { stopAutoSlide(); nextSlide(); startAutoSlide(); });
+        prevBtn.addEventListener('click', () => { stopAutoSlide(); prevSlide(); startAutoSlide(); });
 
         wrapper.addEventListener('mouseenter', stopAutoSlide);
         wrapper.addEventListener('mouseleave', startAutoSlide);
 
         let touchStartX = 0;
         let touchEndX = 0;
-        wrapper.addEventListener('touchstart', (e) => {
-            touchStartX = e.changedTouches[0].screenX;
-        }, { passive: true });
+        wrapper.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
         wrapper.addEventListener('touchend', (e) => {
             touchEndX = e.changedTouches[0].screenX;
             const diff = touchStartX - touchEndX;
             if (Math.abs(diff) > 30) {
-                if (diff > 0) {
-                    stopAutoSlide();
-                    nextSlide();
-                    startAutoSlide();
-                } else {
-                    stopAutoSlide();
-                    prevSlide();
-                    startAutoSlide();
-                }
+                if (diff > 0) { stopAutoSlide(); nextSlide(); startAutoSlide(); }
+                else { stopAutoSlide(); prevSlide(); startAutoSlide(); }
             }
         }, { passive: true });
 
@@ -3399,17 +3728,55 @@
             const newSlidesPerView = getSlidesPerView();
             if (newSlidesPerView !== lastSlidesPerView) {
                 lastSlidesPerView = newSlidesPerView;
-                updateDots();
-                goToSlide(0);
+                renderFeaturedReviews();
             }
         });
 
-        // Inicializar slider
-        renderReviews();
+        renderFeaturedReviews();
         startAutoSlide();
 
         // ============================================================
-        // FORMULÁRIO DE AVALIAÇÃO (mantido)
+        // LISTA DE TODAS AS AVALIAÇÕES
+        // ============================================================
+        function renderAllReviews() {
+            const container = document.getElementById('allReviewsList');
+            const badge = document.getElementById('reviewCountBadge');
+            if (!container) return;
+
+            // Embaralhar ligeiramente para mostrar variedade
+            const sorted = [...allReviews].sort((a, b) => new Date(b.date) - new Date(a.date));
+            badge.textContent = sorted.length;
+
+            container.innerHTML = '';
+            sorted.forEach(review => {
+                const div = document.createElement('div');
+                div.className = 'review-list-item';
+                const initials = review.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+                const fullStars = Math.floor(review.rating);
+                const emptyStars = 5 - fullStars;
+                const stars = '★'.repeat(fullStars) + '☆'.repeat(emptyStars);
+                const cityHtml = review.city ? `<span class="city"><i class="fas fa-map-marker-alt"></i> ${review.city}</span>` : '';
+                const dateFormatted = formatDateDisplay(review.date);
+
+                div.innerHTML = `
+                    <div class="user-row">
+                        <div class="user-icon">${initials}</div>
+                        <div class="user-info">
+                            <div class="name">${review.name} ${cityHtml}</div>
+                        </div>
+                    </div>
+                    <div class="stars">${stars}</div>
+                    <div class="comment">${review.text}</div>
+                    <span class="date">${dateFormatted}</span>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        renderAllReviews();
+
+        // ============================================================
+        // FORMULÁRIO DE AVALIAÇÃO
         // ============================================================
         const starInputs = document.querySelectorAll('#starRatingInput i');
         const ratingValueInput = document.getElementById('reviewRatingValue');
@@ -3419,7 +3786,6 @@
         const feedbackEl = document.getElementById('reviewFeedback');
         let isSubmitting = false;
 
-        // Sistema de estrelas interativo
         starInputs.forEach(star => {
             star.addEventListener('click', function() {
                 const value = parseInt(this.dataset.value);
@@ -3429,7 +3795,6 @@
                     s.classList.toggle('active', val <= value);
                 });
             });
-
             star.addEventListener('mouseenter', function() {
                 const value = parseInt(this.dataset.value);
                 starInputs.forEach(s => {
@@ -3437,30 +3802,20 @@
                     s.classList.toggle('hover', val <= value);
                 });
             });
-
             star.addEventListener('mouseleave', function() {
                 starInputs.forEach(s => s.classList.remove('hover'));
             });
         });
 
-        // Definir 5 estrelas como padrão
         ratingValueInput.value = 5;
-        starInputs.forEach(s => {
-            if (parseInt(s.dataset.value) <= 5) s.classList.add('active');
-        });
+        starInputs.forEach(s => { if (parseInt(s.dataset.value) <= 5) s.classList.add('active'); });
 
-        // Contador de caracteres
         commentInput.addEventListener('input', function() {
             const len = this.value.length;
             charCounter.textContent = `${len} / 500`;
-            if (len > 480) {
-                charCounter.classList.add('limit');
-            } else {
-                charCounter.classList.remove('limit');
-            }
+            charCounter.classList.toggle('limit', len > 480);
         });
 
-        // Publicar avaliação (mantido)
         submitBtn.addEventListener('click', function() {
             if (!currentUser) {
                 feedbackEl.className = 'feedback-msg error';
@@ -3512,7 +3867,7 @@
 
             const newReview = {
                 name: currentUser.fullName,
-                city: currentUser.city || '',
+                city: currentUser.city || 'Maputo',
                 rating: rating,
                 text: text,
                 date: new Date().toISOString()
@@ -3520,7 +3875,8 @@
 
             allReviews.unshift(newReview);
             saveReviewsToStorage();
-            renderReviews();
+            renderFeaturedReviews();
+            renderAllReviews();
             goToSlide(0);
             stopAutoSlide();
             setTimeout(() => startAutoSlide(), 3000);
@@ -3530,7 +3886,6 @@
 
             commentInput.value = '';
             charCounter.textContent = '0 / 500';
-
             submitBtn.disabled = false;
             submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Publicar Avaliação';
             isSubmitting = false;
@@ -3541,7 +3896,7 @@
         });
 
         // ============================================================
-        // LOAN SIMULATOR (mantido)
+        // LOAN SIMULATOR
         // ============================================================
         const simAmount = document.getElementById('simAmount');
         const simTerm = document.getElementById('simTerm');
@@ -3582,7 +3937,7 @@
         updateSimulator();
 
         // ============================================================
-        // STEP NAVIGATION (mantido)
+        // STEP NAVIGATION
         // ============================================================
         let currentStep = 1;
         const stepDots = document.querySelectorAll('.step-dot');
@@ -3600,9 +3955,7 @@
                 content.classList.toggle('active', index + 1 === step);
             });
             document.getElementById('appContent').scrollTop = 0;
-            if (step === 4) {
-                updateSummary();
-            }
+            if (step === 4) updateSummary();
         }
 
         document.querySelectorAll('.next-step').forEach(btn => {
@@ -3636,18 +3989,12 @@
             reader.readAsDataURL(input.files[0]);
         }
 
-        document.getElementById('loanBiFront').addEventListener('change', function() {
-            previewFile(this, 'biFrontPreviewApp');
-        });
-        document.getElementById('loanBiBack').addEventListener('change', function() {
-            previewFile(this, 'biBackPreviewApp');
-        });
-        document.getElementById('loanProof').addEventListener('change', function() {
-            previewFile(this, 'proofPreviewApp');
-        });
+        document.getElementById('loanBiFront').addEventListener('change', function() { previewFile(this, 'biFrontPreviewApp'); });
+        document.getElementById('loanBiBack').addEventListener('change', function() { previewFile(this, 'biBackPreviewApp'); });
+        document.getElementById('loanProof').addEventListener('change', function() { previewFile(this, 'proofPreviewApp'); });
 
         // ============================================================
-        // UPDATE SUMMARY (mantido)
+        // UPDATE SUMMARY
         // ============================================================
         function updateSummary() {
             const name = document.getElementById('loanFullName').value.trim() || '---';
@@ -3677,14 +4024,12 @@
         document.getElementById('loanPhone').addEventListener('input', updateSummary);
         document.getElementById('loanBi').addEventListener('input', updateSummary);
         document.getElementById('loanReceiver').addEventListener('input', updateSummary);
-        document.querySelectorAll('.pm-item').forEach(item => {
-            item.addEventListener('click', updateSummary);
-        });
+        document.querySelectorAll('.pm-item').forEach(item => { item.addEventListener('click', updateSummary); });
         simAmount.addEventListener('input', updateSummary);
         simTerm.addEventListener('input', updateSummary);
 
         // ============================================================
-        // BOTÃO EFETUAR PAGAMENTO (mantido)
+        // BOTÃO EFETUAR PAGAMENTO
         // ============================================================
         document.getElementById('payFeeBtn').addEventListener('click', function() {
             const method = document.querySelector('.pm-item.active')?.dataset.method || 'M-Pesa';
@@ -3693,13 +4038,10 @@
         });
 
         // ============================================================
-        // SUBMIT LOAN (30 segundos) (mantido)
+        // SUBMIT LOAN (30 segundos)
         // ============================================================
         document.getElementById('submitLoanApp').addEventListener('click', function() {
-            if (!currentUser) {
-                showToast('Faça login para solicitar', 'error');
-                return;
-            }
+            if (!currentUser) { showToast('Faça login para solicitar', 'error'); return; }
             const name = document.getElementById('loanFullName').value.trim();
             const phone = document.getElementById('loanPhone').value.trim();
             const receiver = document.getElementById('loanReceiver').value.trim();
@@ -3709,22 +4051,10 @@
             const proofFile = document.getElementById('loanProof').files[0];
             const terms = document.getElementById('loanTerms').checked;
 
-            if (!name || !phone || !receiver || !bi) {
-                showToast('Preencha todos os dados', 'error');
-                return;
-            }
-            if (!frontFile || !backFile) {
-                showToast('Carregue os dois lados do BI', 'error');
-                return;
-            }
-            if (!proofFile) {
-                showToast('Carregue o comprovativo de pagamento', 'error');
-                return;
-            }
-            if (!terms) {
-                showToast('Aceite os Termos e Condições', 'error');
-                return;
-            }
+            if (!name || !phone || !receiver || !bi) { showToast('Preencha todos os dados', 'error'); return; }
+            if (!frontFile || !backFile) { showToast('Carregue os dois lados do BI', 'error'); return; }
+            if (!proofFile) { showToast('Carregue o comprovativo de pagamento', 'error'); return; }
+            if (!terms) { showToast('Aceite os Termos e Condições', 'error'); return; }
 
             const btn = document.getElementById('submitLoanApp');
             btn.disabled = true;
@@ -3732,14 +4062,10 @@
 
             const totalSeconds = 30;
             const loading = showLoading('Verificando documentos...', totalSeconds);
-            let progress = 0;
-            let elapsed = 0;
-            const messages = [
-                { p: 10, msg: 'Verificando documentos...' },
-                { p: 30, msg: 'Validando comprovativo...' },
-                { p: 55, msg: 'Analisando dados do cliente...' },
-                { p: 75, msg: 'Finalizando análise...' }
-            ];
+            let progress = 0,
+                elapsed = 0;
+            const messages = [{ p: 10, msg: 'Verificando documentos...' }, { p: 30, msg: 'Validando comprovativo...' },
+            { p: 55, msg: 'Analisando dados do cliente...' }, { p: 75, msg: 'Finalizando análise...' }];
             let msgIdx = 0;
             const interval = setInterval(() => {
                 elapsed += 1;
@@ -3749,10 +4075,8 @@
                 loading.updateTimer(remaining);
                 for (let i = messages.length - 1; i >= 0; i--) {
                     if (progress >= messages[i].p) {
-                        if (msgIdx !== i) {
-                            msgIdx = i;
-                            document.getElementById('loaderText').textContent = messages[i].msg;
-                        }
+                        if (msgIdx !== i) { msgIdx = i;
+                            document.getElementById('loaderText').textContent = messages[i].msg; }
                         break;
                     }
                 }
@@ -3764,8 +4088,10 @@
                         btn.innerHTML = '<i class="fas fa-paper-plane"></i> ENVIAR SOLICITAÇÃO';
                         const errorMsg = 'ERRO NA SUA IMAGEM DE COMPROVATIVO DE PAGAMENTO DA TAXA DE INSCRIÇÃO, por favor pague a taxa e volte a tentar NOVAMENTE.';
                         showPopup(errorMsg);
-                        addNotif(currentUser, '❌ ERRO NO COMPROVATIVO',
-                            'Por favor, pague a taxa de inscrição e tente novamente.', 'error', 'fa-exclamation-triangle');
+                        // Notificação com data e hora
+                        addNotif(currentUser, '❌ Comprovativo rejeitado',
+                            'O comprovativo enviado não possui qualidade suficiente. Por favor, envie uma imagem mais nítida.',
+                            'error', 'fa-exclamation-triangle');
                         const errorModalHTML = `
                             <div style="text-align:center;margin-bottom:1rem;">
                                 <i class="fas fa-exclamation-triangle" style="font-size:2.5rem;color:var(--error);"></i>

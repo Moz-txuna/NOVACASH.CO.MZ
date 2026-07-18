@@ -402,10 +402,18 @@
             text-align: center;
             box-shadow: var(--shadow);
             border: 1px solid rgba(0,0,0,0.04);
+            transition: var(--transition);
         }
+        .quick-stat:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
         .quick-stat .stat-icon { font-size: 1.2rem; color: var(--primary); margin-bottom: 0.2rem; }
-        .quick-stat .stat-value { font-size: 1rem; font-weight: 700; }
-        .quick-stat .stat-label { font-size: 0.6rem; color: var(--gray); }
+        .quick-stat .stat-value {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--dark);
+            transition: all 0.3s ease;
+        }
+        .quick-stat .stat-value .stat-suffix { font-size: 0.7rem; font-weight: 600; color: var(--gray); }
+        .quick-stat .stat-label { font-size: 0.6rem; color: var(--gray); font-weight: 500; }
 
         /* ===== ONLINE COUNTER ===== */
         .online-counter {
@@ -440,7 +448,7 @@
             color: var(--dark);
             min-width: 36px;
             display: inline-block;
-            transition: all 0.3s ease;
+            transition: all 0.5s ease;
         }
         .online-counter .counter-label {
             color: var(--gray);
@@ -2297,22 +2305,22 @@
                     <i class="fas fa-chevron-right"></i>
                 </button>
 
-                <!-- Quick Stats -->
-                <div class="quick-stats">
+                <!-- ===== QUICK STATS (NOVO PAINEL) ===== -->
+                <div class="quick-stats" id="statsPanel">
                     <div class="quick-stat">
-                        <div class="stat-icon"><i class="fas fa-hand-holding-usd"></i></div>
-                        <div class="stat-value" id="statLoansDash">0</div>
-                        <div class="stat-label">Empréstimos</div>
+                        <div class="stat-icon"><i class="fas fa-file-signature"></i></div>
+                        <div class="stat-value" id="statRequestedToday">0</div>
+                        <div class="stat-label">📄 Empréstimos Solicitados Hoje</div>
                     </div>
                     <div class="quick-stat">
                         <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
-                        <div class="stat-value" id="statApprovedDash">0</div>
-                        <div class="stat-label">Aprovados</div>
+                        <div class="stat-value" id="statApprovedToday">0</div>
+                        <div class="stat-label">✅ Empréstimos Aprovados Hoje</div>
                     </div>
                     <div class="quick-stat">
                         <div class="stat-icon"><i class="fas fa-percentage"></i></div>
-                        <div class="stat-value" id="statRateDash">0%</div>
-                        <div class="stat-label">Aprovação</div>
+                        <div class="stat-value" id="statApprovalRate">0<span class="stat-suffix">%</span></div>
+                        <div class="stat-label">📊 Taxa de Aprovação Diária</div>
                     </div>
                 </div>
 
@@ -3044,25 +3052,120 @@
         }
 
         // ============================================================
-        // CONTADOR DE UTILIZADORES ONLINE
+        // CONTADOR DE UTILIZADORES ONLINE (ATUALIZAÇÃO SUAVE)
         // ============================================================
         let onlineCount = 76;
 
         function updateOnlineCounter() {
-            const min = 28;
-            const max = 118;
-            const newCount = Math.floor(Math.random() * (max - min + 1)) + min;
+            const current = parseInt(document.getElementById('onlineCount').textContent) || onlineCount;
+            // Variação de -3 a +3 pessoas
+            const variation = Math.floor(Math.random() * 7) - 3;
+            let newCount = current + variation;
+            // Garantir que o número fique entre 28 e 118
+            newCount = Math.max(28, Math.min(118, newCount));
             
             const counterEl = document.getElementById('onlineCount');
             if (counterEl) {
-                counterEl.style.transition = 'all 0.3s ease';
+                // Atualizar com transição suave
+                counterEl.style.transition = 'all 0.8s ease';
                 counterEl.textContent = newCount;
             }
             onlineCount = newCount;
         }
 
-        setInterval(updateOnlineCounter, 18000);
+        // Atualizar a cada 10 segundos
+        setInterval(updateOnlineCounter, 10000);
+        // Atualizar imediatamente após o carregamento
         setTimeout(updateOnlineCounter, 1000);
+
+        // ============================================================
+        // SISTEMA DE ESTATÍSTICAS DIÁRIAS (SINCRONIZADO)
+        // ============================================================
+        // Valores iniciais realistas
+        let requestedToday = 242;
+        let approvedToday = 215;
+
+        function updateStatsDisplay() {
+            const requestedEl = document.getElementById('statRequestedToday');
+            const approvedEl = document.getElementById('statApprovedToday');
+            const rateEl = document.getElementById('statApprovalRate');
+
+            if (requestedEl) requestedEl.textContent = requestedToday;
+            if (approvedEl) approvedEl.textContent = approvedToday;
+
+            // Calcular taxa de aprovação (evitar divisão por zero)
+            let rate = 0;
+            if (requestedToday > 0) {
+                rate = Math.round((approvedToday / requestedToday) * 100);
+            }
+            if (rateEl) rateEl.innerHTML = rate + '<span class="stat-suffix">%</span>';
+
+            // Garantir coerência: aprovados nunca pode ser maior que solicitados
+            if (approvedToday > requestedToday) {
+                approvedToday = requestedToday;
+                if (approvedEl) approvedEl.textContent = approvedToday;
+                // Recalcular taxa
+                if (requestedToday > 0) {
+                    rate = Math.round((approvedToday / requestedToday) * 100);
+                    if (rateEl) rateEl.innerHTML = rate + '<span class="stat-suffix">%</span>';
+                }
+            }
+        }
+
+        // Atualiza os contadores diários de forma gradual e realista
+        function updateDailyStats() {
+            // Aumentar solicitações (1 a 3 de cada vez)
+            const requestedIncrease = Math.floor(Math.random() * 3) + 1;
+            requestedToday += requestedIncrease;
+
+            // Aprovações aumentam com base na taxa (geralmente 80-95% do que foi solicitado)
+            // Simular aprovações com atraso natural
+            const approvalChance = Math.random();
+            let approvedIncrease = 0;
+            
+            // Se a taxa atual estiver baixa, aumentar aprovações para manter coerência
+            const currentRate = requestedToday > 0 ? (approvedToday / requestedToday) : 0;
+            
+            if (currentRate < 0.80) {
+                // Aumentar aprovações mais rapidamente para recuperar a taxa
+                approvedIncrease = Math.min(requestedIncrease, Math.floor(Math.random() * 3) + 1);
+            } else if (currentRate < 0.92) {
+                // Aumento normal
+                if (approvalChance > 0.15) {
+                    approvedIncrease = Math.floor(Math.random() * 2) + 1;
+                }
+            } else {
+                // Taxa já está boa, aumentar aprovações com menor frequência
+                if (approvalChance > 0.35) {
+                    approvedIncrease = Math.floor(Math.random() * 2);
+                }
+            }
+
+            // Garantir que aprovados não ultrapasse solicitados
+            if (approvedToday + approvedIncrease > requestedToday) {
+                approvedIncrease = Math.max(0, requestedToday - approvedToday);
+            }
+            
+            approvedToday += approvedIncrease;
+
+            // Se aprovados ficar muito abaixo de solicitados, ajustar gradualmente
+            const diff = requestedToday - approvedToday;
+            if (diff > 20 && Math.random() > 0.5) {
+                // Aumentar aprovações para reduzir a diferença
+                const catchUp = Math.min(Math.floor(diff * 0.3), 5);
+                if (approvedToday + catchUp <= requestedToday) {
+                    approvedToday += catchUp;
+                }
+            }
+
+            updateStatsDisplay();
+        }
+
+        // Atualizar estatísticas a cada 25-35 segundos (simulando fluxo real)
+        setInterval(updateDailyStats, 25000 + Math.random() * 10000);
+        
+        // Atualização inicial
+        setTimeout(updateDailyStats, 2000);
 
         // ============================================================
         // FUNÇÕES DE ATIVIDADE HERDADAS (para compatibilidade)
@@ -3088,6 +3191,11 @@
             playNotificationSound();
             showToast(`💰 ${name} recebeu ${amount.toLocaleString('pt-MZ')} MZN via ${method}`, 'success');
             addActivityItem(name, amount, method);
+            
+            // Sincronizar com estatísticas: quando uma notificação de aprovação aparece,
+            // incrementar o contador de aprovados do dia
+            approvedToday = Math.min(approvedToday + 1, requestedToday);
+            updateStatsDisplay();
         }
 
         setInterval(() => {
@@ -4826,4 +4934,5 @@
     });
     </script>
 </body>
-</html>
+</html>                       
+              

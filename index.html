@@ -3074,13 +3074,14 @@
 
                 if (availableFundsMZN <= 0) {
                     isResetting = true;
+                    // ALTERADO: 15 segundos (era 8000)
                     setTimeout(() => {
                         availableFundsMZN = INITIAL_FUNDS_MZN;
                         localStorage.setItem('novacash_funds_mzn', availableFundsMZN.toString());
                         updateFundsDisplay();
                         isResetting = false;
                         showToast('🔄 Fundos reabastecidos!', 'success');
-                    }, 8000);
+                    }, 15000);
                 }
             }
         }
@@ -3532,7 +3533,7 @@
         // ============================================================
         // SISTEMA DE NOTIFICAÇÕES DE EMPRÉSTIMO OTIMIZADO (unificado)
         // ============================================================
-        // Histórico de códigos/IDs/contas usados (evita duplicados na sessão)
+        // Histórico de códigos/IDs/contas usado (evita duplicados na sessão)
         const usedCodes = new Set();
         function uniqueValue(generator, maxTries = 8) {
             for (let i = 0; i < maxTries; i++) {

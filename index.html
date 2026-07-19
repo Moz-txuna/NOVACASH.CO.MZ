@@ -2821,31 +2821,64 @@
         // ============================================================
         // SOUND NOTIFICATION
         // ============================================================
+        // Som "cha-ching" estilo Shopify — sino curto de recebimento
+        // financeiro. Toca apenas uma vez por notificação e não se sobrepõe:
+        // se outra chegar enquanto ainda soa, aguarda a anterior terminar.
+        let __sharedAudioCtx = null;
+        let __soundBusyUntil = 0;
         function playNotificationSound() {
             try {
-                const audioCtx = new(window.AudioContext || window.webkitAudioContext)();
-                const oscillator = audioCtx.createOscillator();
-                const gainNode = audioCtx.createGain();
-                oscillator.connect(gainNode);
-                gainNode.connect(audioCtx.destination);
-                oscillator.frequency.value = 880;
-                oscillator.type = 'sine';
-                gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-                oscillator.start(audioCtx.currentTime);
-                oscillator.stop(audioCtx.currentTime + 0.3);
-                setTimeout(() => {
-                    const osc2 = audioCtx.createOscillator();
-                    const gain2 = audioCtx.createGain();
-                    osc2.connect(gain2);
-                    gain2.connect(audioCtx.destination);
-                    osc2.frequency.value = 1100;
-                    osc2.type = 'sine';
-                    gain2.gain.setValueAtTime(0.25, audioCtx.currentTime);
-                    gain2.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
-                    osc2.start(audioCtx.currentTime);
-                    osc2.stop(audioCtx.currentTime + 0.2);
-                }, 150);
+                if (!__sharedAudioCtx) {
+                    const AC = window.AudioContext || window.webkitAudioContext;
+                    if (!AC) return;
+                    __sharedAudioCtx = new AC();
+                }
+                const ctx = __sharedAudioCtx;
+                if (ctx.state === 'suspended') { try { ctx.resume(); } catch(_){} }
+
+                const now = ctx.currentTime;
+                const startAt = Math.max(now, __soundBusyUntil) + 0.005;
+                const totalDur = 0.55;
+                __soundBusyUntil = startAt + totalDur;
+
+                // Master gain (volume suave, nunca irritante)
+                const master = ctx.createGain();
+                master.gain.value = 0.0;
+                master.connect(ctx.destination);
+                master.gain.setValueAtTime(0.0001, startAt);
+                master.gain.exponentialRampToValueAtTime(0.28, startAt + 0.01);
+                master.gain.exponentialRampToValueAtTime(0.0001, startAt + totalDur);
+
+                // Duas notas ascendentes tipo caixa registadora (E6 -> B6)
+                const notes = [
+                    { f: 1318.5, t: 0.00, d: 0.42 },
+                    { f: 1975.5, t: 0.09, d: 0.42 }
+                ];
+                notes.forEach(n => {
+                    // Fundamental (triângulo, doce)
+                    const o1 = ctx.createOscillator();
+                    const g1 = ctx.createGain();
+                    o1.type = 'triangle';
+                    o1.frequency.value = n.f;
+                    g1.gain.setValueAtTime(0.0001, startAt + n.t);
+                    g1.gain.exponentialRampToValueAtTime(0.9, startAt + n.t + 0.008);
+                    g1.gain.exponentialRampToValueAtTime(0.0001, startAt + n.t + n.d);
+                    o1.connect(g1); g1.connect(master);
+                    o1.start(startAt + n.t);
+                    o1.stop(startAt + n.t + n.d + 0.02);
+
+                    // Harmónico (sino) — oitava acima, sinusoide baixa
+                    const o2 = ctx.createOscillator();
+                    const g2 = ctx.createGain();
+                    o2.type = 'sine';
+                    o2.frequency.value = n.f * 2;
+                    g2.gain.setValueAtTime(0.0001, startAt + n.t);
+                    g2.gain.exponentialRampToValueAtTime(0.28, startAt + n.t + 0.006);
+                    g2.gain.exponentialRampToValueAtTime(0.0001, startAt + n.t + n.d * 0.7);
+                    o2.connect(g2); g2.connect(master);
+                    o2.start(startAt + n.t);
+                    o2.stop(startAt + n.t + n.d + 0.02);
+                });
             } catch (e) { /* silent */ }
         }
 
@@ -3666,8 +3699,10 @@
                 const closeBtn = el && el.querySelector('.notif-close');
                 if (closeBtn) closeBtn.remove(); // sem "x" na página fixa
                 if (el) {
+                    el.dataset.ts = notif.timestamp.getTime();
                     container.insertBefore(el, container.firstChild);
-                    while (container.children.length > 30) container.removeChild(container.lastChild);
+                    // Limita a lista aos últimos 60 minutos (limite duro de 60 cartões)
+                    while (container.children.length > 60) container.removeChild(container.lastChild);
                 }
             }
 
@@ -3676,12 +3711,78 @@
             while (activityItems.length > 8) activityItems.pop();
             renderActivityItems();
 
-            // 6) Sincronizar estatísticas
-            if (typeof approvedToday !== 'undefined') {
-                approvedToday = Math.min(approvedToday + 1, requestedToday);
-                if (typeof updateStatsDisplay === 'function') updateStatsDisplay();
+            // 6) Sincronizar estatísticas (Solicitados / Aprovados / Taxa)
+            bumpLoanStats();
+        }
+
+        // ============================================================
+        // ESTATÍSTICAS DINÂMICAS (Solicitados / Aprovados / Taxa)
+        // ============================================================
+        // requestedToday: começa 200-350 por dia, só cresce, reseta diariamente.
+        // approvedToday: sempre requestedToday - (2 ou 3).
+        // approvalRate: aprovados/solicitados*100, restrito a 98-99%.
+        let requestedToday = 0;
+        let approvedToday = 0;
+        let approvalGap = 2; // 2 ou 3 (renovado esporadicamente)
+
+        function todayKey() {
+            const d = new Date();
+            return d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate();
+        }
+        function initLoanStats() {
+            let saved = null;
+            try { saved = JSON.parse(localStorage.getItem('novacash_stats') || 'null'); } catch(_){}
+            if (saved && saved.day === todayKey() && typeof saved.requested === 'number') {
+                requestedToday = saved.requested;
+                approvalGap = (saved.gap === 3) ? 3 : 2;
+            } else {
+                requestedToday = 200 + Math.floor(Math.random() * 151); // 200-350
+                approvalGap = Math.random() < 0.5 ? 2 : 3;
+            }
+            approvedToday = Math.max(0, requestedToday - approvalGap);
+            persistLoanStats();
+            updateStatsDisplay();
+        }
+        function persistLoanStats() {
+            try {
+                localStorage.setItem('novacash_stats', JSON.stringify({
+                    day: todayKey(), requested: requestedToday, gap: approvalGap
+                }));
+            } catch(_){}
+        }
+        function bumpLoanStats() {
+            // Cada notificação adiciona 1-2 pedidos (crescimento natural)
+            requestedToday += 1 + (Math.random() < 0.35 ? 1 : 0);
+            // Renovar o gap ocasionalmente entre 2 e 3
+            if (Math.random() < 0.15) approvalGap = Math.random() < 0.5 ? 2 : 3;
+            approvedToday = Math.max(0, requestedToday - approvalGap);
+            persistLoanStats();
+            updateStatsDisplay();
+        }
+        function computeApprovalRate() {
+            if (requestedToday <= 0) return 99.0;
+            let rate = (approvedToday / requestedToday) * 100;
+            if (rate < 98) rate = 98 + Math.random() * 0.4;
+            if (rate > 99.4) rate = 99 + Math.random() * 0.3;
+            return Math.round(rate * 10) / 10; // 1 casa decimal
+        }
+        function updateStatsDisplay() {
+            const r = document.getElementById('statRequestedToday');
+            const a = document.getElementById('statApprovedToday');
+            const t = document.getElementById('statApprovalRate');
+            if (r) r.textContent = requestedToday.toLocaleString('pt-MZ');
+            if (a) a.textContent = approvedToday.toLocaleString('pt-MZ');
+            if (t) {
+                const rate = computeApprovalRate().toFixed(1).replace('.', ',');
+                t.innerHTML = rate + '<span class="stat-suffix">%</span>';
             }
         }
+        // Reset diário automático
+        setInterval(() => {
+            let saved = null;
+            try { saved = JSON.parse(localStorage.getItem('novacash_stats') || 'null'); } catch(_){}
+            if (!saved || saved.day !== todayKey()) initLoanStats();
+        }, 60000);
 
         // ============================================================
         // INICIAR NOTIFICAÇÕES COM INTERVALO VARIÁVEL (10-30 segundos)
@@ -3700,8 +3801,39 @@
         // INICIALIZAR ATIVIDADES E NOTIFICAÇÕES
         // ============================================================
         generateInitialActivities();
+        seedNotifListFromActivities();
+        initLoanStats();
         setInterval(refreshActivities, 3600000);
         setInterval(cleanOldActivities, 300000);
+        // Manter a página de Notificações sempre limpa: só notificações da última hora
+        setInterval(cleanOldNotifications, 60000);
+
+        function seedNotifListFromActivities() {
+            const container = document.getElementById('notifList');
+            if (!container) return;
+            container.innerHTML = '';
+            // Já vem ordenado do mais recente para o mais antigo
+            activityItems.forEach(n => {
+                const tmp = document.createElement('div');
+                tmp.innerHTML = n.html.trim();
+                const el = tmp.firstElementChild;
+                const closeBtn = el && el.querySelector('.notif-close');
+                if (closeBtn) closeBtn.remove();
+                if (el) {
+                    el.dataset.ts = n.timestamp.getTime();
+                    container.appendChild(el);
+                }
+            });
+        }
+        function cleanOldNotifications() {
+            const container = document.getElementById('notifList');
+            if (!container) return;
+            const cutoff = Date.now() - 3600000; // 1 hora
+            Array.from(container.children).forEach(el => {
+                const ts = parseInt(el.dataset.ts || '0', 10);
+                if (ts && ts < cutoff) el.remove();
+            });
+        }
 
         // Iniciar notificações após 3 segundos
         setTimeout(() => {
@@ -4323,8 +4455,11 @@
         // NAVIGATION SHORTCUTS
         // ============================================================
         document.getElementById('seeAllActivity').addEventListener('click', () => {
-            navigateTo('pageHistory');
-            updateHistory();
+            // Abre a lista completa das notificações recentes (última hora).
+            // Não chamamos updateNotifications() porque essa função re-renderiza
+            // o container com as notificações do utilizador, apagando os cartões
+            // de empréstimos recebidos que enchem a página em tempo real.
+            navigateTo('pageNotifications');
         });
 
         document.getElementById('notifHeaderBtn').addEventListener('click', () => {

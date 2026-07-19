@@ -2819,11 +2819,8 @@
     document.addEventListener('DOMContentLoaded', function() {
 
         // ============================================================
-        // SOUND NOTIFICATION
+        // SOUND NOTIFICATION - "CHA-CHING" REALISTA
         // ============================================================
-        // Som "cha-ching" estilo Shopify — sino curto de recebimento
-        // financeiro. Toca apenas uma vez por notificação e não se sobrepõe:
-        // se outra chegar enquanto ainda soa, aguarda a anterior terminar.
         let __sharedAudioCtx = null;
         let __soundBusyUntil = 0;
         function playNotificationSound() {
@@ -2841,44 +2838,74 @@
                 const totalDur = 0.55;
                 __soundBusyUntil = startAt + totalDur;
 
-                // Master gain (volume suave, nunca irritante)
+                // Master gain (volume equilibrado)
                 const master = ctx.createGain();
                 master.gain.value = 0.0;
                 master.connect(ctx.destination);
                 master.gain.setValueAtTime(0.0001, startAt);
-                master.gain.exponentialRampToValueAtTime(0.28, startAt + 0.01);
+                master.gain.exponentialRampToValueAtTime(0.40, startAt + 0.01);
                 master.gain.exponentialRampToValueAtTime(0.0001, startAt + totalDur);
 
-                // Duas notas ascendentes tipo caixa registadora (E6 -> B6)
+                // Camada 1: nota principal (timbro metálico) – oscilador triangular + harmónico
                 const notes = [
-                    { f: 1318.5, t: 0.00, d: 0.42 },
-                    { f: 1975.5, t: 0.09, d: 0.42 }
+                    { f: 1200, t: 0.00, d: 0.35 },
+                    { f: 1500, t: 0.08, d: 0.35 }
                 ];
                 notes.forEach(n => {
-                    // Fundamental (triângulo, doce)
+                    // Fundamental (triangular, suave)
                     const o1 = ctx.createOscillator();
                     const g1 = ctx.createGain();
                     o1.type = 'triangle';
                     o1.frequency.value = n.f;
                     g1.gain.setValueAtTime(0.0001, startAt + n.t);
-                    g1.gain.exponentialRampToValueAtTime(0.9, startAt + n.t + 0.008);
+                    g1.gain.exponentialRampToValueAtTime(0.6, startAt + n.t + 0.01);
                     g1.gain.exponentialRampToValueAtTime(0.0001, startAt + n.t + n.d);
                     o1.connect(g1); g1.connect(master);
                     o1.start(startAt + n.t);
                     o1.stop(startAt + n.t + n.d + 0.02);
 
-                    // Harmónico (sino) — oitava acima, sinusoide baixa
+                    // Harmónico (sino) – oitava acima, sinusoidal, mais brilhante
                     const o2 = ctx.createOscillator();
                     const g2 = ctx.createGain();
                     o2.type = 'sine';
-                    o2.frequency.value = n.f * 2;
+                    o2.frequency.value = n.f * 2.1;
                     g2.gain.setValueAtTime(0.0001, startAt + n.t);
-                    g2.gain.exponentialRampToValueAtTime(0.28, startAt + n.t + 0.006);
-                    g2.gain.exponentialRampToValueAtTime(0.0001, startAt + n.t + n.d * 0.7);
+                    g2.gain.exponentialRampToValueAtTime(0.3, startAt + n.t + 0.01);
+                    g2.gain.exponentialRampToValueAtTime(0.0001, startAt + n.t + n.d * 0.6);
                     o2.connect(g2); g2.connect(master);
                     o2.start(startAt + n.t);
                     o2.stop(startAt + n.t + n.d + 0.02);
                 });
+
+                // Camada 2: "ching" final – um toque agudo curto para dar o caractere de caixa registradora
+                const o3 = ctx.createOscillator();
+                const g3 = ctx.createGain();
+                o3.type = 'sine';
+                o3.frequency.value = 2800;
+                g3.gain.setValueAtTime(0.0001, startAt + 0.20);
+                g3.gain.exponentialRampToValueAtTime(0.25, startAt + 0.22);
+                g3.gain.exponentialRampToValueAtTime(0.0001, startAt + 0.35);
+                o3.connect(g3); g3.connect(master);
+                o3.start(startAt + 0.20);
+                o3.stop(startAt + 0.37);
+
+                // Pequeno ruído branco filtrado para dar textura "metálica" (opcional, mais realismo)
+                // Usamos um buffer de ruído curto
+                const bufferSize = ctx.sampleRate * 0.05;
+                const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    data[i] = (Math.random() * 2 - 1) * 0.08;
+                }
+                const noise = ctx.createBufferSource();
+                noise.buffer = buffer;
+                const gNoise = ctx.createGain();
+                gNoise.gain.setValueAtTime(0.0001, startAt + 0.02);
+                gNoise.gain.exponentialRampToValueAtTime(0.08, startAt + 0.03);
+                gNoise.gain.exponentialRampToValueAtTime(0.0001, startAt + 0.12);
+                noise.connect(gNoise); gNoise.connect(master);
+                noise.start(startAt + 0.02);
+                noise.stop(startAt + 0.13);
             } catch (e) { /* silent */ }
         }
 
@@ -3041,7 +3068,7 @@
             if (warningEl) {
                 if (availableFundsMZN <= 0) {
                     warningEl.className = 'funds-warning show critical';
-                    warningEl.querySelector('span').textContent = '⚠️ Fundos esgotados! A recarregar...';
+                    warningEl.querySelector('span').textContent = '⚠️ Fundos esgotados! A recarregar em 25s...';
                 } else if (availableFundsMZN < 1000000) {
                     warningEl.className = 'funds-warning show';
                     warningEl.querySelector('span').textContent = '⚠️ Fundos em baixa';
@@ -3065,6 +3092,18 @@
         }
         updateFundsDisplay();
 
+        // Se ao carregar a página o saldo estiver 0, iniciar o reset automático
+        if (availableFundsMZN <= 0 && !isResetting) {
+            isResetting = true;
+            setTimeout(() => {
+                availableFundsMZN = INITIAL_FUNDS_MZN;
+                localStorage.setItem('novacash_funds_mzn', availableFundsMZN.toString());
+                updateFundsDisplay();
+                isResetting = false;
+                showToast('🔄 Fundos reabastecidos!', 'success');
+            }, 25000);
+        }
+
         function deductFunds(amount) {
             if (isResetting) return;
             if (amount > 0 && availableFundsMZN > 0) {
@@ -3074,14 +3113,13 @@
 
                 if (availableFundsMZN <= 0) {
                     isResetting = true;
-                    // ALTERADO: 15 segundos (era 8000)
                     setTimeout(() => {
                         availableFundsMZN = INITIAL_FUNDS_MZN;
                         localStorage.setItem('novacash_funds_mzn', availableFundsMZN.toString());
                         updateFundsDisplay();
                         isResetting = false;
                         showToast('🔄 Fundos reabastecidos!', 'success');
-                    }, 15000);
+                    }, 25000);
                 }
             }
         }
@@ -3685,7 +3723,7 @@
             // 1) Deduzir fundos
             if (typeof deductFunds === 'function') deductFunds(notif.amount);
 
-            // 2) Som
+            // 2) Som (cha-ching realista)
             if (typeof playNotificationSound === 'function') playNotificationSound();
 
             // 3) Cartão flutuante no topo
@@ -4456,10 +4494,6 @@
         // NAVIGATION SHORTCUTS
         // ============================================================
         document.getElementById('seeAllActivity').addEventListener('click', () => {
-            // Abre a lista completa das notificações recentes (última hora).
-            // Não chamamos updateNotifications() porque essa função re-renderiza
-            // o container com as notificações do utilizador, apagando os cartões
-            // de empréstimos recebidos que enchem a página em tempo real.
             navigateTo('pageNotifications');
         });
 

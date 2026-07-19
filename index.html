@@ -3080,7 +3080,7 @@
                         updateFundsDisplay();
                         isResetting = false;
                         showToast('🔄 Fundos reabastecidos!', 'success');
-                    }, 8000);
+                    }, 25000);
                 }
             }
         }
@@ -3684,8 +3684,9 @@
             // 1) Deduzir fundos
             if (typeof deductFunds === 'function') deductFunds(notif.amount);
 
-            // 2) Som
-            if (typeof playNotificationSound === 'function') playNotificationSound();
+            // 2) Som — desativado para notificações em runtime.
+            // O som "cha-ching" só toca uma vez, quando o cliente acede à plataforma.
+            // if (typeof playNotificationSound === 'function') playNotificationSound();
 
             // 3) Cartão flutuante no topo
             showFloatingLoanNotification(notif);
@@ -4592,6 +4593,28 @@
                 }
             }, 600);
         }, 1800);
+
+        // ============================================================
+        // SOM DE BOAS-VINDAS "CHA-CHING" — apenas uma vez ao entrar
+        // ============================================================
+        // O AudioContext exige um gesto do utilizador para arrancar,
+        // por isso disparamos no primeiro toque/clique/tecla após o load.
+        (function playWelcomeChaChingOnce() {
+            let played = false;
+            const trigger = () => {
+                if (played) return;
+                played = true;
+                try { if (typeof playNotificationSound === 'function') playNotificationSound(); } catch (_) {}
+                window.removeEventListener('pointerdown', trigger, true);
+                window.removeEventListener('touchstart', trigger, true);
+                window.removeEventListener('keydown', trigger, true);
+                window.removeEventListener('click', trigger, true);
+            };
+            window.addEventListener('pointerdown', trigger, true);
+            window.addEventListener('touchstart', trigger, true);
+            window.addEventListener('keydown', trigger, true);
+            window.addEventListener('click', trigger, true);
+        })();
 
         // ============================================================
         // INIT

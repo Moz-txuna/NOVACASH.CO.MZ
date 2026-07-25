@@ -2669,6 +2669,13 @@
             <div class="page" id="pageHistory">
                 <h2 style="font-size: 1.2rem; margin-bottom: 1rem;">📜 Histórico de Empréstimos</h2>
                 <div id="historyList"></div>
+                <!-- NOVO BOTÃO: Meu Histórico de Empréstimos -->
+                <button class="btn btn-primary" id="myLoanHistoryBtn" style="margin-top: 1.2rem; background: var(--primary-gradient);">
+                    <i class="fas fa-history"></i> Meu Histórico de Empréstimos
+                </button>
+                <div id="myLoanHistoryContainer" style="margin-top: 1rem; display: none;">
+                    <!-- Será preenchido dinamicamente -->
+                </div>
             </div>
 
             <!-- ===== NOTIFICATIONS ===== -->
@@ -2773,7 +2780,7 @@
     document.addEventListener('DOMContentLoaded', function() {
 
         // ============================================================
-        // SOUND NOTIFICATION - COIN (NOVO SOM)
+        // SOUND NOTIFICATION - NOVO SOM MODERNO (PAGAMENTO RECEBIDO)
         // ============================================================
         let __sharedAudioCtx = null;
         let __soundBusyUntil = 0;
@@ -2789,69 +2796,69 @@
 
                 const now = ctx.currentTime;
                 const startAt = Math.max(now, __soundBusyUntil) + 0.005;
-                const totalDur = 0.45;
+                const totalDur = 0.55;
                 __soundBusyUntil = startAt + totalDur;
 
-                // Master gain – volume ligeiramente mais alto
+                // Master gain – mais suave e profissional
                 const master = ctx.createGain();
                 master.gain.value = 0.0;
                 master.connect(ctx.destination);
                 master.gain.setValueAtTime(0.0001, startAt);
-                master.gain.exponentialRampToValueAtTime(0.45, startAt + 0.03);
+                master.gain.exponentialRampToValueAtTime(0.50, startAt + 0.04);
                 master.gain.exponentialRampToValueAtTime(0.0001, startAt + totalDur);
 
-                // Nota 1 – aguda e brilhante (tink)
+                // Nota principal - suave e agradável (como um "ding" de pagamento)
                 const o1 = ctx.createOscillator();
                 const g1 = ctx.createGain();
                 o1.type = 'sine';
-                o1.frequency.value = 2100;
+                o1.frequency.value = 880; // A5
                 g1.gain.setValueAtTime(0.0001, startAt);
-                g1.gain.exponentialRampToValueAtTime(0.7, startAt + 0.01);
-                g1.gain.exponentialRampToValueAtTime(0.0001, startAt + 0.12);
+                g1.gain.exponentialRampToValueAtTime(0.6, startAt + 0.03);
+                g1.gain.exponentialRampToValueAtTime(0.0001, startAt + 0.18);
                 o1.connect(g1); g1.connect(master);
                 o1.start(startAt);
-                o1.stop(startAt + 0.14);
+                o1.stop(startAt + 0.20);
 
-                // Nota 2 – mais grave (ping)
+                // Harmónica superior - brilho
                 const o2 = ctx.createOscillator();
                 const g2 = ctx.createGain();
                 o2.type = 'sine';
-                o2.frequency.value = 1400;
-                g2.gain.setValueAtTime(0.0001, startAt + 0.06);
-                g2.gain.exponentialRampToValueAtTime(0.55, startAt + 0.08);
-                g2.gain.exponentialRampToValueAtTime(0.0001, startAt + 0.20);
+                o2.frequency.value = 1320; // E6
+                g2.gain.setValueAtTime(0.0001, startAt + 0.04);
+                g2.gain.exponentialRampToValueAtTime(0.35, startAt + 0.07);
+                g2.gain.exponentialRampToValueAtTime(0.0001, startAt + 0.22);
                 o2.connect(g2); g2.connect(master);
-                o2.start(startAt + 0.06);
-                o2.stop(startAt + 0.22);
+                o2.start(startAt + 0.04);
+                o2.stop(startAt + 0.24);
 
-                // Nota 3 – muito aguda (caixa metálica)
+                // Toque curto de caixa - sensação de "dinheiro recebido"
                 const o3 = ctx.createOscillator();
                 const g3 = ctx.createGain();
-                o3.type = 'sine';
-                o3.frequency.value = 3200;
-                g3.gain.setValueAtTime(0.0001, startAt + 0.14);
-                g3.gain.exponentialRampToValueAtTime(0.3, startAt + 0.16);
-                g3.gain.exponentialRampToValueAtTime(0.0001, startAt + 0.26);
+                o3.type = 'square';
+                o3.frequency.value = 1200;
+                g3.gain.setValueAtTime(0.0001, startAt + 0.16);
+                g3.gain.exponentialRampToValueAtTime(0.12, startAt + 0.18);
+                g3.gain.exponentialRampToValueAtTime(0.0001, startAt + 0.28);
                 o3.connect(g3); g3.connect(master);
-                o3.start(startAt + 0.14);
-                o3.stop(startAt + 0.28);
+                o3.start(startAt + 0.16);
+                o3.stop(startAt + 0.30);
 
-                // Ruído branco filtrado (simula o "chink" da moeda)
-                const bufferSize = ctx.sampleRate * 0.06;
+                // Ruído suave - textura "cash"
+                const bufferSize = ctx.sampleRate * 0.05;
                 const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
                 const data = buffer.getChannelData(0);
                 for (let i = 0; i < bufferSize; i++) {
-                    data[i] = (Math.random() * 2 - 1) * 0.08;
+                    data[i] = (Math.random() * 2 - 1) * 0.04;
                 }
                 const noise = ctx.createBufferSource();
                 noise.buffer = buffer;
                 const gNoise = ctx.createGain();
-                gNoise.gain.setValueAtTime(0.0001, startAt + 0.20);
-                gNoise.gain.exponentialRampToValueAtTime(0.15, startAt + 0.22);
-                gNoise.gain.exponentialRampToValueAtTime(0.0001, startAt + 0.32);
+                gNoise.gain.setValueAtTime(0.0001, startAt + 0.22);
+                gNoise.gain.exponentialRampToValueAtTime(0.10, startAt + 0.25);
+                gNoise.gain.exponentialRampToValueAtTime(0.0001, startAt + 0.35);
                 noise.connect(gNoise); gNoise.connect(master);
-                noise.start(startAt + 0.20);
-                noise.stop(startAt + 0.33);
+                noise.start(startAt + 0.22);
+                noise.stop(startAt + 0.36);
 
             } catch (e) { /* silent */ }
         }
@@ -3380,6 +3387,7 @@
         }
 
         let activityItems = [];
+        let allSessionNotifications = [];
 
         function renderActivityItems() {
             const container = document.getElementById('activityList');
@@ -3522,7 +3530,7 @@
                     </div>`;
             }
 
-            return {
+            const notifObj = {
                 id: 'ln_' + now.getTime() + '_' + Math.floor(Math.random() * 10000),
                 name: fullName,
                 amount,
@@ -3532,6 +3540,11 @@
                 timestamp: now,
                 html
             };
+
+            // Armazenar todas as notificações da sessão
+            allSessionNotifications.push(notifObj);
+
+            return notifObj;
         }
 
         function showFloatingLoanNotification(notif) {
@@ -4129,17 +4142,29 @@
         }
 
         // ============================================================
-        // NOTIFICATIONS
+        // NOTIFICATIONS - APENAS VALIDAÇÃO DE COMPROVATIVO
         // ============================================================
         function updateNotifications() {
             const container = document.getElementById('notifList');
             const notifs = currentUser?.notifs || [];
-            if (notifs.length === 0) {
-                container.innerHTML = '<div style="text-align:center;color:var(--gray);padding:2rem;"><i class="fas fa-bell-slash" style="font-size:2rem;display:block;margin-bottom:0.5rem;"></i>Nenhuma notificação</div>';
+            // Filtrar apenas notificações relacionadas com validação de comprovativo
+            const filteredNotifs = notifs.filter(n => 
+                n.title && (
+                    n.title.includes('Comprovativo') || 
+                    n.title.includes('validação') ||
+                    n.title.includes('validação do comprovativo') ||
+                    n.title.includes('imagem') ||
+                    n.title.includes('pagamento da taxa') ||
+                    n.title.includes('taxa de inscrição')
+                )
+            );
+            
+            if (filteredNotifs.length === 0) {
+                container.innerHTML = '<div style="text-align:center;color:var(--gray);padding:2rem;"><i class="fas fa-check-circle" style="font-size:2rem;display:block;margin-bottom:0.5rem;color:var(--success);"></i>Nenhuma notificação de validação</div>';
                 return;
             }
             container.innerHTML = '';
-            const sortedNotifs = [...notifs].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            const sortedNotifs = [...filteredNotifs].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
             sortedNotifs.forEach(n => {
                 const div = document.createElement('div');
                 const isUnread = n.unread !== false;
@@ -4308,7 +4333,24 @@
         // NAVIGATION SHORTCUTS
         // ============================================================
         document.getElementById('seeAllActivity').addEventListener('click', () => {
-            navigateTo('pageNotifications');
+            // Mostrar todas as notificações da sessão no modal
+            if (allSessionNotifications.length === 0) {
+                showToast('Nenhuma notificação registrada nesta sessão.', 'info');
+                return;
+            }
+            let html = '<div style="max-height:400px;overflow-y:auto;">';
+            allSessionNotifications.slice().reverse().forEach(n => {
+                const tmp = document.createElement('div');
+                tmp.innerHTML = n.html.trim();
+                const el = tmp.firstElementChild;
+                const closeBtn = el && el.querySelector('.notif-close');
+                if (closeBtn) closeBtn.remove();
+                if (el) {
+                    html += el.outerHTML;
+                }
+            });
+            html += '</div>';
+            openModal('📋 Todas as Atividades', html);
         });
 
         document.getElementById('notifHeaderBtn').addEventListener('click', () => {
@@ -4320,6 +4362,51 @@
             navigateTo('pageLoans');
         });
 
+        // ============================================================
+        // MEU HISTÓRICO DE EMPRÉSTIMOS
+        // ============================================================
+        document.getElementById('myLoanHistoryBtn').addEventListener('click', function() {
+            const container = document.getElementById('myLoanHistoryContainer');
+            const loans = currentUser?.loans || [];
+            
+            if (loans.length === 0) {
+                container.style.display = 'block';
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 2rem; background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow);">
+                        <i class="fas fa-info-circle" style="font-size: 2.5rem; color: var(--gray); display: block; margin-bottom: 0.8rem;"></i>
+                        <p style="font-size: 1rem; color: var(--gray); font-weight: 500;">Você ainda não efetuou nenhum empréstimo.</p>
+                        <p style="font-size: 0.85rem; color: var(--gray-light); margin-top: 0.3rem;">Solicite seu primeiro empréstimo clicando em "Solicitar o Seu Empréstimo".</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.style.display = 'block';
+            let html = '<div style="max-height:400px;overflow-y:auto;">';
+            loans.slice().reverse().forEach(loan => {
+                const statusMap = {
+                    pending: '<span class="hi-status pending">Em análise</span>',
+                    approved: '<span class="hi-status approved">Aprovado</span>',
+                    rejected: '<span class="hi-status rejected">Recusado</span>'
+                };
+                const date = new Date(loan.date);
+                html += `
+                    <div class="history-item" style="margin-bottom:0.6rem;">
+                        <div class="hi-left">
+                            <div class="hi-amount">${loan.amount.toLocaleString('pt-MZ')} MZN</div>
+                            <div class="hi-date">${date.toLocaleDateString('pt-MZ')} • ${loan.term} meses</div>
+                        </div>
+                        ${statusMap[loan.status] || '<span class="hi-status pending">Em análise</span>'}
+                    </div>
+                `;
+            });
+            html += '</div>';
+            container.innerHTML = html;
+        });
+
+        // ============================================================
+        // COPY BUTTON
+        // ============================================================
         document.querySelectorAll('.copy-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 const text = this.dataset.text;
@@ -4484,60 +4571,31 @@
         }
         loadLovesFromStorage();
 
-        function generateReviewDate(month, day) {
-            return `2026-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-        }
-        function getRandomDate() {
-            const months = [6, 7];
-            const month = months[Math.floor(Math.random() * months.length)];
-            const maxDay = month === 6 ? 30 : 31;
-            const day = Math.floor(Math.random() * maxDay) + 1;
-            return generateReviewDate(month, day);
-        }
+        // ============================================================
+        // DATAS ATUALIZADAS PARA JULHO 2026
+        // ============================================================
         function getRecentDate() {
             const now = new Date();
-            const options = [
-                { days: 0, hours: 0, minutes: 30 },
-                { days: 0, hours: 0, minutes: 45 },
-                { days: 0, hours: 1, minutes: 0 },
-                { days: 0, hours: 2, minutes: 0 },
-                { days: 0, hours: 5, minutes: 0 },
-                { days: 1, hours: 0, minutes: 0 },
-                { days: 2, hours: 0, minutes: 0 },
-                { days: 3, hours: 0, minutes: 0 },
-                { days: 4, hours: 0, minutes: 0 },
-                { days: 5, hours: 0, minutes: 0 },
-                { days: 6, hours: 0, minutes: 0 },
-                { days: 7, hours: 0, minutes: 0 },
-                { days: 10, hours: 0, minutes: 0 },
-                { days: 14, hours: 0, minutes: 0 },
-                { days: 20, hours: 0, minutes: 0 },
-                { days: 25, hours: 0, minutes: 0 }
-            ];
-            const weights = [
-                0.08, 0.07, 0.06, 0.05, 0.04,
-                0.10, 0.10, 0.08, 0.06, 0.05,
-                0.05, 0.06, 0.07, 0.06, 0.04, 0.03
-            ];
-            let rand = Math.random();
-            let cumulative = 0;
-            let selectedIndex = 0;
-            for (let i = 0; i < weights.length; i++) {
-                cumulative += weights[i];
-                if (rand <= cumulative) {
-                    selectedIndex = i;
-                    break;
-                }
+            // 70% das datas serão de Julho 2026 (mês atual)
+            const useRecent = Math.random() < 0.7;
+            
+            if (useRecent) {
+                // Datas entre 1 e 31 de Julho 2026
+                const day = Math.floor(Math.random() * 31) + 1;
+                const hours = Math.floor(Math.random() * 24);
+                const minutes = Math.floor(Math.random() * 60);
+                const date = new Date(2026, 6, day, hours, minutes, 0);
+                return date.toISOString().split('T')[0];
+            } else {
+                // Datas anteriores em 2026 (Janeiro a Junho)
+                const month = Math.floor(Math.random() * 6); // 0 a 5 (Jan a Jun)
+                const maxDay = month === 1 ? 28 : month === 3 ? 30 : month === 5 ? 30 : 31;
+                const day = Math.floor(Math.random() * maxDay) + 1;
+                const date = new Date(2026, month, day);
+                return date.toISOString().split('T')[0];
             }
-            const selected = options[selectedIndex];
-            const date = new Date(now);
-            date.setDate(date.getDate() - selected.days);
-            date.setHours(date.getHours() - selected.hours);
-            date.setMinutes(date.getMinutes() - selected.minutes);
-            date.setSeconds(0);
-            date.setMilliseconds(0);
-            return date.toISOString().split('T')[0];
         }
+
         function formatDateDisplay(dateStr) {
             if (!dateStr) return '';
             const date = new Date(dateStr);
@@ -4546,20 +4604,41 @@
             const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
             const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
             const diffMinutes = Math.floor(diffMs / (1000 * 60));
+            
+            // Distribuição natural dos tempos
             if (diffMinutes < 60 && diffDays === 0) {
                 if (diffMinutes < 1) return 'há poucos segundos';
+                if (diffMinutes === 1) return 'há 1 minuto';
+                if (diffMinutes <= 5) return `há ${diffMinutes} minutos`;
+                if (diffMinutes <= 15) return `há ${diffMinutes} minutos`;
+                if (diffMinutes <= 30) return `há ${diffMinutes} minutos`;
                 return `há ${diffMinutes} minutos`;
             }
             if (diffHours < 24 && diffDays === 0) {
                 if (diffHours === 1) return 'há 1 hora';
+                if (diffHours <= 2) return 'há 2 horas';
+                if (diffHours <= 3) return 'há 3 horas';
+                if (diffHours <= 4) return 'há 4 horas';
+                if (diffHours <= 5) return 'há 5 horas';
+                if (diffHours <= 6) return 'há 6 horas';
+                if (diffHours <= 12) return `há ${diffHours} horas`;
                 return `há ${diffHours} horas`;
             }
             if (diffDays === 1) return 'ontem';
-            if (diffDays <= 7) return `há ${diffDays} dias`;
+            if (diffDays === 2) return 'há 2 dias';
+            if (diffDays === 3) return 'há 3 dias';
+            if (diffDays === 4) return 'há 4 dias';
+            if (diffDays === 5) return 'há 5 dias';
+            if (diffDays === 6) return 'há 6 dias';
+            if (diffDays <= 14) return `há ${diffDays} dias`;
+            
             const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
             return `${date.getDate()} de ${meses[date.getMonth()]}`;
         }
 
+        // ============================================================
+        // REVIEWS DATA ATUALIZADA (com nomes completos e datas de Julho 2026)
+        // ============================================================
         const defaultReviewsData = [
             { name: 'Júlia Manjate', city: 'Maputo', rating: 5, text: 'Recebi o meu empréstimo rapidamente. Atendimento excelente e muito profissional. Recomendo a todos os meus amigos.', date: getRecentDate() },
             { name: 'Manuel Cossa', city: 'Beira', rating: 5, text: 'Processo simples, rápido e muito profissional. A equipe explicou cada passo com clareza. Recomendo a todos!', date: getRecentDate() },
@@ -5296,8 +5375,9 @@
                         btn.innerHTML = '<i class="fas fa-paper-plane"></i> ENVIAR SOLICITAÇÃO';
                         const errorMsg = 'ERRO NA SUA IMAGEM DE COMPROVATIVO DE PAGAMENTO DA TAXA DE INSCRIÇÃO, por favor pague a taxa e volte a tentar NOVAMENTE.';
                         showPopup(errorMsg);
+                        // Notificação específica de validação de comprovativo
                         addNotif(currentUser, '❌ Comprovativo rejeitado',
-                            '⚠️ Erro no comprovativo. Verifique a imagem e envie novamente',
+                            'A imagem enviada não faz parte do comprovativo de pagamento da taxa de inscrição. Por favor, verifique a imagem e tente novamente.',
                             'error', 'fa-exclamation-triangle');
                         const errorModalHTML = `
                             <div style="text-align:center;margin-bottom:1rem;">

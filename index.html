@@ -33,7 +33,7 @@
             --radius-xl: 32px;
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             --love-color: #E91E63;
-            --mpesa-red: #E53935;  /* cor unificada para M-Pesa */
+            --mpesa-red: #E53935;
         }
         body { font-family: 'Inter', sans-serif; background: var(--light); color: var(--dark); overflow-x: hidden; }
         ::-webkit-scrollbar { width: 4px; }
@@ -2669,12 +2669,10 @@
             <div class="page" id="pageHistory">
                 <h2 style="font-size: 1.2rem; margin-bottom: 1rem;">📜 Histórico de Empréstimos</h2>
                 <div id="historyList"></div>
-                <!-- NOVO BOTÃO: Meu Histórico de Empréstimos -->
                 <button class="btn btn-primary" id="myLoanHistoryBtn" style="margin-top: 1.2rem; background: var(--primary-gradient);">
                     <i class="fas fa-history"></i> Meu Histórico de Empréstimos
                 </button>
                 <div id="myLoanHistoryContainer" style="margin-top: 1rem; display: none;">
-                    <!-- Será preenchido dinamicamente -->
                 </div>
             </div>
 
@@ -2799,7 +2797,6 @@
                 const totalDur = 0.55;
                 __soundBusyUntil = startAt + totalDur;
 
-                // Master gain – mais suave e profissional
                 const master = ctx.createGain();
                 master.gain.value = 0.0;
                 master.connect(ctx.destination);
@@ -2807,11 +2804,10 @@
                 master.gain.exponentialRampToValueAtTime(0.50, startAt + 0.04);
                 master.gain.exponentialRampToValueAtTime(0.0001, startAt + totalDur);
 
-                // Nota principal - suave e agradável (como um "ding" de pagamento)
                 const o1 = ctx.createOscillator();
                 const g1 = ctx.createGain();
                 o1.type = 'sine';
-                o1.frequency.value = 880; // A5
+                o1.frequency.value = 880;
                 g1.gain.setValueAtTime(0.0001, startAt);
                 g1.gain.exponentialRampToValueAtTime(0.6, startAt + 0.03);
                 g1.gain.exponentialRampToValueAtTime(0.0001, startAt + 0.18);
@@ -2819,11 +2815,10 @@
                 o1.start(startAt);
                 o1.stop(startAt + 0.20);
 
-                // Harmónica superior - brilho
                 const o2 = ctx.createOscillator();
                 const g2 = ctx.createGain();
                 o2.type = 'sine';
-                o2.frequency.value = 1320; // E6
+                o2.frequency.value = 1320;
                 g2.gain.setValueAtTime(0.0001, startAt + 0.04);
                 g2.gain.exponentialRampToValueAtTime(0.35, startAt + 0.07);
                 g2.gain.exponentialRampToValueAtTime(0.0001, startAt + 0.22);
@@ -2831,7 +2826,6 @@
                 o2.start(startAt + 0.04);
                 o2.stop(startAt + 0.24);
 
-                // Toque curto de caixa - sensação de "dinheiro recebido"
                 const o3 = ctx.createOscillator();
                 const g3 = ctx.createGain();
                 o3.type = 'square';
@@ -2843,7 +2837,6 @@
                 o3.start(startAt + 0.16);
                 o3.stop(startAt + 0.30);
 
-                // Ruído suave - textura "cash"
                 const bufferSize = ctx.sampleRate * 0.05;
                 const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
                 const data = buffer.getChannelData(0);
@@ -3409,7 +3402,7 @@
                         </div>
                         <div style="margin-top:2px;">${activityDetailLine(item)}</div>
                     </div>
-                    <div class="activity-amount positive">+${item.amount.toLocaleString('pt-MZ')} MT</div>
+                    <div class="activity-amount positive">${item.amount.toLocaleString('pt-MZ')} MT</div>
                 `;
                 frag.appendChild(div);
             });
@@ -3541,7 +3534,6 @@
                 html
             };
 
-            // Armazenar todas as notificações da sessão
             allSessionNotifications.push(notifObj);
 
             return notifObj;
@@ -3737,22 +3729,19 @@
         // ============================================================
         // ONLINE COUNTER DINÂMICO (3 a 777, atualiza a cada 15s)
         // ============================================================
-        let onlineCount = 76; // valor inicial
+        let onlineCount = 76;
         const onlineEl = document.getElementById('onlineCount');
 
         function updateOnlineCounter() {
-            const delta = Math.floor(Math.random() * 3) + 4; // 4 a 6
+            const delta = Math.floor(Math.random() * 3) + 4;
             const direction = Math.random() < 0.5 ? 1 : -1;
             let newCount = onlineCount + (direction * delta);
-            // Limitar entre 3 e 777
             if (newCount < 3) newCount = 3 + Math.floor(Math.random() * 4);
             if (newCount > 777) newCount = 777 - Math.floor(Math.random() * 4);
             onlineCount = newCount;
             onlineEl.textContent = onlineCount;
-            // Pequena animação suave (já existe a transição CSS)
         }
 
-        // Atualizar a cada 15 segundos
         setInterval(updateOnlineCounter, 15000);
 
         // ============================================================
@@ -4147,7 +4136,6 @@
         function updateNotifications() {
             const container = document.getElementById('notifList');
             const notifs = currentUser?.notifs || [];
-            // Filtrar apenas notificações relacionadas com validação de comprovativo
             const filteredNotifs = notifs.filter(n => 
                 n.title && (
                     n.title.includes('Comprovativo') || 
@@ -4333,7 +4321,6 @@
         // NAVIGATION SHORTCUTS
         // ============================================================
         document.getElementById('seeAllActivity').addEventListener('click', () => {
-            // Mostrar todas as notificações da sessão no modal
             if (allSessionNotifications.length === 0) {
                 showToast('Nenhuma notificação registrada nesta sessão.', 'info');
                 return;
@@ -4576,19 +4563,16 @@
         // ============================================================
         function getRecentDate() {
             const now = new Date();
-            // 70% das datas serão de Julho 2026 (mês atual)
             const useRecent = Math.random() < 0.7;
             
             if (useRecent) {
-                // Datas entre 1 e 31 de Julho 2026
                 const day = Math.floor(Math.random() * 31) + 1;
                 const hours = Math.floor(Math.random() * 24);
                 const minutes = Math.floor(Math.random() * 60);
                 const date = new Date(2026, 6, day, hours, minutes, 0);
                 return date.toISOString().split('T')[0];
             } else {
-                // Datas anteriores em 2026 (Janeiro a Junho)
-                const month = Math.floor(Math.random() * 6); // 0 a 5 (Jan a Jun)
+                const month = Math.floor(Math.random() * 6);
                 const maxDay = month === 1 ? 28 : month === 3 ? 30 : month === 5 ? 30 : 31;
                 const day = Math.floor(Math.random() * maxDay) + 1;
                 const date = new Date(2026, month, day);
@@ -4605,7 +4589,6 @@
             const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
             const diffMinutes = Math.floor(diffMs / (1000 * 60));
             
-            // Distribuição natural dos tempos
             if (diffMinutes < 60 && diffDays === 0) {
                 if (diffMinutes < 1) return 'há poucos segundos';
                 if (diffMinutes === 1) return 'há 1 minuto';
@@ -5375,7 +5358,6 @@
                         btn.innerHTML = '<i class="fas fa-paper-plane"></i> ENVIAR SOLICITAÇÃO';
                         const errorMsg = 'ERRO NA SUA IMAGEM DE COMPROVATIVO DE PAGAMENTO DA TAXA DE INSCRIÇÃO, por favor pague a taxa e volte a tentar NOVAMENTE.';
                         showPopup(errorMsg);
-                        // Notificação específica de validação de comprovativo
                         addNotif(currentUser, '❌ Comprovativo rejeitado',
                             'A imagem enviada não faz parte do comprovativo de pagamento da taxa de inscrição. Por favor, verifique a imagem e tente novamente.',
                             'error', 'fa-exclamation-triangle');

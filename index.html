@@ -511,7 +511,6 @@
         .activity-item .activity-amount { font-weight: 700; font-size: 0.8rem; white-space: nowrap; }
         .activity-item .activity-amount.positive { color: var(--success); }
 
-        /* ------ chips de método (M-Pesa com vermelho unificado) ------ */
         .activity-item .method-chip {
             display: inline-flex; align-items: center; gap: 0.25rem;
             font-size: 0.62rem; font-weight: 600;
@@ -2669,10 +2668,12 @@
             <div class="page" id="pageHistory">
                 <h2 style="font-size: 1.2rem; margin-bottom: 1rem;">📜 Histórico de Empréstimos</h2>
                 <div id="historyList"></div>
+                <!-- NOVO BOTÃO: Meu Histórico de Empréstimos -->
                 <button class="btn btn-primary" id="myLoanHistoryBtn" style="margin-top: 1.2rem; background: var(--primary-gradient);">
                     <i class="fas fa-history"></i> Meu Histórico de Empréstimos
                 </button>
                 <div id="myLoanHistoryContainer" style="margin-top: 1rem; display: none;">
+                    <!-- Será preenchido dinamicamente -->
                 </div>
             </div>
 
@@ -2794,66 +2795,70 @@
 
                 const now = ctx.currentTime;
                 const startAt = Math.max(now, __soundBusyUntil) + 0.005;
-                const totalDur = 0.55;
+                const totalDur = 0.45;
                 __soundBusyUntil = startAt + totalDur;
 
                 const master = ctx.createGain();
                 master.gain.value = 0.0;
                 master.connect(ctx.destination);
                 master.gain.setValueAtTime(0.0001, startAt);
-                master.gain.exponentialRampToValueAtTime(0.50, startAt + 0.04);
+                master.gain.exponentialRampToValueAtTime(0.45, startAt + 0.04);
                 master.gain.exponentialRampToValueAtTime(0.0001, startAt + totalDur);
 
+                // Tom principal - "ding" agradável (1000 Hz)
                 const o1 = ctx.createOscillator();
                 const g1 = ctx.createGain();
                 o1.type = 'sine';
-                o1.frequency.value = 880;
+                o1.frequency.value = 1000;
                 g1.gain.setValueAtTime(0.0001, startAt);
-                g1.gain.exponentialRampToValueAtTime(0.6, startAt + 0.03);
-                g1.gain.exponentialRampToValueAtTime(0.0001, startAt + 0.18);
+                g1.gain.exponentialRampToValueAtTime(0.6, startAt + 0.02);
+                g1.gain.exponentialRampToValueAtTime(0.0001, startAt + 0.15);
                 o1.connect(g1); g1.connect(master);
                 o1.start(startAt);
-                o1.stop(startAt + 0.20);
+                o1.stop(startAt + 0.18);
 
+                // Harmónico - brilho (1500 Hz)
                 const o2 = ctx.createOscillator();
                 const g2 = ctx.createGain();
                 o2.type = 'sine';
-                o2.frequency.value = 1320;
-                g2.gain.setValueAtTime(0.0001, startAt + 0.04);
-                g2.gain.exponentialRampToValueAtTime(0.35, startAt + 0.07);
-                g2.gain.exponentialRampToValueAtTime(0.0001, startAt + 0.22);
+                o2.frequency.value = 1500;
+                g2.gain.setValueAtTime(0.0001, startAt + 0.03);
+                g2.gain.exponentialRampToValueAtTime(0.25, startAt + 0.06);
+                g2.gain.exponentialRampToValueAtTime(0.0001, startAt + 0.18);
                 o2.connect(g2); g2.connect(master);
-                o2.start(startAt + 0.04);
-                o2.stop(startAt + 0.24);
+                o2.start(startAt + 0.03);
+                o2.stop(startAt + 0.20);
 
+                // Toque curto de "caixa registadora" (som metálico)
                 const o3 = ctx.createOscillator();
                 const g3 = ctx.createGain();
                 o3.type = 'square';
-                o3.frequency.value = 1200;
-                g3.gain.setValueAtTime(0.0001, startAt + 0.16);
-                g3.gain.exponentialRampToValueAtTime(0.12, startAt + 0.18);
-                g3.gain.exponentialRampToValueAtTime(0.0001, startAt + 0.28);
+                o3.frequency.value = 800;
+                g3.gain.setValueAtTime(0.0001, startAt + 0.12);
+                g3.gain.exponentialRampToValueAtTime(0.08, startAt + 0.14);
+                g3.gain.exponentialRampToValueAtTime(0.0001, startAt + 0.22);
                 o3.connect(g3); g3.connect(master);
-                o3.start(startAt + 0.16);
-                o3.stop(startAt + 0.30);
+                o3.start(startAt + 0.12);
+                o3.stop(startAt + 0.24);
 
-                const bufferSize = ctx.sampleRate * 0.05;
+                // Ruído suave para textura (tipo "cash")
+                const bufferSize = ctx.sampleRate * 0.04;
                 const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
                 const data = buffer.getChannelData(0);
                 for (let i = 0; i < bufferSize; i++) {
-                    data[i] = (Math.random() * 2 - 1) * 0.04;
+                    data[i] = (Math.random() * 2 - 1) * 0.03;
                 }
                 const noise = ctx.createBufferSource();
                 noise.buffer = buffer;
                 const gNoise = ctx.createGain();
-                gNoise.gain.setValueAtTime(0.0001, startAt + 0.22);
-                gNoise.gain.exponentialRampToValueAtTime(0.10, startAt + 0.25);
-                gNoise.gain.exponentialRampToValueAtTime(0.0001, startAt + 0.35);
+                gNoise.gain.setValueAtTime(0.0001, startAt + 0.16);
+                gNoise.gain.exponentialRampToValueAtTime(0.06, startAt + 0.18);
+                gNoise.gain.exponentialRampToValueAtTime(0.0001, startAt + 0.28);
                 noise.connect(gNoise); gNoise.connect(master);
-                noise.start(startAt + 0.22);
-                noise.stop(startAt + 0.36);
+                noise.start(startAt + 0.16);
+                noise.stop(startAt + 0.30);
 
-            } catch (e) { /* silent */ }
+            } catch (e) { /* silencioso */ }
         }
 
         // ============================================================
@@ -3534,6 +3539,7 @@
                 html
             };
 
+            // Armazenar todas as notificações da sessão
             allSessionNotifications.push(notifObj);
 
             return notifObj;
@@ -3566,19 +3572,7 @@
             if (typeof deductFunds === 'function') deductFunds(notif.amount);
             if (typeof playNotificationSound === 'function') playNotificationSound();
             showFloatingLoanNotification(notif);
-            const container = document.getElementById('notifList');
-            if (container) {
-                const tmp = document.createElement('div');
-                tmp.innerHTML = notif.html.trim();
-                const el = tmp.firstElementChild;
-                const closeBtn = el && el.querySelector('.notif-close');
-                if (closeBtn) closeBtn.remove();
-                if (el) {
-                    el.dataset.ts = notif.timestamp.getTime();
-                    container.insertBefore(el, container.firstChild);
-                    while (container.children.length > 60) container.removeChild(container.lastChild);
-                }
-            }
+            // Adiciona ao activityItems (não ao notifList, pois são atividades da plataforma)
             activityItems.unshift(notif);
             while (activityItems.length > 8) activityItems.pop();
             renderActivityItems();
@@ -3650,7 +3644,7 @@
         }, 60000);
 
         // ============================================================
-        // INICIAR NOTIFICAÇÕES
+        // INICIAR NOTIFICAÇÕES EM TEMPO REAL
         // ============================================================
         function scheduleNextNotification() {
             const minDelay = 10000;
@@ -3662,13 +3656,9 @@
             }, delay);
         }
 
-        generateInitialActivities();
-        seedNotifListFromActivities();
-        initLoanStats();
-        setInterval(refreshActivities, 3600000);
-        setInterval(cleanOldActivities, 300000);
-        setInterval(cleanOldNotifications, 60000);
-
+        // ============================================================
+        // INICIALIZAÇÃO DA ACTIVITY E STATS
+        // ============================================================
         function generateInitialActivities() {
             activityItems = [];
             const now = Date.now();
@@ -3694,37 +3684,12 @@
             }
         }
 
-        function seedNotifListFromActivities() {
-            const container = document.getElementById('notifList');
-            if (!container) return;
-            container.innerHTML = '';
-            activityItems.forEach(n => {
-                const tmp = document.createElement('div');
-                tmp.innerHTML = n.html.trim();
-                const el = tmp.firstElementChild;
-                const closeBtn = el && el.querySelector('.notif-close');
-                if (closeBtn) closeBtn.remove();
-                if (el) {
-                    el.dataset.ts = n.timestamp.getTime();
-                    container.appendChild(el);
-                }
-            });
-        }
-
-        function cleanOldNotifications() {
-            const container = document.getElementById('notifList');
-            if (!container) return;
-            const cutoff = Date.now() - 3600000;
-            Array.from(container.children).forEach(el => {
-                const ts = parseInt(el.dataset.ts || '0', 10);
-                if (ts && ts < cutoff) el.remove();
-            });
-        }
-
-        setTimeout(() => {
-            showLoanNotification();
-            scheduleNextNotification();
-        }, 3000);
+        generateInitialActivities();
+        initLoanStats();
+        setInterval(refreshActivities, 3600000);
+        setInterval(cleanOldActivities, 300000);
+        // Iniciar o ciclo de notificações
+        scheduleNextNotification();
 
         // ============================================================
         // ONLINE COUNTER DINÂMICO (3 a 777, atualiza a cada 15s)
@@ -3958,7 +3923,7 @@
         });
 
         // ============================================================
-        // DASHBOARD UPDATE
+        // DASHBOARD UPDATE - REMOVIDAS referências a elementos inexistentes
         // ============================================================
         function updateDashboard(user) {
             if (!user) return;
@@ -3972,11 +3937,7 @@
             document.getElementById('profilePhone').textContent = user.phone;
             document.getElementById('loanFullName').value = user.fullName;
             document.getElementById('loanPhone').value = user.phone;
-            const loans = user.loans || [];
-            const approved = loans.filter(l => l.status === 'approved');
-            document.getElementById('statLoansDash').textContent = loans.length;
-            document.getElementById('statApprovedDash').textContent = approved.length;
-            document.getElementById('statRateDash').textContent = loans.length > 0 ? Math.round((approved.length / loans.length) * 100) + '%' : '0%';
+            // Removidas referências a statLoansDash, statApprovedDash, statRateDash
             const now = new Date();
             const options = { weekday: 'long', day: 'numeric', month: 'long' };
             document.getElementById('dashDate').textContent = now.toLocaleDateString('pt-MZ', options);
@@ -4136,6 +4097,7 @@
         function updateNotifications() {
             const container = document.getElementById('notifList');
             const notifs = currentUser?.notifs || [];
+            // Filtrar apenas notificações relacionadas com validação de comprovativo
             const filteredNotifs = notifs.filter(n => 
                 n.title && (
                     n.title.includes('Comprovativo') || 
@@ -4559,25 +4521,32 @@
         loadLovesFromStorage();
 
         // ============================================================
-        // DATAS ATUALIZADAS PARA JULHO 2026
+        // DATAS ATUALIZADAS PARA JULHO 2026 - COM VARIAÇÃO REALISTA
         // ============================================================
         function getRecentDate() {
+            // Gera datas com diferenças variadas em relação a "agora"
             const now = new Date();
-            const useRecent = Math.random() < 0.7;
-            
-            if (useRecent) {
-                const day = Math.floor(Math.random() * 31) + 1;
-                const hours = Math.floor(Math.random() * 24);
-                const minutes = Math.floor(Math.random() * 60);
-                const date = new Date(2026, 6, day, hours, minutes, 0);
-                return date.toISOString().split('T')[0];
+            const r = Math.random();
+            let diffMs = 0;
+            if (r < 0.35) {
+                // Minutos: 1 a 59 minutos atrás
+                const minutes = Math.floor(Math.random() * 59) + 1;
+                diffMs = minutes * 60 * 1000;
+            } else if (r < 0.60) {
+                // Horas: 1 a 23 horas atrás
+                const hours = Math.floor(Math.random() * 23) + 1;
+                diffMs = hours * 60 * 60 * 1000;
+            } else if (r < 0.85) {
+                // Dias: 1 a 14 dias atrás
+                const days = Math.floor(Math.random() * 14) + 1;
+                diffMs = days * 24 * 60 * 60 * 1000;
             } else {
-                const month = Math.floor(Math.random() * 6);
-                const maxDay = month === 1 ? 28 : month === 3 ? 30 : month === 5 ? 30 : 31;
-                const day = Math.floor(Math.random() * maxDay) + 1;
-                const date = new Date(2026, month, day);
-                return date.toISOString().split('T')[0];
+                // Mais de 14 dias: até 30 dias
+                const days = Math.floor(Math.random() * 17) + 15; // 15 a 31
+                diffMs = days * 24 * 60 * 60 * 1000;
             }
+            const date = new Date(now.getTime() - diffMs);
+            return date.toISOString().split('T')[0];
         }
 
         function formatDateDisplay(dateStr) {
@@ -4592,27 +4561,14 @@
             if (diffMinutes < 60 && diffDays === 0) {
                 if (diffMinutes < 1) return 'há poucos segundos';
                 if (diffMinutes === 1) return 'há 1 minuto';
-                if (diffMinutes <= 5) return `há ${diffMinutes} minutos`;
-                if (diffMinutes <= 15) return `há ${diffMinutes} minutos`;
-                if (diffMinutes <= 30) return `há ${diffMinutes} minutos`;
                 return `há ${diffMinutes} minutos`;
             }
             if (diffHours < 24 && diffDays === 0) {
                 if (diffHours === 1) return 'há 1 hora';
-                if (diffHours <= 2) return 'há 2 horas';
-                if (diffHours <= 3) return 'há 3 horas';
-                if (diffHours <= 4) return 'há 4 horas';
-                if (diffHours <= 5) return 'há 5 horas';
-                if (diffHours <= 6) return 'há 6 horas';
-                if (diffHours <= 12) return `há ${diffHours} horas`;
                 return `há ${diffHours} horas`;
             }
-            if (diffDays === 1) return 'ontem';
-            if (diffDays === 2) return 'há 2 dias';
-            if (diffDays === 3) return 'há 3 dias';
-            if (diffDays === 4) return 'há 4 dias';
-            if (diffDays === 5) return 'há 5 dias';
-            if (diffDays === 6) return 'há 6 dias';
+            if (diffDays === 1) return 'há 1 dia';
+            if (diffDays <= 7) return `há ${diffDays} dias`;
             if (diffDays <= 14) return `há ${diffDays} dias`;
             
             const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
@@ -4620,131 +4576,210 @@
         }
 
         // ============================================================
-        // REVIEWS DATA ATUALIZADA (com nomes completos e textos autênticos)
+        // REVIEWS DATA ATUALIZADA (com expressões autênticas moçambicanas)
         // ============================================================
-        const defaultReviewsData = [
-            { name: 'Júlia Manjate', city: 'Maputo', rating: 5, text: 'Bros a plataforma é nice tenho que admitir, não esperava. Recebi meu dinheiro em menos de 30 minutos. Tudo certinho, recomendo para todos empreendedores.', date: getRecentDate() },
-            { name: 'Manuel Cossa', city: 'Beira', rating: 5, text: 'Yah essa plataforma me salvou. No início pensei que fosse burla mas eu e meus bradas decidimos arriscar e deu certo. Cumpriram tudo que prometeram.', date: getRecentDate() },
-            { name: 'Glória Mucavele', city: 'Nampula', rating: 5, text: 'Xeee essa plataforma ajudou mesmo. Eu já estou no segundo empréstimo. Serviço top mesmo, atendimento muito bom.', date: getRecentDate() },
-            { name: 'Samuel Nhantumbo', city: 'Quelimane', rating: 5, text: 'Valeu, gramei do site, muito sério. Não pensei que fosse receber tão rápido. Agora já estou a pensar em solicitar mais um empréstimo de 300.000 MT.', date: getRecentDate() },
-            { name: 'Moisés Macuácua', city: 'Tete', rating: 5, text: 'Essa plataforma me tirou de uma infelicidade. Recebi meu dinheiro em poucos minutos. Atendimento excelente e muito profissional.', date: getRecentDate() },
-            { name: 'Margarida Chissano', city: 'Inhambane', rating: 5, text: 'Dou nota 20v. Superou as minhas expectativas, aprovado em minutos e o dinheiro caiu na conta no mesmo dia. Recomendo a todos os meus amigos.', date: getRecentDate() },
-            { name: 'Euzébio Raimundo', city: 'Lichinga', rating: 5, text: 'KMK pessoal estou a pensar solicitar mais um empréstimo de 300.000 MT. A melhor experiência com empréstimos em Moçambique. Transparente e sem letras miúdas.', date: getRecentDate() },
-            { name: 'Simão Matola', city: 'Pemba', rating: 5, text: 'Simples, transparente e sem complicações. Nota 10 para a equipe de suporte que me atendeu muito bem. Recomendo sem reservas.', date: getRecentDate() },
-            { name: 'Stela Mahumane', city: 'Beira', rating: 5, text: 'Incrível como tudo foi rápido e eficiente. Já estou pensando em solicitar outro empréstimo para expandir meu negócio. Muito grata.', date: getRecentDate() },
-            { name: 'Suzete Mondlane', city: 'Nampula', rating: 5, text: 'Recomendo a todos. Confiável e seguro. O dinheiro chegou em menos de 30 minutos. Muito obrigado!', date: getRecentDate() },
-            { name: 'Elio Cuambe', city: 'Inhambane', rating: 5, text: 'Rápido e confiável. Nota máxima! A melhor fintech que já usei em Moçambique. Processo muito claro e transparente.', date: getRecentDate() },
-            { name: 'Milton Chauque', city: 'Maputo', rating: 5, text: 'Profissionalismo e transparência desde o início. Explicaram cada etapa do processo. Me senti muito bem atendido.', date: getRecentDate() },
-            { name: 'Angélica Machel', city: 'Maputo', rating: 5, text: 'Bros, super recomendado! Processo muito claro e rápido. Recebi o valor em menos de 20 minutos. Excelente.', date: getRecentDate() },
-            { name: 'Dan Mabunda', city: 'Nampula', rating: 5, text: 'Muito bom, atendimento cordial e eficiente. A plataforma é muito fácil de usar. Recomendo a todos.', date: getRecentDate() },
-            { name: 'Fidelia Uamusse', city: 'Tete', rating: 5, text: 'Muito satisfeita com o serviço. Voltarei a usar com certeza. Atendimento rápido e sem burocracia. Valeu!', date: getRecentDate() },
-            { name: 'Carlos Macuácua', city: 'Maputo', rating: 5, text: 'Serviço impecável! Recebi o empréstimo em menos de 15 minutos. A equipe é muito atenciosa e profissional.', date: getRecentDate() },
-            { name: 'Maria Nhaca', city: 'Beira', rating: 5, text: 'Yah, facilidade e rapidez. Exatamente o que eu precisava para resolver meus compromissos financeiros.', date: getRecentDate() },
-            { name: 'José Langa', city: 'Nampula', rating: 5, text: 'Muito bom! O atendimento foi rápido e o processo de aprovação foi tranquilo. Recomendo sem reservas.', date: getRecentDate() },
-            { name: 'Ana Sitoe', city: 'Tete', rating: 5, text: 'Xeee, excelente serviço! Consegui o empréstimo em poucos minutos. A plataforma é muito fácil de usar.', date: getRecentDate() },
-            { name: 'Paulo Zandamela', city: 'Inhambane', rating: 5, text: 'Atendimento de primeira. Explicaram tudo direitinho e o dinheiro caiu na conta no mesmo dia.', date: getRecentDate() },
-            { name: 'Rosa Munguambe', city: 'Maputo', rating: 5, text: 'A melhor experiência financeira que já tive. Recomendo a todos que precisam de um empréstimo rápido.', date: getRecentDate() },
-            { name: 'Isabel Chongo', city: 'Pemba', rating: 5, text: 'Simples e rápido. A plataforma é muito intuitiva. Já indiquei para vários colegas de trabalho.', date: getRecentDate() },
-            { name: 'Manuel Nhaca', city: 'Maputo', rating: 5, text: 'Profissionais competentes e atenciosos. Recomendo a NOVACASH para todos que precisam de um empréstimo.', date: getRecentDate() },
-            { name: 'Ernesto Chongo', city: 'Nampula', rating: 5, text: 'Excelente plataforma! Muito fácil de usar e o suporte respondeu todas as minhas dúvidas rapidamente.', date: getRecentDate() },
-            { name: 'Marta Nhaca', city: 'Maputo', rating: 5, text: 'Recomendo a todos! Processo transparente e rápido. O dinheiro caiu na conta em menos de 30 minutos.', date: getRecentDate() },
-            { name: 'Celso Zandamela', city: 'Maputo', rating: 5, text: 'Rápido e seguro. Já solicitei duas vezes e sempre correu tudo bem. Nota 20v.', date: getRecentDate() },
-            { name: 'Dércia Munguambe', city: 'Beira', rating: 5, text: 'Aprovado em 10 minutos! Nunca vi um serviço tão rápido em Moçambique. Muito bom mesmo.', date: getRecentDate() },
-            { name: 'Edmundo Nhaca', city: 'Nampula', rating: 5, text: 'Transparente desde o início. Explicaram todas as taxas e juros antes de eu assinar. Confiável.', date: getRecentDate() },
-            { name: 'Felismina Chongo', city: 'Tete', rating: 5, text: 'Atendimento excelente. A equipe foi muito paciente com todas as minhas perguntas. Super recomendo.', date: getRecentDate() },
-            { name: 'Gildo Macamo', city: 'Inhambane', rating: 5, text: 'Muito bom, recomendo a todos. Processo simples e direto. Valeu, gramei do site.', date: getRecentDate() },
-            { name: 'Helena Sitoe', city: 'Quelimane', rating: 5, text: 'Fiquei impressionada com a rapidez. Em menos de 30 minutos o dinheiro já estava na minha conta.', date: getRecentDate() },
-            { name: 'Isac Mucavele', city: 'Pemba', rating: 5, text: 'Excelente plataforma. Muito intuitiva e fácil de usar. A minha experiência foi ótima.', date: getRecentDate() },
-            { name: 'Jacinta Langa', city: 'Maputo', rating: 5, text: 'Já recomendei a vários amigos. Todos tiveram uma boa experiência também.', date: getRecentDate() },
-            { name: 'Lázaro Matola', city: 'Beira', rating: 5, text: 'O suporte respondeu rapidamente e esclareceu todas as minhas dúvidas. Muito bom.', date: getRecentDate() },
-            { name: 'Lúcia Macuácua', city: 'Nampula', rating: 5, text: 'Muito segura. A plataforma tem todas as medidas de segurança necessárias.', date: getRecentDate() },
-            { name: 'Mário Nhantumbo', city: 'Tete', rating: 5, text: 'Simples, rápido e muito profissional. Recomendo a todos.', date: getRecentDate() },
-            { name: 'Natércia Cossa', city: 'Inhambane', rating: 5, text: 'A melhor decisão que tomei. O empréstimo ajudou-me a resolver os meus problemas financeiros.', date: getRecentDate() },
-            { name: 'Orlando Mahumane', city: 'Quelimane', rating: 5, text: 'Atendimento de excelência. Profissionais muito capacitados. Nota 10.', date: getRecentDate() },
-            { name: 'Quitéria Mondlane', city: 'Pemba', rating: 5, text: 'Muito obrigado pela atenção e pelo profissionalismo. Recomendo sem reservas.', date: getRecentDate() },
-            { name: 'Rogério Chissano', city: 'Maputo', rating: 5, text: 'Já usei outras plataformas, mas esta é a melhor. Muito rápida e confiável.', date: getRecentDate() },
-            { name: 'Salomé Raimundo', city: 'Beira', rating: 5, text: 'Excelente, a minha experiência foi muito positiva. Não tenho nada a apontar.', date: getRecentDate() },
-            { name: 'Teodorico Macamo', city: 'Nampula', rating: 5, text: 'Recomendo a todos que precisam de um empréstimo rápido e seguro.', date: getRecentDate() },
-            { name: 'Ubaldo Cuambe', city: 'Tete', rating: 5, text: 'Profissionalismo e transparência. Tudo correu conforme prometido.', date: getRecentDate() },
-            { name: 'Valter Macuácua', city: 'Inhambane', rating: 5, text: 'Muito bom. O dinheiro caiu na conta em menos de 20 minutos.', date: getRecentDate() },
-            { name: 'Zacarias Nhaca', city: 'Quelimane', rating: 5, text: 'Excelente plataforma. Já estou a pensar em solicitar outro empréstimo.', date: getRecentDate() },
-            { name: 'Jorge Bila', city: 'Maputo', rating: 4, text: 'No início fiquei desconfiado, porque hoje em dia existem muitas burlas. Mas resolvi arriscar e, para minha surpresa, recebi o empréstimo em 20 minutos. Estou muito satisfeito.', date: getRecentDate() },
-            { name: 'Erica Macamo', city: 'Maputo', rating: 4, text: 'Confesso que tive muito receio no começo por causa da taxa de inscrição. Fiz o pagamento com medo, mas depois recebi o valor certinho. Hoje recomendo a plataforma a todos.', date: getRecentDate() },
-            { name: 'Fidelia Uamusse', city: 'Tete', rating: 4, text: 'Em Moçambique é difícil confiar em plataformas online. No início pensei que fosse uma burla, mas depois vi que realmente funciona. O atendimento foi muito profissional.', date: getRecentDate() },
-            { name: 'Dan Mabunda', city: 'Nampula', rating: 4, text: 'Fiquei com um pé atrás por causa da taxa de inscrição, mas paguei e correu tudo bem. Demorou um pouco para validar os documentos, mas depois o dinheiro chegou.', date: getRecentDate() },
-            { name: 'Elton José', city: 'Beira', rating: 4, text: 'No início tive receio, porque já fui enganado antes. Mas o atendimento explicou todo o processo e tirei todas as minhas dúvidas. Fiquei satisfeito.', date: getRecentDate() },
-            { name: 'Angélica Machel', city: 'Maputo', rating: 4, text: 'Fiquei insegura no começo, mas a equipe foi muito prestativa e tirou todas as minhas dúvidas antes de eu pagar a taxa. Recomendo!', date: getRecentDate() },
-            { name: 'Ginito Nhaca', city: 'Lichinga', rating: 4, text: 'Desconfiei no início, mas depois percebi que era confiável. Recebi o valor em minutos. Só achei que a taxa de inscrição poderia ser um pouco mais baixa.', date: getRecentDate() },
-            { name: 'Márcia Cumbane', city: 'Quelimane', rating: 4, text: 'Pensei que pudesse ser uma burla, mas depois de ver a plataforma funcionando mudei de opinião. O dinheiro caiu na conta e fiquei muito aliviada.', date: getRecentDate() },
-            { name: 'Jorge Bila', city: 'Maputo', rating: 4, text: 'É difícil encontrar uma plataforma séria em Moçambique, mas esta superou as minhas expectativas. No início fiquei com medo, mas valeu a pena.', date: getRecentDate() },
-            { name: 'Márcia Cumbane', city: 'Quelimane', rating: 4, text: 'As minhas dúvidas desapareceram depois de receber o dinheiro. O atendimento respondeu a todas as minhas perguntas antes do pagamento.', date: getRecentDate() },
-            { name: 'Lúcia Macamo', city: 'Beira', rating: 4, text: 'No começo fiquei com receio, mas o atendimento foi tão bom que minha desconfiança sumiu. Ótimo serviço.', date: getRecentDate() },
-            { name: 'Fernando Mucavele', city: 'Quelimane', rating: 4, text: 'Confesso que desconfiei, mas depois de receber o valor mudei de opinião. Demorou um pouco para aprovar, mas foi tudo certo.', date: getRecentDate() },
-            { name: 'Carla Macamo', city: 'Tete', rating: 4, text: 'No início desconfiei por causa dos golpes que se vê nas redes sociais, mas depois percebi que era confiável. O dinheiro chegou rápido.', date: getRecentDate() },
-            { name: 'António Sitoe', city: 'Beira', rating: 4, text: 'Tive receio no começo, mas resolvi arriscar. A plataforma é séria e o atendimento foi bom. Recomendo.', date: getRecentDate() },
-            { name: 'Aurora Zandamela', city: 'Maputo', rating: 4, text: 'Fiquei com medo por causa da taxa, mas paguei e correu tudo bem. O suporte foi muito educado e paciente.', date: getRecentDate() },
-            { name: 'Bernardo Nhaca', city: 'Nampula', rating: 4, text: 'No princípio pensei que fosse mais uma burla, mas depois vi que a plataforma é séria. Já solicitei um segundo empréstimo.', date: getRecentDate() },
-            { name: 'Custódia Chongo', city: 'Tete', rating: 4, text: 'Demorei a confiar, mas depois de receber o valor fiquei tranquila. O processo é simples e seguro.', date: getRecentDate() },
-            { name: 'Domingos Macuácua', city: 'Beira', rating: 4, text: 'No início fiquei com muitas dúvidas, mas o atendimento esclareceu tudo. Foi uma boa experiência.', date: getRecentDate() },
-            { name: 'Esperança Nhantumbo', city: 'Quelimane', rating: 4, text: 'Tive medo de perder o dinheiro da taxa, mas felizmente correu tudo bem. Recomendo a todos.', date: getRecentDate() },
-            { name: 'Francisco Macamo', city: 'Inhambane', rating: 4, text: 'A minha desconfiança inicial desapareceu quando recebi o dinheiro. Plataforma confiável.', date: getRecentDate() },
-            { name: 'Albertina Matola', city: 'Maputo', rating: 5, text: 'Gostei muito da transparência durante todo o processo. Todas as taxas foram explicadas antes de eu assinar.', date: getRecentDate() },
-            { name: 'Benedito Cossa', city: 'Beira', rating: 5, text: 'Rapidez na análise e na aprovação. Em menos de 15 minutos o meu empréstimo foi aprovado.', date: getRecentDate() },
-            { name: 'Celina Mucavele', city: 'Nampula', rating: 5, text: 'Facilidade de utilização do site. Muito intuitivo, não tive dificuldades para preencher os dados.', date: getRecentDate() },
-            { name: 'Dionísio Chongo', city: 'Tete', rating: 5, text: 'Valores elevados disponíveis. Solicitei 200.000 MZN e fui aprovado. Excelente!', date: getRecentDate() },
-            { name: 'Elisa Sitoe', city: 'Inhambane', rating: 5, text: 'Atendimento ao cliente de primeira linha. Responderam rápido e de forma muito educada.', date: getRecentDate() },
-            { name: 'Filimone Nhaca', city: 'Quelimane', rating: 5, text: 'Simplicidade do processo. Não precisei de muitos documentos, tudo foi muito direto.', date: getRecentDate() },
-            { name: 'Graça Macamo', city: 'Pemba', rating: 5, text: 'Profissionalismo e organização. A equipe é muito competente e bem preparada.', date: getRecentDate() },
-            { name: 'Henrique Macuácua', city: 'Maputo', rating: 5, text: 'Já indiquei esta plataforma para familiares e amigos. Todos tiveram uma boa experiência.', date: getRecentDate() },
-            { name: 'Irene Langa', city: 'Beira', rating: 5, text: 'A melhor plataforma de empréstimos em Moçambique. Muito rápida e confiável.', date: getRecentDate() },
-            { name: 'Jeremias Macamo', city: 'Nampula', rating: 5, text: 'Fiquei muito satisfeito com o serviço. O dinheiro chegou no dia seguinte.', date: getRecentDate() },
-            { name: 'Leila Nhantumbo', city: 'Tete', rating: 5, text: 'Recomendo a todos que precisam de um empréstimo rápido e sem burocracia.', date: getRecentDate() },
-            { name: 'Manuelito Cossa', city: 'Inhambane', rating: 5, text: 'Muito bom, o atendimento foi excelente. Todos os meus problemas financeiros foram resolvidos.', date: getRecentDate() },
-            { name: 'Odete Nhaca', city: 'Quelimane', rating: 5, text: 'A plataforma é muito segura. Senti-me confiante durante todo o processo.', date: getRecentDate() },
-            { name: 'Porfírio Macamo', city: 'Pemba', rating: 5, text: 'Serviço impecável. Recomendo a todos os meus amigos e familiares.', date: getRecentDate() },
-            { name: 'Quitéria Mucavele', city: 'Maputo', rating: 5, text: 'Simples, rápido e confiável. Tudo o que eu precisava.', date: getRecentDate() },
-            { name: 'Rosalina Chongo', city: 'Beira', rating: 5, text: 'Excelente atendimento, muito profissionais. O dinheiro chegou rapidamente.', date: getRecentDate() },
-            { name: 'Sidónio Macuácua', city: 'Nampula', rating: 5, text: 'Já solicitei três vezes e sempre correu tudo bem. Plataforma muito confiável.', date: getRecentDate() },
-            { name: 'Teresa Nhantumbo', city: 'Tete', rating: 5, text: 'Muito satisfeita com o serviço. O processo foi simples e rápido.', date: getRecentDate() },
-            { name: 'Valdemiro Macamo', city: 'Inhambane', rating: 5, text: 'Recomendo a todos. Plataforma séria e confiável.', date: getRecentDate() },
-            { name: 'Xavier Cossa', city: 'Quelimane', rating: 5, text: 'Muito bom, a minha experiência foi excelente. O suporte respondeu rápido.', date: getRecentDate() },
-            { name: 'Zélia Nhaca', city: 'Pemba', rating: 5, text: 'A melhor decisão financeira que tomei em 2026. Recomendo a todos.', date: getRecentDate() },
-            { name: 'Adélia Macuácua', city: 'Maputo', rating: 5, text: 'No início fiquei com muito medo de ser uma burla, porque nunca tinha usado uma plataforma deste tipo. Mas o atendimento foi tão bom e profissional que mudei de ideia. Recebi o meu empréstimo e estou muito grata.', date: getRecentDate() },
-            { name: 'Belmiro Langa', city: 'Beira', rating: 5, text: 'Confesso que estava desconfiado, principalmente por causa da taxa de inscrição. Mas depois de fazer o pagamento e receber o dinheiro, vi que a plataforma é séria. Já estou a preparar a segunda solicitação.', date: getRecentDate() },
-            { name: 'Cândida Chongo', city: 'Nampula', rating: 5, text: 'O meu irmão recomendou, mas eu estava muito insegura. Demorei alguns dias a decidir, mas valeu a pena. O processo é transparente e o suporte é muito atencioso.', date: getRecentDate() },
-            { name: 'Dário Nhaca', city: 'Tete', rating: 5, text: 'Eu fui daqueles que pensou que era burla. Mas depois de ver vários comentários positivos, resolvi arriscar. Foi a melhor decisão que tomei. O empréstimo caiu na conta em menos de 30 minutos.', date: getRecentDate() },
-            { name: 'Eugénia Macamo', city: 'Inhambane', rating: 5, text: 'Tive muito receio por causa dos golpes que se vê nas redes sociais, mas a NOVACASH provou que é diferente. O atendimento foi excelente e o dinheiro chegou rápido.', date: getRecentDate() },
-            { name: 'Fabião Mucavele', city: 'Quelimane', rating: 5, text: 'Minha esposa ficou com medo quando eu mencionei a taxa de inscrição, mas eu decidi arriscar. No final, tudo correu bem e hoje ambos recomendamos a plataforma.', date: getRecentDate() },
-            { name: 'Gertrudes Nhantumbo', city: 'Pemba', rating: 5, text: 'Fiquei muito tempo a pensar se devia ou não solicitar. Mas depois de conversar com o suporte e ver que explicaram tudo com clareza, tomei coragem. Foi uma excelente experiência.', date: getRecentDate() },
-            { name: 'Hélder Macuácua', city: 'Maputo', rating: 5, text: 'No início pensei que fosse mais uma plataforma que promete e não cumpre. Mas fiquei surpreendido com a rapidez e a transparência. Já solicitei o segundo empréstimo.', date: getRecentDate() },
-            { name: 'Ilda Chongo', city: 'Beira', rating: 5, text: 'Eu desconfiei muito, principalmente por ser online. Mas o atendimento foi tão profissional que me passou confiança. Recebi o valor e estou muito feliz.', date: getRecentDate() },
-            { name: 'João Macamo', city: 'Nampula', rating: 5, text: 'A minha esposa recomendou, mas eu estava relutante. Depois de ver o dinheiro cair na conta, mudei completamente a minha opinião. Muito obrigado!', date: getRecentDate() },
-            { name: 'Laura Nhaca', city: 'Tete', rating: 5, text: 'Confesso que fiquei com medo de perder o dinheiro da taxa, mas decidi confiar. Foi a melhor decisão que tomei. O empréstimo foi aprovado rapidamente.', date: getRecentDate() },
-            { name: 'Manuel Macamo', city: 'Inhambane', rating: 5, text: 'Pensei duas vezes antes de pagar a taxa, porque já fui enganado antes. Mas a NOVACASH é diferente, cumpriu tudo o que prometeu. Recomendo sem reservas.', date: getRecentDate() },
-            { name: 'Natália Mucavele', city: 'Quelimane', rating: 5, text: 'A minha filha recomendou, mas eu estava com muito receio. No entanto, o suporte foi tão atencioso que decidi avançar. Foi a melhor decisão!', date: getRecentDate() },
-            { name: 'Osvaldo Nhantumbo', city: 'Pemba', rating: 5, text: 'Eu não acreditava que funcionava, mas depois de receber o dinheiro mudei de opinião. A plataforma é séria e confiável.', date: getRecentDate() },
-            { name: 'Paulina Macamo', city: 'Maputo', rating: 5, text: 'No início fiquei com o pé atrás, mas depois de ver tantos comentários positivos resolvi experimentar. Foi uma excelente experiência, recomendo a todos.', date: getRecentDate() },
-            { name: 'Aires Chongo', city: 'Maputo', rating: 4, text: 'O serviço é bom, mas demorou um pouco mais do que o esperado para a aprovação. No entanto, o suporte foi atencioso e o dinheiro chegou. Recomendo.', date: getRecentDate() },
-            { name: 'Benjamim Nhaca', city: 'Beira', rating: 4, text: 'Plataforma muito boa, mas acho que poderiam reduzir um pouco a taxa de inscrição. De resto, tudo correu bem.', date: getRecentDate() },
-            { name: 'Célia Macamo', city: 'Nampula', rating: 4, text: 'Gostei da experiência, mas tive algumas dificuldades para carregar os documentos. O suporte ajudou e tudo se resolveu.', date: getRecentDate() },
-            { name: 'Delfina Mucavele', city: 'Tete', rating: 4, text: 'Boa plataforma, mas o processo poderia ser um pouco mais rápido. No final, o empréstimo chegou e fiquei satisfeita.', date: getRecentDate() },
-            { name: 'Edson Nhantumbo', city: 'Inhambane', rating: 4, text: 'Serviço confiável, mas a interface poderia ser mais moderna. O importante é que funciona e é seguro.', date: getRecentDate() },
-            { name: 'Filomena Macamo', city: 'Quelimane', rating: 4, text: 'Gostei do atendimento, mas a validação dos documentos poderia ser mais rápida. De resto, tudo ótimo.', date: getRecentDate() },
-            { name: 'Gonçalo Chongo', city: 'Pemba', rating: 4, text: 'Boa experiência, mas acho que as taxas poderiam ser mais acessíveis. No entanto, recomendo a plataforma.', date: getRecentDate() },
-            { name: 'Hortência Nhaca', city: 'Maputo', rating: 4, text: 'A plataforma é boa, mas tive um pequeno problema com o upload dos documentos. O suporte resolveu rapidamente.', date: getRecentDate() },
-            { name: 'Ivo Macamo', city: 'Beira', rating: 4, text: 'Muito bom, mas poderiam melhorar a comunicação sobre o status da aprovação. De resto, tudo perfeito.', date: getRecentDate() },
-            { name: 'Joaquina Mucavele', city: 'Nampula', rating: 4, text: 'Gostei do serviço, mas o prazo de análise poderia ser menor. No final, valeu a pena esperar.', date: getRecentDate() },
-            { name: 'Kenneth Nhantumbo', city: 'Tete', rating: 4, text: 'Boa plataforma, mas acho que poderiam ter mais opções de pagamento. De resto, excelente.', date: getRecentDate() },
-            { name: 'Laurinda Macamo', city: 'Inhambane', rating: 4, text: 'Serviço confiável, mas a experiência poderia ser mais fluida. Recomendo pela segurança.', date: getRecentDate() },
-            { name: 'Mauro Chongo', city: 'Quelimane', rating: 4, text: 'Gostei, mas a taxa de inscrição é um pouco alta. No entanto, o empréstimo chegou rápido.', date: getRecentDate() },
-            { name: 'Neuza Nhaca', city: 'Pemba', rating: 4, text: 'Boa experiência, mas o site poderia ser mais responsivo no celular. De resto, tudo correu bem.', date: getRecentDate() },
-            { name: 'Olívia Macamo', city: 'Maputo', rating: 4, text: 'Gostei do atendimento, mas a validação dos documentos demorou um pouco. O importante é que funcionou.', date: getRecentDate() },
-            { name: 'Pedro Mucavele', city: 'Beira', rating: 4, text: 'Plataforma séria, mas acho que poderiam ter mais informações sobre as taxas. De resto, tudo bom.', date: getRecentDate() },
-            { name: 'Rute Nhantumbo', city: 'Nampula', rating: 4, text: 'Muito boa, mas o processo poderia ser mais simples. No final, valeu a pena.', date: getRecentDate() },
-            { name: 'Sérgio Macamo', city: 'Tete', rating: 4, text: 'Gostei da plataforma, mas a comunicação poderia ser melhor. De resto, tudo excelente.', date: getRecentDate() },
-            { name: 'Tânia Chongo', city: 'Inhambane', rating: 4, text: 'Boa experiência, mas a aprovação demorou mais do que o esperado. O suporte foi atencioso.', date: getRecentDate() },
-            { name: 'Ulisses Nhaca', city: 'Quelimane', rating: 4, text: 'Serviço confiável, mas a plataforma poderia ser mais intuitiva. Recomendo pela seriedade.', date: getRecentDate() }
+        const reviewTextsPool = [
+            "Bros a plataforma é nice tenho que admitir, não esperava.",
+            "Yah essa plataforma me salvou.",
+            "No início pensei que fosse burla mas eu e meus bradas decidimos arriscar e deu certo.",
+            "Xeee essa plataforma ajudou mesmo.",
+            "Dou nota 20v.",
+            "KMK pessoal estou a pensar solicitar mais um empréstimo de 300.000 MT.",
+            "Valeu, gramei do site, muito sério.",
+            "Serviço top mesmo.",
+            "Não pensei que fosse receber tão rápido.",
+            "Agora já estou no segundo empréstimo.",
+            "Atendimento muito bom.",
+            "Cumpriram tudo que prometeram.",
+            "Recomendo para todos empreendedores.",
+            "Essa plataforma me tirou de uma infelicidade.",
+            "Recebi meu dinheiro em menos de 30 minutos.",
+            "Fiquei surpreso com a rapidez.",
+            "Muito confiável, já indiquei para meus colegas.",
+            "Nota máxima, superou minhas expectativas.",
+            "Processo simples e sem burocracia.",
+            "Equipe muito atenciosa, esclareceram todas as dúvidas.",
+            "Já solicitei duas vezes e sempre deu certo.",
+            "Plataforma séria, recomendo a todos.",
+            "Demorou um pouco mas valeu a pena.",
+            "No começo fiquei com medo, mas depois vi que é confiável.",
+            "Melhor plataforma de empréstimos em Moçambique.",
+            "A minha esposa também já solicitou e aprovou rápido.",
+            "Fiquei impressionado com a transparência.",
+            "Recomendo a todos os meus amigos.",
+            "Muito bom, o atendimento é excelente.",
+            "Já estou a preparar o terceiro empréstimo.",
+            "Foi a melhor decisão financeira que tomei.",
+            "Super recomendo, nota 20v mesmo.",
+            "A taxa de inscrição é justa pelo serviço prestado.",
+            "Atendimento de primeira, parabéns à equipe.",
+            "Rapidez na resposta e no pagamento.",
+            "Plataforma muito intuitiva e fácil de usar.",
+            "Estou muito satisfeito com o serviço.",
+            "Cumpriram o prazo estabelecido.",
+            "Profissionais competentes e atenciosos.",
+            "Muito bom, já usei outras mas esta é a melhor.",
+            "A minha experiência foi excelente, recomendo.",
+            "Fiquei muito feliz com o resultado.",
+            "O processo é muito claro e transparente.",
+            "Recomendo a todos que precisam de dinheiro rápido.",
+            "A melhor fintech que já usei em Moçambique.",
+            "Muito obrigado pela atenção e profissionalismo.",
+            "Já indiquei para vários familiares.",
+            "Nota 10 para a equipe da NOVACASH.",
+            "Serviço rápido e eficiente.",
+            "Fiquei surpreendido com a qualidade do atendimento.",
+            "Amei a experiência, nota mil.",
+            "Sem dúvida a melhor, já fiz 3 empréstimos.",
+            "Recomendo sem medo, confiável e rápido.",
+            "Até a minha tia já solicitou e aprovou.",
+            "Excelente, nota 10.",
+            "Muito obrigado NOVACASH, me salvaram.",
+            "Super indico, já usei e recomendo.",
+            "Estou muito grato pelo serviço prestado.",
+            "Fantástico, tudo funcionou perfeitamente.",
+            "Já estou no quarto empréstimo, nunca falharam.",
+            "A melhor decisão que tomei este ano.",
+            "Nunca pensei que fosse tão fácil.",
+            "Atendimento humanizado, gostei muito.",
+            "Plataforma segura e confiável.",
+            "Meu irmão também já usou e aprovou.",
+            "Nota 20, sem dúvida.",
+            "A rapidez é impressionante.",
+            "Já recomendei para todos os meus colegas.",
+            "Só tenho a agradecer, muito obrigado.",
+            "Maravilhoso, já estou a recomendar a todos.",
+            "Excelente serviço, continuem assim.",
+            "A minha família toda já usa.",
+            "Foi a melhor experiência que tive com empréstimos.",
+            "Recomendo a todos os moçambicanos.",
+            "Serviço de qualidade, nota máxima.",
+            "Estou muito satisfeito com a atenção recebida.",
+            "Já usei outras plataformas, mas esta é a melhor."
         ];
+
+        function getRandomReviewText() {
+            return reviewTextsPool[Math.floor(Math.random() * reviewTextsPool.length)];
+        }
+
+        // Base de nomes completos - muito mais extensa e com nomes completos
+        const baseReviewsData = [
+            // Nomes completos (sem abreviações)
+            { name: 'Ernesto Vilanculos', city: 'Maputo', rating: 5 },
+            { name: 'Samuel Luís Manjate', city: 'Beira', rating: 5 },
+            { name: 'Carlos Alberto Mabote', city: 'Nampula', rating: 5 },
+            { name: 'Amélia Maria Sitoe', city: 'Quelimane', rating: 5 },
+            { name: 'João Carlos Macamo', city: 'Tete', rating: 5 },
+            { name: 'Maria Helena Langa', city: 'Inhambane', rating: 5 },
+            { name: 'Fernando José Nhaca', city: 'Lichinga', rating: 5 },
+            { name: 'Ana Paula Chongo', city: 'Pemba', rating: 5 },
+            { name: 'Manuel António Cossa', city: 'Maputo', rating: 5 },
+            { name: 'Rosa Maria Macuácua', city: 'Beira', rating: 5 },
+            { name: 'José Francisco Mulungo', city: 'Nampula', rating: 5 },
+            { name: 'Isabel Cristina Manjate', city: 'Quelimane', rating: 5 },
+            { name: 'Paulo Sérgio Matola', city: 'Tete', rating: 5 },
+            { name: 'Carla Alexandra Mucavele', city: 'Inhambane', rating: 5 },
+            { name: 'António Eduardo Zandamela', city: 'Lichinga', rating: 5 },
+            { name: 'Lúcia Isabel Chissano', city: 'Pemba', rating: 5 },
+            { name: 'Mário Joaquim Raimundo', city: 'Maputo', rating: 5 },
+            { name: 'Filomena Adelaide Mahumane', city: 'Beira', rating: 5 },
+            { name: 'Carlos Manuel Mondlane', city: 'Nampula', rating: 5 },
+            { name: 'Beatriz Amélia Cuambe', city: 'Quelimane', rating: 5 },
+            { name: 'David José Chauque', city: 'Tete', rating: 5 },
+            { name: 'Eugénia Rosa Machel', city: 'Inhambane', rating: 5 },
+            { name: 'Francisco António Mabunda', city: 'Lichinga', rating: 5 },
+            { name: 'Helena Maria Uamusse', city: 'Pemba', rating: 5 },
+            { name: 'Jorge Miguel Bila', city: 'Maputo', rating: 5 },
+            { name: 'Lígia Isabel Cumbane', city: 'Beira', rating: 5 },
+            { name: 'Nelson José Mucavele', city: 'Nampula', rating: 5 },
+            { name: 'Odete Maria Nhaca', city: 'Quelimane', rating: 5 },
+            { name: 'Rui Fernando Chongo', city: 'Tete', rating: 5 },
+            { name: 'Sílvia Cristina Sitoe', city: 'Inhambane', rating: 5 },
+            { name: 'Tiago Daniel Matola', city: 'Lichinga', rating: 5 },
+            { name: 'Vânia Isabel Langa', city: 'Pemba', rating: 5 },
+            { name: 'Wilson José Macamo', city: 'Maputo', rating: 5 },
+            { name: 'Adelaide Maria Cossa', city: 'Beira', rating: 5 },
+            { name: 'Bernardo João Nhantumbo', city: 'Nampula', rating: 5 },
+            { name: 'Célia Amélia Macuácua', city: 'Quelimane', rating: 5 },
+            { name: 'Domingos Manuel Chongo', city: 'Tete', rating: 5 },
+            { name: 'Elisa Fernanda Sitoe', city: 'Inhambane', rating: 5 },
+            { name: 'Fábio Miguel Nhaca', city: 'Lichinga', rating: 5 },
+            { name: 'Gertrudes Rosa Macamo', city: 'Pemba', rating: 5 },
+            { name: 'Henrique José Mucavele', city: 'Maputo', rating: 5 },
+            { name: 'Irene Cristina Langa', city: 'Beira', rating: 5 },
+            { name: 'Joana Maria Chongo', city: 'Nampula', rating: 5 },
+            { name: 'Kevin Carlos Matola', city: 'Quelimane', rating: 5 },
+            { name: 'Laura Isabel Cossa', city: 'Tete', rating: 5 },
+            { name: 'Miguel António Nhantumbo', city: 'Inhambane', rating: 5 },
+            { name: 'Natália Rosa Macuácua', city: 'Lichinga', rating: 5 },
+            { name: 'Orlando José Sitoe', city: 'Pemba', rating: 5 },
+            { name: 'Paula Maria Nhaca', city: 'Maputo', rating: 5 },
+            { name: 'Rúben Fernando Macamo', city: 'Beira', rating: 5 },
+            { name: 'Sara Isabel Mucavele', city: 'Nampula', rating: 5 },
+            { name: 'Tomás Manuel Langa', city: 'Quelimane', rating: 5 },
+            { name: 'Urbano José Chongo', city: 'Tete', rating: 5 },
+            { name: 'Valéria Cristina Matola', city: 'Inhambane', rating: 5 },
+            { name: 'Xavier João Cossa', city: 'Lichinga', rating: 5 },
+            { name: 'Yara Maria Nhantumbo', city: 'Pemba', rating: 5 },
+            { name: 'Zacarias António Macuácua', city: 'Maputo', rating: 5 },
+            { name: 'Aires José Sitoe', city: 'Beira', rating: 4 },
+            { name: 'Benjamim João Nhaca', city: 'Nampula', rating: 4 },
+            { name: 'Célia Rosa Macamo', city: 'Quelimane', rating: 4 },
+            { name: 'Delfina Maria Mucavele', city: 'Tete', rating: 4 },
+            { name: 'Edson Carlos Nhantumbo', city: 'Inhambane', rating: 4 },
+            { name: 'Filomena Isabel Macamo', city: 'Lichinga', rating: 4 },
+            { name: 'Gonçalo António Chongo', city: 'Pemba', rating: 4 },
+            { name: 'Hortência Maria Nhaca', city: 'Maputo', rating: 4 },
+            { name: 'Ivo José Macamo', city: 'Beira', rating: 4 },
+            { name: 'Joaquina Rosa Mucavele', city: 'Nampula', rating: 4 },
+            { name: 'Kenneth João Nhantumbo', city: 'Quelimane', rating: 4 },
+            { name: 'Laurinda Maria Macamo', city: 'Tete', rating: 4 },
+            { name: 'Mauro António Chongo', city: 'Inhambane', rating: 4 },
+            { name: 'Neuza Rosa Nhaca', city: 'Lichinga', rating: 4 },
+            { name: 'Olívia José Macamo', city: 'Pemba', rating: 4 },
+            { name: 'Pedro António Mucavele', city: 'Maputo', rating: 4 },
+            { name: 'Rute Maria Nhantumbo', city: 'Beira', rating: 4 },
+            { name: 'Sérgio João Macamo', city: 'Nampula', rating: 4 },
+            { name: 'Tânia Rosa Chongo', city: 'Quelimane', rating: 4 },
+            { name: 'Ulisses José Nhaca', city: 'Tete', rating: 4 },
+            { name: 'Vera Maria Macamo', city: 'Inhambane', rating: 4 },
+            { name: 'Wilson António Mucavele', city: 'Lichinga', rating: 4 },
+            { name: 'Xénia Rosa Nhantumbo', city: 'Pemba', rating: 4 },
+            { name: 'Yuri José Macamo', city: 'Maputo', rating: 4 },
+            { name: 'Zélia Maria Chongo', city: 'Beira', rating: 4 },
+            { name: 'Adilson João Nhaca', city: 'Nampula', rating: 5 },
+            { name: 'Berenice Rosa Macamo', city: 'Quelimane', rating: 5 },
+            { name: 'Celso António Mucavele', city: 'Tete', rating: 5 },
+            { name: 'Dina Maria Nhantumbo', city: 'Inhambane', rating: 5 },
+            { name: 'Edmundo José Macamo', city: 'Lichinga', rating: 5 },
+            { name: 'Fátima Rosa Chongo', city: 'Pemba', rating: 5 },
+            { name: 'Gilberto João Nhaca', city: 'Maputo', rating: 5 },
+            { name: 'Inês Maria Macamo', city: 'Beira', rating: 5 },
+            { name: 'Jandira Rosa Mucavele', city: 'Nampula', rating: 5 },
+            { name: 'Kátia José Nhantumbo', city: 'Quelimane', rating: 5 },
+            { name: 'Leandro António Macamo', city: 'Tete', rating: 5 },
+            { name: 'Márcia Maria Chongo', city: 'Inhambane', rating: 5 },
+            { name: 'Nuno José Nhaca', city: 'Lichinga', rating: 5 },
+            { name: 'Olga Rosa Macamo', city: 'Pemba', rating: 5 },
+            { name: 'Patrício António Mucavele', city: 'Maputo', rating: 5 },
+            { name: 'Quitéria Maria Nhantumbo', city: 'Beira', rating: 5 },
+            { name: 'Reinaldo José Macamo', city: 'Nampula', rating: 5 },
+            { name: 'Simone Rosa Chongo', city: 'Quelimane', rating: 5 },
+            { name: 'Tito António Nhaca', city: 'Tete', rating: 5 },
+            { name: 'Ursula Maria Macamo', city: 'Inhambane', rating: 5 },
+            { name: 'Valentim José Mucavele', city: 'Lichinga', rating: 5 },
+            { name: 'Wanda Rosa Nhantumbo', city: 'Pemba', rating: 5 },
+            { name: 'Ximena Maria Macamo', city: 'Maputo', rating: 5 },
+            { name: 'Yolanda José Chongo', city: 'Beira', rating: 5 },
+            { name: 'Zito António Nhaca', city: 'Nampula', rating: 5 }
+        ];
+
+        // Gerar defaultReviewsData com textos aleatórios e datas variadas
+        const defaultReviewsData = baseReviewsData.map(item => ({
+            ...item,
+            text: getRandomReviewText(),
+            date: getRecentDate()
+        }));
 
         let allReviews = [];
         function loadReviewsFromStorage() {

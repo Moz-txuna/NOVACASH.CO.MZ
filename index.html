@@ -4521,30 +4521,64 @@
         loadLovesFromStorage();
 
         // ============================================================
-        // DATAS ATUALIZADAS PARA JULHO 2026 - COM VARIAÇÃO REALISTA
+        // DATAS ATUALIZADAS – distribuição natural com ~30% recentes
         // ============================================================
         function getRecentDate() {
-            // Gera datas com diferenças variadas em relação a "agora"
             const now = new Date();
             const r = Math.random();
             let diffMs = 0;
-            if (r < 0.35) {
-                // Minutos: 1 a 59 minutos atrás
-                const minutes = Math.floor(Math.random() * 59) + 1;
-                diffMs = minutes * 60 * 1000;
-            } else if (r < 0.60) {
-                // Horas: 1 a 23 horas atrás
-                const hours = Math.floor(Math.random() * 23) + 1;
-                diffMs = hours * 60 * 60 * 1000;
-            } else if (r < 0.85) {
-                // Dias: 1 a 14 dias atrás
-                const days = Math.floor(Math.random() * 14) + 1;
-                diffMs = days * 24 * 60 * 60 * 1000;
-            } else {
-                // Mais de 14 dias: até 30 dias
-                const days = Math.floor(Math.random() * 17) + 15; // 15 a 31
-                diffMs = days * 24 * 60 * 60 * 1000;
+
+            // ~30% das datas nos últimos 2 dias (muito recentes)
+            if (r < 0.30) {
+                const subR = Math.random();
+                if (subR < 0.35) {
+                    // minutos (1 a 59)
+                    const minutes = Math.floor(Math.random() * 59) + 1;
+                    diffMs = minutes * 60 * 1000;
+                } else if (subR < 0.65) {
+                    // horas (1 a 23)
+                    const hours = Math.floor(Math.random() * 23) + 1;
+                    diffMs = hours * 60 * 60 * 1000;
+                } else if (subR < 0.85) {
+                    // 1 dia
+                    diffMs = 24 * 60 * 60 * 1000;
+                } else {
+                    // 2 dias (48h)
+                    diffMs = 48 * 60 * 60 * 1000;
+                }
+            } 
+            // ~40% das datas entre 3 e 14 dias
+            else if (r < 0.70) {
+                const subR = Math.random();
+                if (subR < 0.25) {
+                    const days = 3 + Math.floor(Math.random() * 2); // 3-4
+                    diffMs = days * 24 * 60 * 60 * 1000;
+                } else if (subR < 0.55) {
+                    const days = 5 + Math.floor(Math.random() * 3); // 5-7
+                    diffMs = days * 24 * 60 * 60 * 1000;
+                } else if (subR < 0.80) {
+                    const days = 8 + Math.floor(Math.random() * 3); // 8-10
+                    diffMs = days * 24 * 60 * 60 * 1000;
+                } else {
+                    const days = 11 + Math.floor(Math.random() * 4); // 11-14
+                    diffMs = days * 24 * 60 * 60 * 1000;
+                }
             }
+            // ~30% das datas mais antigas (15+ dias)
+            else {
+                const subR = Math.random();
+                if (subR < 0.35) {
+                    const days = 15 + Math.floor(Math.random() * 5); // 15-19
+                    diffMs = days * 24 * 60 * 60 * 1000;
+                } else if (subR < 0.65) {
+                    const days = 20 + Math.floor(Math.random() * 10); // 20-29
+                    diffMs = days * 24 * 60 * 60 * 1000;
+                } else {
+                    const days = 30 + Math.floor(Math.random() * 20); // 30-49
+                    diffMs = days * 24 * 60 * 60 * 1000;
+                }
+            }
+
             const date = new Date(now.getTime() - diffMs);
             return date.toISOString().split('T')[0];
         }
@@ -4576,15 +4610,21 @@
         }
 
         // ============================================================
-        // REVIEWS DATA ATUALIZADA (com expressões autênticas moçambicanas)
+        // REVIEWS DATA ATUALIZADA – mais de 87 comentários com autenticidade
         // ============================================================
         const reviewTextsPool = [
+            // Receio inicial / burla
             "Bros a plataforma é nice tenho que admitir, não esperava.",
-            "Yah essa plataforma me salvou.",
             "No início pensei que fosse burla mas eu e meus bradas decidimos arriscar e deu certo.",
+            "Fiquei com medo de pagar a taxa mas depois vi que era confiável.",
+            "Pensei que era scam, mas arrisquei e recebi o dinheiro em 20 minutos.",
+            "Tinha muito receio, mas depois que vi os comentários decidi tentar.",
+            "No começo desconfiei, mas o atendimento me convenceu.",
+            "Fiquei com pé atrás por causa da taxa, mas valeu a pena.",
+            "Pensei que iam me enganar, mas cumpriram tudo.",
+            // Gratidão e surpresa
             "Xeee essa plataforma ajudou mesmo.",
             "Dou nota 20v.",
-            "KMK pessoal estou a pensar solicitar mais um empréstimo de 300.000 MT.",
             "Valeu, gramei do site, muito sério.",
             "Serviço top mesmo.",
             "Não pensei que fosse receber tão rápido.",
@@ -4602,7 +4642,6 @@
             "Já solicitei duas vezes e sempre deu certo.",
             "Plataforma séria, recomendo a todos.",
             "Demorou um pouco mas valeu a pena.",
-            "No começo fiquei com medo, mas depois vi que é confiável.",
             "Melhor plataforma de empréstimos em Moçambique.",
             "A minha esposa também já solicitou e aprovou rápido.",
             "Fiquei impressionado com a transparência.",
@@ -4655,16 +4694,37 @@
             "Recomendo a todos os moçambicanos.",
             "Serviço de qualidade, nota máxima.",
             "Estou muito satisfeito com a atenção recebida.",
-            "Já usei outras plataformas, mas esta é a melhor."
+            "Já usei outras plataformas, mas esta é a melhor.",
+            // Pequenos empresários / investimentos
+            "Usei o dinheiro para comprar mercadoria, já tive retorno.",
+            "Com o empréstimo consegui expandir meu negócio.",
+            "Graças a NOVACASH pude investir na minha loja.",
+            "Dinheiro caiu na hora certa, salvei meu negócio.",
+            "Comprei material de construção e já estou a vender.",
+            "Ajudou a pagar as dívidas da minha empresa.",
+            // Emergências familiares
+            "Meu filho estava doente, consegui pagar o hospital.",
+            "Usei para pagar as mensalidades da universidade.",
+            "Ajudou a cobrir as despesas da casa.",
+            "Graças a Deus e à NOVACASH, resolvi um problema familiar.",
+            "Meu pai precisava de medicamentos, consegui comprar.",
+            // Críticas leves (minoria)
+            "Tudo bom, mas podiam melhorar o horário de atendimento.",
+            "Gostei, mas o chat podia ser mais rápido.",
+            "Só acho que deviam ter mais opções de pagamento.",
+            "Demorou um pouco a resposta, mas no final deu certo.",
+            "Poderiam oferecer prazos mais longos.",
+            "Sugiro que aumentem o valor máximo.",
+            "Atendimento bom, mas podiam ter mais agentes.",
+            "A plataforma é ótima, mas a app podia ser mais leve."
         ];
 
         function getRandomReviewText() {
             return reviewTextsPool[Math.floor(Math.random() * reviewTextsPool.length)];
         }
 
-        // Base de nomes completos - muito mais extensa e com nomes completos (100+ nomes)
+        // Base de nomes completos – mais de 100 nomes (todos completos)
         const baseReviewsData = [
-            // ===== 100+ NOMES COMPLETOS =====
             { name: 'Ernesto Vilanculos', city: 'Maputo', rating: 5 },
             { name: 'Samuel Luís Manjate', city: 'Beira', rating: 5 },
             { name: 'Carlos Alberto Mabote', city: 'Nampula', rating: 5 },

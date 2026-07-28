@@ -692,6 +692,15 @@
         }
         .file-input-wrapper .file-label:hover { border-color: var(--primary); color: var(--primary); }
 
+        /* face photo preview circular */
+        .face-preview-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--primary);
+            margin-top: 0.5rem;
+        }
         .btn {
             display: inline-flex;
             align-items: center;
@@ -1023,7 +1032,7 @@
             gap: 0.7rem;
             margin-bottom: 0.4rem;
         }
-        .review-card-premium .card-inner .user-row .user-icon {
+        .review-card-premium .card-inner .user-row .user-avatar-review {
             width: 42px;
             height: 42px;
             border-radius: 50%;
@@ -1036,6 +1045,12 @@
             font-size: 0.9rem;
             flex-shrink: 0;
             box-shadow: 0 2px 8px rgba(255,127,0,0.15);
+            overflow: hidden;
+        }
+        .review-card-premium .card-inner .user-row .user-avatar-review img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
         .review-card-premium .card-inner .user-row .user-info {
             flex: 1;
@@ -1204,7 +1219,7 @@
             gap: 0.7rem;
             margin-bottom: 0.3rem;
         }
-        .review-list-item .user-row .user-icon {
+        .review-list-item .user-row .user-avatar-review {
             width: 36px;
             height: 36px;
             border-radius: 50%;
@@ -1216,6 +1231,12 @@
             font-weight: 700;
             font-size: 0.8rem;
             flex-shrink: 0;
+            overflow: hidden;
+        }
+        .review-list-item .user-row .user-avatar-review img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
         .review-list-item .user-row .user-info .name {
             font-weight: 700;
@@ -2227,7 +2248,7 @@
             .reviews-header-premium .avg-box .stars-big { font-size: 0.9rem; }
             .reviews-header-premium .avg-box .total-reviews { font-size: 0.65rem; }
             .review-card-premium .card-inner { padding: 1rem; }
-            .review-card-premium .card-inner .user-row .user-icon { width: 36px; height: 36px; font-size: 0.8rem; }
+            .review-card-premium .card-inner .user-row .user-avatar-review { width: 36px; height: 36px; font-size: 0.8rem; }
             .review-card-premium .card-inner .user-row .user-info .name { font-size: 0.8rem; }
             .review-card-premium .card-inner .comment { font-size: 0.8rem; }
             .review-form-premium { padding: 1rem; }
@@ -2235,7 +2256,7 @@
             .review-form-premium .form-actions { flex-direction: column; align-items: stretch; }
             .review-form-premium .form-actions .btn-submit-review { justify-content: center; }
             .review-list-item { padding: 0.8rem 1rem; }
-            .review-list-item .user-row .user-icon { width: 30px; height: 30px; font-size: 0.7rem; }
+            .review-list-item .user-row .user-avatar-review { width: 30px; height: 30px; font-size: 0.7rem; }
             .review-list-item .user-row .user-info .name { font-size: 0.8rem; }
             .review-list-item .comment { font-size: 0.8rem; }
             .notif-item { padding: 0.8rem 1rem; }
@@ -2569,6 +2590,15 @@
                             </div>
                             <div id="biBackPreviewApp" class="image-preview"></div>
                         </div>
+                        <!-- NOVO CAMPO: FOTO DO ROSTO -->
+                        <div class="form-group">
+                            <label>Fotografia do Rosto (para identificação) <span style="color:var(--error);">*</span></label>
+                            <div class="file-input-wrapper">
+                                <div class="file-label"><i class="fas fa-user"></i> Clique para carregar a foto do rosto</div>
+                                <input type="file" id="loanFacePhoto" accept="image/*">
+                            </div>
+                            <div id="facePhotoPreview" style="display:flex;justify-content:center;align-items:center;margin-top:0.5rem;"></div>
+                        </div>
                         <div style="display: flex; gap: 0.6rem;">
                             <button class="btn btn-outline prev-step" style="flex:1;" data-prev="1"><i class="fas fa-arrow-left"></i> Voltar</button>
                             <button class="btn btn-primary next-step" style="flex:2;" data-next="3">Continuar <i class="fas fa-arrow-right"></i></button>
@@ -2779,7 +2809,7 @@
     document.addEventListener('DOMContentLoaded', function() {
 
         // ============================================================
-        // SOUND NOTIFICATION - NOVO SOM MODERNO (PAGAMENTO RECEBIDO)
+        // SOUND NOTIFICATION
         // ============================================================
         let __sharedAudioCtx = null;
         let __soundBusyUntil = 0;
@@ -2805,7 +2835,6 @@
                 master.gain.exponentialRampToValueAtTime(0.45, startAt + 0.04);
                 master.gain.exponentialRampToValueAtTime(0.0001, startAt + totalDur);
 
-                // Tom principal - "ding" agradável (1000 Hz)
                 const o1 = ctx.createOscillator();
                 const g1 = ctx.createGain();
                 o1.type = 'sine';
@@ -2817,7 +2846,6 @@
                 o1.start(startAt);
                 o1.stop(startAt + 0.18);
 
-                // Harmónico - brilho (1500 Hz)
                 const o2 = ctx.createOscillator();
                 const g2 = ctx.createGain();
                 o2.type = 'sine';
@@ -2829,7 +2857,6 @@
                 o2.start(startAt + 0.03);
                 o2.stop(startAt + 0.20);
 
-                // Toque curto de "caixa registadora" (som metálico)
                 const o3 = ctx.createOscillator();
                 const g3 = ctx.createGain();
                 o3.type = 'square';
@@ -2841,7 +2868,6 @@
                 o3.start(startAt + 0.12);
                 o3.stop(startAt + 0.24);
 
-                // Ruído suave para textura (tipo "cash")
                 const bufferSize = ctx.sampleRate * 0.04;
                 const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
                 const data = buffer.getChannelData(0);
@@ -3539,7 +3565,6 @@
                 html
             };
 
-            // Armazenar todas as notificações da sessão
             allSessionNotifications.push(notifObj);
 
             return notifObj;
@@ -3572,7 +3597,6 @@
             if (typeof deductFunds === 'function') deductFunds(notif.amount);
             if (typeof playNotificationSound === 'function') playNotificationSound();
             showFloatingLoanNotification(notif);
-            // Adiciona ao activityItems (não ao notifList, pois são atividades da plataforma)
             activityItems.unshift(notif);
             while (activityItems.length > 8) activityItems.pop();
             renderActivityItems();
@@ -3688,11 +3712,10 @@
         initLoanStats();
         setInterval(refreshActivities, 3600000);
         setInterval(cleanOldActivities, 300000);
-        // Iniciar o ciclo de notificações
         scheduleNextNotification();
 
         // ============================================================
-        // ONLINE COUNTER DINÂMICO (3 a 777, atualiza a cada 15s)
+        // ONLINE COUNTER DINÂMICO
         // ============================================================
         let onlineCount = 76;
         const onlineEl = document.getElementById('onlineCount');
@@ -3923,7 +3946,7 @@
         });
 
         // ============================================================
-        // DASHBOARD UPDATE - REMOVIDAS referências a elementos inexistentes
+        // DASHBOARD UPDATE
         // ============================================================
         function updateDashboard(user) {
             if (!user) return;
@@ -3937,7 +3960,6 @@
             document.getElementById('profilePhone').textContent = user.phone;
             document.getElementById('loanFullName').value = user.fullName;
             document.getElementById('loanPhone').value = user.phone;
-            // Removidas referências a statLoansDash, statApprovedDash, statRateDash
             const now = new Date();
             const options = { weekday: 'long', day: 'numeric', month: 'long' };
             document.getElementById('dashDate').textContent = now.toLocaleDateString('pt-MZ', options);
@@ -4092,12 +4114,11 @@
         }
 
         // ============================================================
-        // NOTIFICATIONS - APENAS VALIDAÇÃO DE COMPROVATIVO
+        // NOTIFICATIONS
         // ============================================================
         function updateNotifications() {
             const container = document.getElementById('notifList');
             const notifs = currentUser?.notifs || [];
-            // Filtrar apenas notificações relacionadas com validação de comprovativo
             const filteredNotifs = notifs.filter(n => 
                 n.title && (
                     n.title.includes('Comprovativo') || 
@@ -4496,7 +4517,7 @@
         });
 
         // ============================================================
-        // SISTEMA DE AVALIAÇÕES (mantido)
+        // SISTEMA DE AVALIAÇÕES (com datas dinâmicas e maior quantidade)
         // ============================================================
         const REVIEWS_STORAGE_KEY = 'novacash_all_reviews';
         const LOVES_STORAGE_KEY = 'novacash_loves';
@@ -4521,209 +4542,34 @@
         loadLovesFromStorage();
 
         // ============================================================
-        // DATAS ATUALIZADAS – distribuição natural com ~30% recentes
+        // FUNÇÃO PARA GERAR DATA COM DISTRIBUIÇÃO
         // ============================================================
-        function getRecentDate() {
+        function generateReviewDate() {
             const now = new Date();
             const r = Math.random();
-            let diffMs = 0;
-
-            // ~30% das datas nos últimos 2 dias (muito recentes)
-            if (r < 0.30) {
-                const subR = Math.random();
-                if (subR < 0.35) {
-                    // minutos (1 a 59)
-                    const minutes = Math.floor(Math.random() * 59) + 1;
-                    diffMs = minutes * 60 * 1000;
-                } else if (subR < 0.65) {
-                    // horas (1 a 23)
-                    const hours = Math.floor(Math.random() * 23) + 1;
-                    diffMs = hours * 60 * 60 * 1000;
-                } else if (subR < 0.85) {
-                    // 1 dia
-                    diffMs = 24 * 60 * 60 * 1000;
-                } else {
-                    // 2 dias (48h)
-                    diffMs = 48 * 60 * 60 * 1000;
-                }
-            } 
-            // ~40% das datas entre 3 e 14 dias
-            else if (r < 0.70) {
-                const subR = Math.random();
-                if (subR < 0.25) {
-                    const days = 3 + Math.floor(Math.random() * 2); // 3-4
-                    diffMs = days * 24 * 60 * 60 * 1000;
-                } else if (subR < 0.55) {
-                    const days = 5 + Math.floor(Math.random() * 3); // 5-7
-                    diffMs = days * 24 * 60 * 60 * 1000;
-                } else if (subR < 0.80) {
-                    const days = 8 + Math.floor(Math.random() * 3); // 8-10
-                    diffMs = days * 24 * 60 * 60 * 1000;
-                } else {
-                    const days = 11 + Math.floor(Math.random() * 4); // 11-14
-                    diffMs = days * 24 * 60 * 60 * 1000;
-                }
+            let date;
+            if (r < 0.3) {
+                // 30%: mês atual, dia aleatório
+                const day = Math.floor(Math.random() * 28) + 1;
+                date = new Date(now.getFullYear(), now.getMonth(), day);
+                if (date > now) date = new Date(now.getFullYear(), now.getMonth(), day - 1);
+            } else if (r < 0.5) {
+                // 20%: há 1 a 15 dias
+                const daysAgo = Math.floor(Math.random() * 15) + 1;
+                date = new Date(now);
+                date.setDate(date.getDate() - daysAgo);
+            } else {
+                // 50%: há 10 minutos a 20 horas
+                const minutesAgo = Math.floor(Math.random() * (20 * 60 - 10 + 1)) + 10;
+                date = new Date(now);
+                date.setMinutes(date.getMinutes() - minutesAgo);
             }
-            // ~30% das datas mais antigas (15+ dias)
-            else {
-                const subR = Math.random();
-                if (subR < 0.35) {
-                    const days = 15 + Math.floor(Math.random() * 5); // 15-19
-                    diffMs = days * 24 * 60 * 60 * 1000;
-                } else if (subR < 0.65) {
-                    const days = 20 + Math.floor(Math.random() * 10); // 20-29
-                    diffMs = days * 24 * 60 * 60 * 1000;
-                } else {
-                    const days = 30 + Math.floor(Math.random() * 20); // 30-49
-                    diffMs = days * 24 * 60 * 60 * 1000;
-                }
-            }
-
-            const date = new Date(now.getTime() - diffMs);
-            return date.toISOString().split('T')[0];
-        }
-
-        function formatDateDisplay(dateStr) {
-            if (!dateStr) return '';
-            const date = new Date(dateStr);
-            const now = new Date();
-            const diffMs = now - date;
-            const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-            const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-            const diffMinutes = Math.floor(diffMs / (1000 * 60));
-            
-            if (diffMinutes < 60 && diffDays === 0) {
-                if (diffMinutes < 1) return 'há poucos segundos';
-                if (diffMinutes === 1) return 'há 1 minuto';
-                return `há ${diffMinutes} minutos`;
-            }
-            if (diffHours < 24 && diffDays === 0) {
-                if (diffHours === 1) return 'há 1 hora';
-                return `há ${diffHours} horas`;
-            }
-            if (diffDays === 1) return 'há 1 dia';
-            if (diffDays <= 7) return `há ${diffDays} dias`;
-            if (diffDays <= 14) return `há ${diffDays} dias`;
-            
-            const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
-            return `${date.getDate()} de ${meses[date.getMonth()]}`;
+            return date;
         }
 
         // ============================================================
-        // REVIEWS DATA ATUALIZADA – mais de 87 comentários com autenticidade
+        // BASE DE DADOS DE AVALIAÇÕES (100+ nomes)
         // ============================================================
-        const reviewTextsPool = [
-            // Receio inicial / burla
-            "Bros a plataforma é nice tenho que admitir, não esperava.",
-            "No início pensei que fosse burla mas eu e meus bradas decidimos arriscar e deu certo.",
-            "Fiquei com medo de pagar a taxa mas depois vi que era confiável.",
-            "Pensei que era scam, mas arrisquei e recebi o dinheiro em 20 minutos.",
-            "Tinha muito receio, mas depois que vi os comentários decidi tentar.",
-            "No começo desconfiei, mas o atendimento me convenceu.",
-            "Fiquei com pé atrás por causa da taxa, mas valeu a pena.",
-            "Pensei que iam me enganar, mas cumpriram tudo.",
-            // Gratidão e surpresa
-            "Xeee essa plataforma ajudou mesmo.",
-            "Dou nota 20v.",
-            "Valeu, gramei do site, muito sério.",
-            "Serviço top mesmo.",
-            "Não pensei que fosse receber tão rápido.",
-            "Agora já estou no segundo empréstimo.",
-            "Atendimento muito bom.",
-            "Cumpriram tudo que prometeram.",
-            "Recomendo para todos empreendedores.",
-            "Essa plataforma me tirou de uma infelicidade.",
-            "Recebi meu dinheiro em menos de 30 minutos.",
-            "Fiquei surpreso com a rapidez.",
-            "Muito confiável, já indiquei para meus colegas.",
-            "Nota máxima, superou minhas expectativas.",
-            "Processo simples e sem burocracia.",
-            "Equipe muito atenciosa, esclareceram todas as dúvidas.",
-            "Já solicitei duas vezes e sempre deu certo.",
-            "Plataforma séria, recomendo a todos.",
-            "Demorou um pouco mas valeu a pena.",
-            "Melhor plataforma de empréstimos em Moçambique.",
-            "A minha esposa também já solicitou e aprovou rápido.",
-            "Fiquei impressionado com a transparência.",
-            "Recomendo a todos os meus amigos.",
-            "Muito bom, o atendimento é excelente.",
-            "Já estou a preparar o terceiro empréstimo.",
-            "Foi a melhor decisão financeira que tomei.",
-            "Super recomendo, nota 20v mesmo.",
-            "A taxa de inscrição é justa pelo serviço prestado.",
-            "Atendimento de primeira, parabéns à equipe.",
-            "Rapidez na resposta e no pagamento.",
-            "Plataforma muito intuitiva e fácil de usar.",
-            "Estou muito satisfeito com o serviço.",
-            "Cumpriram o prazo estabelecido.",
-            "Profissionais competentes e atenciosos.",
-            "Muito bom, já usei outras mas esta é a melhor.",
-            "A minha experiência foi excelente, recomendo.",
-            "Fiquei muito feliz com o resultado.",
-            "O processo é muito claro e transparente.",
-            "Recomendo a todos que precisam de dinheiro rápido.",
-            "A melhor fintech que já usei em Moçambique.",
-            "Muito obrigado pela atenção e profissionalismo.",
-            "Já indiquei para vários familiares.",
-            "Nota 10 para a equipe da NOVACASH.",
-            "Serviço rápido e eficiente.",
-            "Fiquei surpreendido com a qualidade do atendimento.",
-            "Amei a experiência, nota mil.",
-            "Sem dúvida a melhor, já fiz 3 empréstimos.",
-            "Recomendo sem medo, confiável e rápido.",
-            "Até a minha tia já solicitou e aprovou.",
-            "Excelente, nota 10.",
-            "Muito obrigado NOVACASH, me salvaram.",
-            "Super indico, já usei e recomendo.",
-            "Estou muito grato pelo serviço prestado.",
-            "Fantástico, tudo funcionou perfeitamente.",
-            "Já estou no quarto empréstimo, nunca falharam.",
-            "A melhor decisão que tomei este ano.",
-            "Nunca pensei que fosse tão fácil.",
-            "Atendimento humanizado, gostei muito.",
-            "Plataforma segura e confiável.",
-            "Meu irmão também já usou e aprovou.",
-            "Nota 20, sem dúvida.",
-            "A rapidez é impressionante.",
-            "Já recomendei para todos os meus colegas.",
-            "Só tenho a agradecer, muito obrigado.",
-            "Maravilhoso, já estou a recomendar a todos.",
-            "Excelente serviço, continuem assim.",
-            "A minha família toda já usa.",
-            "Foi a melhor experiência que tive com empréstimos.",
-            "Recomendo a todos os moçambicanos.",
-            "Serviço de qualidade, nota máxima.",
-            "Estou muito satisfeito com a atenção recebida.",
-            "Já usei outras plataformas, mas esta é a melhor.",
-            // Pequenos empresários / investimentos
-            "Usei o dinheiro para comprar mercadoria, já tive retorno.",
-            "Com o empréstimo consegui expandir meu negócio.",
-            "Graças a NOVACASH pude investir na minha loja.",
-            "Dinheiro caiu na hora certa, salvei meu negócio.",
-            "Comprei material de construção e já estou a vender.",
-            "Ajudou a pagar as dívidas da minha empresa.",
-            // Emergências familiares
-            "Meu filho estava doente, consegui pagar o hospital.",
-            "Usei para pagar as mensalidades da universidade.",
-            "Ajudou a cobrir as despesas da casa.",
-            "Graças a Deus e à NOVACASH, resolvi um problema familiar.",
-            "Meu pai precisava de medicamentos, consegui comprar.",
-            // Críticas leves (minoria)
-            "Tudo bom, mas podiam melhorar o horário de atendimento.",
-            "Gostei, mas o chat podia ser mais rápido.",
-            "Só acho que deviam ter mais opções de pagamento.",
-            "Demorou um pouco a resposta, mas no final deu certo.",
-            "Poderiam oferecer prazos mais longos.",
-            "Sugiro que aumentem o valor máximo.",
-            "Atendimento bom, mas podiam ter mais agentes.",
-            "A plataforma é ótima, mas a app podia ser mais leve."
-        ];
-
-        function getRandomReviewText() {
-            return reviewTextsPool[Math.floor(Math.random() * reviewTextsPool.length)];
-        }
-
-        // Base de nomes completos – mais de 100 nomes (todos completos)
         const baseReviewsData = [
             { name: 'Ernesto Vilanculos', city: 'Maputo', rating: 5 },
             { name: 'Samuel Luís Manjate', city: 'Beira', rating: 5 },
@@ -4834,12 +4680,99 @@
             { name: 'Zito António Nhaca', city: 'Nampula', rating: 5 }
         ];
 
-        // Gerar defaultReviewsData com textos aleatórios e datas variadas
-        const defaultReviewsData = baseReviewsData.map(item => ({
-            ...item,
-            text: getRandomReviewText(),
-            date: getRecentDate()
-        }));
+        // Pool de textos variados
+        const reviewTextsPool = [
+            "Bros a plataforma é nice tenho que admitir, não esperava.",
+            "Yah essa plataforma me salvou.",
+            "No início pensei que fosse burla mas eu e meus bradas decidimos arriscar e deu certo.",
+            "Xeee essa plataforma ajudou mesmo.",
+            "Dou nota 20v.",
+            "KMK pessoal estou a pensar solicitar mais um empréstimo de 300.000 MT.",
+            "Valeu, gramei do site, muito sério.",
+            "Serviço top mesmo.",
+            "Não pensei que fosse receber tão rápido.",
+            "Agora já estou no segundo empréstimo.",
+            "Atendimento muito bom.",
+            "Cumpriram tudo que prometeram.",
+            "Recomendo para todos empreendedores.",
+            "Essa plataforma me tirou de uma infelicidade.",
+            "Recebi meu dinheiro em menos de 30 minutos.",
+            "Fiquei surpreso com a rapidez.",
+            "Muito confiável, já indiquei para meus colegas.",
+            "Nota máxima, superou minhas expectativas.",
+            "Processo simples e sem burocracia.",
+            "Equipe muito atenciosa, esclareceram todas as dúvidas.",
+            "Já solicitei duas vezes e sempre deu certo.",
+            "Plataforma séria, recomendo a todos.",
+            "Demorou um pouco mas valeu a pena.",
+            "No começo fiquei com medo, mas depois vi que é confiável.",
+            "Melhor plataforma de empréstimos em Moçambique.",
+            "A minha esposa também já solicitou e aprovou rápido.",
+            "Fiquei impressionado com a transparência.",
+            "Recomendo a todos os meus amigos.",
+            "Muito bom, o atendimento é excelente.",
+            "Já estou a preparar o terceiro empréstimo.",
+            "Foi a melhor decisão financeira que tomei.",
+            "Super recomendo, nota 20v mesmo.",
+            "A taxa de inscrição é justa pelo serviço prestado.",
+            "Atendimento de primeira, parabéns à equipe.",
+            "Rapidez na resposta e no pagamento.",
+            "Plataforma muito intuitiva e fácil de usar.",
+            "Estou muito satisfeito com o serviço.",
+            "Cumpriram o prazo estabelecido.",
+            "Profissionais competentes e atenciosos.",
+            "Muito bom, já usei outras mas esta é a melhor.",
+            "A minha experiência foi excelente, recomendo.",
+            "Fiquei muito feliz com o resultado.",
+            "O processo é muito claro e transparente.",
+            "Recomendo a todos que precisam de dinheiro rápido.",
+            "A melhor fintech que já usei em Moçambique.",
+            "Muito obrigado pela atenção e profissionalismo.",
+            "Já indiquei para vários familiares.",
+            "Nota 10 para a equipe da NOVACASH.",
+            "Serviço rápido e eficiente.",
+            "Fiquei surpreendido com a qualidade do atendimento.",
+            "Amei a experiência, nota mil.",
+            "Sem dúvida a melhor, já fiz 3 empréstimos.",
+            "Recomendo sem medo, confiável e rápido.",
+            "Até a minha tia já solicitou e aprovou.",
+            "Excelente, nota 10.",
+            "Muito obrigado NOVACASH, me salvaram.",
+            "Super indico, já usei e recomendo.",
+            "Estou muito grato pelo serviço prestado.",
+            "Fantástico, tudo funcionou perfeitamente.",
+            "Já estou no quarto empréstimo, nunca falharam.",
+            "A melhor decisão que tomei este ano.",
+            "Nunca pensei que fosse tão fácil.",
+            "Atendimento humanizado, gostei muito.",
+            "Plataforma segura e confiável.",
+            "Meu irmão também já usou e aprovou.",
+            "Nota 20, sem dúvida.",
+            "A rapidez é impressionante.",
+            "Já recomendei para todos os meus colegas.",
+            "Só tenho a agradecer, muito obrigado.",
+            "Maravilhoso, já estou a recomendar a todos.",
+            "Excelente serviço, continuem assim.",
+            "A minha família toda já usa.",
+            "Foi a melhor experiência que tive com empréstimos.",
+            "Recomendo a todos os moçambicanos.",
+            "Serviço de qualidade, nota máxima.",
+            "Estou muito satisfeito com a atenção recebida.",
+            "Já usei outras plataformas, mas esta é a melhor."
+        ];
+
+        function getRandomReviewText() {
+            return reviewTextsPool[Math.floor(Math.random() * reviewTextsPool.length)];
+        }
+
+        // Gerar avaliações iniciais com datas dinâmicas
+        function generateDefaultReviews() {
+            return baseReviewsData.map(item => ({
+                ...item,
+                text: getRandomReviewText(),
+                date: generateReviewDate().toISOString()
+            }));
+        }
 
         let allReviews = [];
         function loadReviewsFromStorage() {
@@ -4853,13 +4786,42 @@
                     }
                 } catch (e) { /* ignore */ }
             }
-            allReviews = [...defaultReviewsData];
+            allReviews = generateDefaultReviews();
             saveReviewsToStorage();
         }
         function saveReviewsToStorage() {
             localStorage.setItem(REVIEWS_STORAGE_KEY, JSON.stringify(allReviews));
         }
         loadReviewsFromStorage();
+
+        // ============================================================
+        // FORMATAR DATA DE EXIBIÇÃO (dinâmica)
+        // ============================================================
+        function formatDateDisplay(dateStr) {
+            if (!dateStr) return '';
+            const date = new Date(dateStr);
+            const now = new Date();
+            const diffMs = now - date;
+            const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+            const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+            const diffMinutes = Math.floor(diffMs / (1000 * 60));
+            
+            if (diffMinutes < 60 && diffDays === 0) {
+                if (diffMinutes < 1) return 'há poucos segundos';
+                if (diffMinutes === 1) return 'há 1 minuto';
+                return `há ${diffMinutes} minutos`;
+            }
+            if (diffHours < 24 && diffDays === 0) {
+                if (diffHours === 1) return 'há 1 hora';
+                return `há ${diffHours} horas`;
+            }
+            if (diffDays === 1) return 'há 1 dia';
+            if (diffDays <= 7) return `há ${diffDays} dias`;
+            if (diffDays <= 14) return `há ${diffDays} dias`;
+            
+            const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+            return `${date.getDate()} de ${meses[date.getMonth()]}`;
+        }
 
         // ============================================================
         // SLIDER DE AVALIAÇÕES
@@ -4964,10 +4926,16 @@
                 const loveCount = getLoveCountForReview(reviewKey);
                 const isLoved = hasUserLovedReview(reviewKey);
 
+                // Verifica se a avaliação é do currentUser e se tem foto
+                const isCurrentUser = currentUser && review.name === currentUser.fullName;
+                const avatarHtml = (isCurrentUser && currentUser.profileImage) 
+                    ? `<img src="${currentUser.profileImage}" alt="${nameFull}">`
+                    : initials;
+
                 card.innerHTML = `
                     <div class="card-inner">
                         <div class="user-row">
-                            <div class="user-icon">${initials}</div>
+                            <div class="user-avatar-review">${avatarHtml}</div>
                             <div class="user-info">
                                 <div class="name">${review.name}</div>
                                 ${cityHtml}
@@ -5090,7 +5058,7 @@
         startAutoSlide();
 
         // ============================================================
-        // RENDER TODAS AS AVALIAÇÕES
+        // RENDER TODAS AS AVALIAÇÕES (com foto do perfil se for do currentUser)
         // ============================================================
         function renderAllReviews() {
             const container = document.getElementById('allReviewsList');
@@ -5113,9 +5081,14 @@
                 const loveCount = getLoveCountForReview(reviewKey);
                 const isLoved = hasUserLovedReview(reviewKey);
 
+                const isCurrentUser = currentUser && review.name === currentUser.fullName;
+                const avatarHtml = (isCurrentUser && currentUser.profileImage)
+                    ? `<img src="${currentUser.profileImage}" alt="${nameFull}">`
+                    : initials;
+
                 div.innerHTML = `
                     <div class="user-row">
-                        <div class="user-icon">${initials}</div>
+                        <div class="user-avatar-review">${avatarHtml}</div>
                         <div class="user-info">
                             <div class="name">${review.name} ${cityHtml}</div>
                         </div>
@@ -5358,6 +5331,18 @@
         document.getElementById('loanBiBack').addEventListener('change', function() { previewFile(this, 'biBackPreviewApp'); });
         document.getElementById('loanProof').addEventListener('change', function() { previewFile(this, 'proofPreviewApp'); });
 
+        // ===== PREVIEW DA FOTO DO ROSTO (circular) =====
+        document.getElementById('loanFacePhoto').addEventListener('change', function() {
+            const container = document.getElementById('facePhotoPreview');
+            if (this.files && this.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    container.innerHTML = `<img src="${e.target.result}" class="face-preview-circle" alt="Foto do rosto">`;
+                };
+                reader.readAsDataURL(this.files[0]);
+            }
+        });
+
         // ============================================================
         // UPDATE SUMMARY
         // ============================================================
@@ -5403,7 +5388,7 @@
         });
 
         // ============================================================
-        // SUBMIT LOAN (30 segundos)
+        // SUBMIT LOAN (30 segundos) com validação da foto do rosto
         // ============================================================
         document.getElementById('submitLoanApp').addEventListener('click', function() {
             if (!currentUser) { showToast('Faça login para solicitar', 'error'); return; }
@@ -5414,70 +5399,93 @@
             const frontFile = document.getElementById('loanBiFront').files[0];
             const backFile = document.getElementById('loanBiBack').files[0];
             const proofFile = document.getElementById('loanProof').files[0];
+            const faceFile = document.getElementById('loanFacePhoto').files[0];
             const terms = document.getElementById('loanTerms').checked;
 
             if (!name || !phone || !receiver || !bi) { showToast('Preencha todos os dados', 'error'); return; }
             if (!frontFile || !backFile) { showToast('Carregue os dois lados do BI', 'error'); return; }
+            if (!faceFile) { showToast('Carregue a fotografia do rosto', 'error'); return; }
             if (!proofFile) { showToast('Carregue o comprovativo de pagamento', 'error'); return; }
             if (!terms) { showToast('Aceite os Termos e Condições', 'error'); return; }
 
-            const btn = document.getElementById('submitLoanApp');
-            btn.disabled = true;
-            btn.innerHTML = 'Processando...';
+            // Salvar foto do rosto no perfil do usuário
+            const readerFace = new FileReader();
+            readerFace.onload = function(e) {
+                currentUser.profileImage = e.target.result;
+                const idx = users.findIndex(u => u.phone === currentUser.phone);
+                if (idx !== -1) users[idx] = currentUser;
+                saveUsers();
+                sessionStorage.setItem('novacash_session', JSON.stringify(currentUser));
+                updateAllAvatars(currentUser);
+                // Continuar com o envio do empréstimo
+                proceedLoanSubmission();
+            };
+            readerFace.readAsDataURL(faceFile);
 
-            const totalSeconds = 30;
-            const loading = showLoading('Verificando documentos...', totalSeconds);
-            let progress = 0,
-                elapsed = 0;
-            const messages = [{ p: 10, msg: 'Verificando documentos...' }, { p: 30, msg: 'Validando comprovativo...' },
-            { p: 55, msg: 'Analisando dados do cliente...' }, { p: 75, msg: 'Finalizando análise...' }];
-            let msgIdx = 0;
-            const interval = setInterval(() => {
-                elapsed += 1;
-                progress = (elapsed / totalSeconds) * 100;
-                const remaining = totalSeconds - elapsed;
-                loading.update(Math.min(progress, 100));
-                loading.updateTimer(remaining);
-                for (let i = messages.length - 1; i >= 0; i--) {
-                    if (progress >= messages[i].p) {
-                        if (msgIdx !== i) { msgIdx = i;
-                            document.getElementById('loaderText').textContent = messages[i].msg; }
-                        break;
+            function proceedLoanSubmission() {
+                const btn = document.getElementById('submitLoanApp');
+                btn.disabled = true;
+                btn.innerHTML = 'Processando...';
+
+                const totalSeconds = 30;
+                const loading = showLoading('Verificando documentos...', totalSeconds);
+                let progress = 0, elapsed = 0;
+                const messages = [
+                    { p: 10, msg: 'Verificando documentos...' },
+                    { p: 30, msg: 'Validando comprovativo...' },
+                    { p: 55, msg: 'Analisando dados do cliente...' },
+                    { p: 75, msg: 'Finalizando análise...' }
+                ];
+                let msgIdx = 0;
+                const interval = setInterval(() => {
+                    elapsed += 1;
+                    progress = (elapsed / totalSeconds) * 100;
+                    const remaining = totalSeconds - elapsed;
+                    loading.update(Math.min(progress, 100));
+                    loading.updateTimer(remaining);
+                    for (let i = messages.length - 1; i >= 0; i--) {
+                        if (progress >= messages[i].p) {
+                            if (msgIdx !== i) {
+                                msgIdx = i;
+                                document.getElementById('loaderText').textContent = messages[i].msg;
+                            }
+                            break;
+                        }
                     }
-                }
-                if (elapsed >= totalSeconds) {
-                    clearInterval(interval);
-                    setTimeout(() => {
-                        loading.hide();
-                        btn.disabled = false;
-                        btn.innerHTML = '<i class="fas fa-paper-plane"></i> ENVIAR SOLICITAÇÃO';
-                        const errorMsg = 'ERRO NA SUA IMAGEM DE COMPROVATIVO DE PAGAMENTO DA TAXA DE INSCRIÇÃO, por favor pague a taxa e volte a tentar NOVAMENTE.';
-                        showPopup(errorMsg);
-                        addNotif(currentUser, '❌ Comprovativo rejeitado',
-                            'A imagem enviada não faz parte do comprovativo de pagamento da taxa de inscrição. Por favor, verifique a imagem e tente novamente.',
-                            'error', 'fa-exclamation-triangle');
-                        const errorModalHTML = `
-                            <div style="text-align:center;margin-bottom:1rem;">
-                                <i class="fas fa-exclamation-triangle" style="font-size:2.5rem;color:var(--error);"></i>
-                                <p style="margin-top:0.5rem;font-weight:600;">ERRO NA SUA IMAGEM DE COMPROVATIVO</p>
-                                <p style="color:var(--gray);font-size:0.85rem;">Por favor, pague a taxa e tente novamente.</p>
-                            </div>
-                            <div style="background:#f8f4f0;border-radius:16px;padding:0.8rem;margin:0.6rem 0;">
-                                <div style="font-size:0.75rem;color:var(--gray);">Dados para pagamento:</div>
-                                <div style="display:flex;justify-content:space-between;font-weight:600;">
-                                    <span>876364927</span>
-                                    <span>TIOFELO EDSON LUIS JAIELA</span>
+                    if (elapsed >= totalSeconds) {
+                        clearInterval(interval);
+                        setTimeout(() => {
+                            loading.hide();
+                            btn.disabled = false;
+                            btn.innerHTML = '<i class="fas fa-paper-plane"></i> ENVIAR SOLICITAÇÃO';
+                            const errorMsg = 'ERRO NA SUA IMAGEM DE COMPROVATIVO DE PAGAMENTO DA TAXA DE INSCRIÇÃO, por favor pague a taxa e volte a tentar NOVAMENTE.';
+                            showPopup(errorMsg);
+                            addNotif(currentUser, '❌ Comprovativo rejeitado',
+                                'A imagem enviada não faz parte do comprovativo de pagamento da taxa de inscrição. Por favor, verifique a imagem e tente novamente.',
+                                'error', 'fa-exclamation-triangle');
+                            const errorModalHTML = `
+                                <div style="text-align:center;margin-bottom:1rem;">
+                                    <i class="fas fa-exclamation-triangle" style="font-size:2.5rem;color:var(--error);"></i>
+                                    <p style="margin-top:0.5rem;font-weight:600;">ERRO NA SUA IMAGEM DE COMPROVATIVO</p>
+                                    <p style="color:var(--gray);font-size:0.85rem;">Por favor, pague a taxa e tente novamente.</p>
                                 </div>
-                            </div>
-                            <button class="pay-btn" id="understoodBtn" style="background:var(--primary);">ENTENDI, VOU PAGAR</button>
-                        `;
-                        openModal('Pagamento da Taxa', errorModalHTML);
-                        document.getElementById('understoodBtn')?.addEventListener('click', function() {
-                            document.getElementById('modalOverlay').classList.remove('active');
-                        });
-                    }, 400);
-                }
-            }, 1000);
+                                <div style="background:#f8f4f0;border-radius:16px;padding:0.8rem;margin:0.6rem 0;">
+                                    <div style="font-size:0.75rem;color:var(--gray);">Dados para pagamento:</div>
+                                    <div style="display:flex;justify-content:space-between;font-weight:600;">
+                                        <span>876364927</span>
+                                        <span>TIOFELO EDSON LUIS JAIELA</span>
+                                    </div>
+                                </div>
+                                <button class="pay-btn" id="understoodBtn" style="background:var(--primary);">ENTENDI, VOU PAGAR</button>
+                            `;
+                            openModal('Pagamento da Taxa', errorModalHTML);
+                            document.getElementById('understoodBtn')?.addEventListener('click', function() {
+                                document.getElementById('modalOverlay').classList.remove('active');
+                            });
+                        }, 400);
+                    }
+                }, 1000);
+            }
         });
 
     });

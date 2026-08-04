@@ -4049,6 +4049,11 @@
                         document.getElementById('app').classList.add('active');
                         updateDashboard(user);
                         showToast('Bem-vindo, ' + user.fullName + '!', 'success');
+                        // Expirar notificações antigas após login
+                        if (currentUser) {
+                            expireOldNotifications(currentUser);
+                            updateNotifications();
+                        }
                     }, 400);
                 }
             }, 1000);
@@ -4205,6 +4210,8 @@
             const options = { weekday: 'long', day: 'numeric', month: 'long' };
             document.getElementById('dashDate').textContent = now.toLocaleDateString('pt-MZ', options);
             updateHistory();
+            // Expirar notificações antigas e atualizar
+            expireOldNotifications(user);
             updateNotifications();
         }
 
@@ -4355,9 +4362,34 @@
         }
 
         // ============================================================
+        // EXPIRAR NOTIFICAÇÕES COM MAIS DE 24 HORAS
+        // ============================================================
+        function expireOldNotifications(user) {
+            if (!user || !user.notifs || user.notifs.length === 0) return;
+            const now = Date.now();
+            const oneDay = 24 * 60 * 60 * 1000;
+            const filtered = user.notifs.filter(n => {
+                const ts = new Date(n.timestamp).getTime();
+                return (now - ts) <= oneDay;
+            });
+            if (filtered.length !== user.notifs.length) {
+                user.notifs = filtered;
+                const idx = users.findIndex(u => u.phone === user.phone);
+                if (idx !== -1) users[idx] = user;
+                saveUsers();
+                sessionStorage.setItem('novacash_session', JSON.stringify(user));
+            }
+        }
+
+        // ============================================================
         // NOTIFICATIONS
         // ============================================================
         function updateNotifications() {
+            // Primeiro, expirar notificações antigas
+            if (currentUser) {
+                expireOldNotifications(currentUser);
+            }
+
             const container = document.getElementById('notifList');
             const notifs = currentUser?.notifs || [];
             const filteredNotifs = notifs.filter(n => 
@@ -4410,7 +4442,15 @@
             if (!user.notifs) user.notifs = [];
             const timestamp = new Date().toISOString();
             user.notifs.unshift({ title, body, type, icon, unread: true, timestamp });
-            if (user.notifs.length > 30) user.notifs.pop();
+            // Expirar notificações antigas (manter apenas últimas 24h)
+            const now = Date.now();
+            const oneDay = 24 * 60 * 60 * 1000;
+            user.notifs = user.notifs.filter(n => {
+                const ts = new Date(n.timestamp).getTime();
+                return (now - ts) <= oneDay;
+            });
+            // Limitar a 30 notificações após expiração
+            if (user.notifs.length > 30) user.notifs = user.notifs.slice(0, 30);
             const idx = users.findIndex(u => u.phone === user.phone);
             if (idx !== -1) users[idx] = user;
             saveUsers();
@@ -4982,7 +5022,7 @@
             { name: 'Zara Maria Cossa', city: 'Pemba', rating: 5 },
         ];
 
-        // Pool de textos variados (ampliado)
+        // Pool de textos variados (ampliado e sem repetições)
         const reviewTextsPool = [
             "Bros a plataforma é nice tenho que admitir, não esperava.",
             "Yah essa plataforma me salvou.",
@@ -5090,12 +5130,27 @@
             "Estou muito feliz com o resultado, recomendo."
         ];
 
+        // Função para obter texto aleatório sem repetição dentro do mesmo lote
+        let usedTexts = [];
         function getRandomReviewText() {
-            return reviewTextsPool[Math.floor(Math.random() * reviewTextsPool.length)];
+            // Se já usamos todos, reiniciar
+            if (usedTexts.length >= reviewTextsPool.length) {
+                usedTexts = [];
+            }
+            // Encontrar um texto não usado
+            let available = reviewTextsPool.filter(t => !usedTexts.includes(t));
+            if (available.length === 0) {
+                usedTexts = [];
+                available = reviewTextsPool;
+            }
+            const selected = available[Math.floor(Math.random() * available.length)];
+            usedTexts.push(selected);
+            return selected;
         }
 
         // Gerar avaliações iniciais com datas entre julho e agosto
         function generateDefaultReviews() {
+            usedTexts = []; // reset
             return baseReviewsData.map(item => ({
                 ...item,
                 text: getRandomReviewText(),
@@ -5115,7 +5170,6 @@
                         const now = new Date();
                         const currentMonth = now.getMonth();
                         const currentYear = now.getFullYear();
-                        // Verifica se alguma data está fora do período
                         let needsRegenerate = false;
                         for (let r of parsed) {
                             const d = new Date(r.date);
@@ -5239,6 +5293,16 @@
             return 1;
         }
 
+        // Gerar cor única baseada no nome
+        function getAvatarColor(name) {
+            let hash = 0;
+            for (let i = 0; i < name.length; i++) {
+                hash = name.charCodeAt(i) + ((hash << 5) - hash);
+            }
+            const h = Math.abs(hash % 360);
+            return `hsl(${h}, 70%, 60%)`;
+        }
+
         function renderFeaturedReviews() {
             track.innerHTML = '';
             const featured = getFeaturedReviews();
@@ -5257,9 +5321,13 @@
                 const isLoved = hasUserLovedReview(reviewKey);
 
                 const isCurrentUser = currentUser && review.name === currentUser.fullName;
-                const avatarHtml = (isCurrentUser && currentUser.profileImage) 
-                    ? `<img src="${currentUser.profileImage}" alt="${nameFull}">`
-                    : initials;
+                const avatarColor = getAvatarColor(review.name);
+                let avatarHtml = initials;
+                if (isCurrentUser && currentUser.profileImage) {
+                    avatarHtml = `<img src="${currentUser.profileImage}" alt="${nameFull}">`;
+                } else {
+                    avatarHtml = `<div style="background:${avatarColor};width:100%;height:100%;display:flex;align-items:center;justify-content:center;border-radius:50%;color:white;font-weight:700;font-size:0.9rem;">${initials}</div>`;
+                }
 
                 card.innerHTML = `
                     <div class="card-inner">
@@ -5408,9 +5476,13 @@
                 const isLoved = hasUserLovedReview(reviewKey);
 
                 const isCurrentUser = currentUser && review.name === currentUser.fullName;
-                const avatarHtml = (isCurrentUser && currentUser.profileImage)
-                    ? `<img src="${currentUser.profileImage}" alt="${nameFull}">`
-                    : initials;
+                const avatarColor = getAvatarColor(review.name);
+                let avatarHtml = initials;
+                if (isCurrentUser && currentUser.profileImage) {
+                    avatarHtml = `<img src="${currentUser.profileImage}" alt="${nameFull}">`;
+                } else {
+                    avatarHtml = `<div style="background:${avatarColor};width:100%;height:100%;display:flex;align-items:center;justify-content:center;border-radius:50%;color:white;font-weight:700;font-size:0.8rem;">${initials}</div>`;
+                }
 
                 div.innerHTML = `
                     <div class="user-row">

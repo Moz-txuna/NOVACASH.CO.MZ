@@ -1696,6 +1696,7 @@
             box-shadow: 0 0 20px #FF7F00, 0 0 60px #FF7F00;
             pointer-events: none;
             animation: scanMove 1.8s ease-in-out infinite;
+            z-index: 10;
         }
         @keyframes scanMove {
             0% { top: 0; }
@@ -3104,7 +3105,7 @@
                         canvas.height = height;
                         ctx.drawImage(img, 0, 0, width, height);
                         // Iniciar animação de scanner (linha já está no CSS, mas podemos adicionar partículas)
-                        startParticles(canvas, ctx, width, height);
+                        startParticles(canvas, ctx, width, height, img.src);
                     };
                     img.src = imageDataURL;
                 },
@@ -3122,8 +3123,9 @@
         // ===== PARTICLES FOR SCANNER =====
         let particleAnimationId = null;
         let particles = [];
+        let scannerImageData = null;
 
-        function startParticles(canvas, ctx, width, height) {
+        function startParticles(canvas, ctx, width, height, imgSrc) {
             particles = [];
             for (let i = 0; i < 25; i++) {
                 particles.push({
@@ -3135,25 +3137,13 @@
                     alpha: Math.random() * 0.6 + 0.2
                 });
             }
+            scannerImageData = imgSrc;
             if (particleAnimationId) cancelAnimationFrame(particleAnimationId);
             function drawParticles() {
-                ctx.clearRect(0, 0, width, height);
-                // Redesenhar imagem (mantida no canvas)
-                // Precisamos redesenhar a imagem a cada frame? Melhor desenhar uma vez e depois sobrepor partículas.
-                // Vamos desenhar a imagem apenas uma vez, e depois as partículas em cima.
-                // Para isso, guardamos a imagem desenhada. Vamos usar um segundo canvas ou manter a imagem.
-                // Solução: desenhamos a imagem e depois as partículas em cima.
-                // Como a imagem já foi desenhada, vamos só desenhar as partículas por cima.
-                // Mas a cada frame precisamos limpar e redesenhar a imagem + partículas.
-                // Vamos redesenhar a imagem a partir da imagem original.
-                // Vamos armazenar a imagem original em uma variável global.
-                if (!window._scannerImageData) {
-                    // Se não tiver, sair
-                    return;
-                }
-                ctx.clearRect(0, 0, width, height);
+                if (!scannerImageData) return;
                 const img = new Image();
                 img.onload = function() {
+                    ctx.clearRect(0, 0, width, height);
                     ctx.drawImage(img, 0, 0, width, height);
                     // Desenhar partículas
                     particles.forEach(p => {
@@ -3166,13 +3156,14 @@
                         if (p.x < 0 || p.x > width) p.vx *= -1;
                         if (p.y < 0 || p.y > height) p.vy *= -1;
                     });
-                    // Desenhar linha de scan (já tem no CSS, mas podemos adicionar um efeito extra)
                     particleAnimationId = requestAnimationFrame(drawParticles);
                 };
-                img.src = window._scannerImageData;
+                img.onerror = function() {
+                    // Se falhar ao carregar a imagem, tentar novamente com o src armazenado
+                    img.src = scannerImageData;
+                };
+                img.src = scannerImageData;
             }
-            // Guardar a imagem data para reuso
-            window._scannerImageData = canvas.toDataURL();
             drawParticles();
         }
 
@@ -3181,7 +3172,7 @@
                 cancelAnimationFrame(particleAnimationId);
                 particleAnimationId = null;
             }
-            window._scannerImageData = null;
+            scannerImageData = null;
             const canvas = document.getElementById('scannerCanvas');
             const ctx = canvas.getContext('2d');
             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -4798,7 +4789,7 @@
         });
 
         // ============================================================
-        // SISTEMA DE AVALIAÇÕES (com datas reais entre julho e agosto)
+        // SISTEMA DE AVALIAÇÕES (com datas reais entre julho e agosto de 2026)
         // ============================================================
         const REVIEWS_STORAGE_KEY = 'novacash_all_reviews';
         const LOVES_STORAGE_KEY = 'novacash_loves';
@@ -4823,40 +4814,25 @@
         loadLovesFromStorage();
 
         // ============================================================
-        // FUNÇÃO PARA GERAR DATA ENTRE JULHO E AGOSTO
+        // FUNÇÃO PARA GERAR DATA ENTRE 1 DE AGOSTO E DIA CORRENTE DE AGOSTO DE 2026
         // ============================================================
         function generateReviewDate() {
             const now = new Date();
             const currentYear = now.getFullYear();
-            const currentMonth = now.getMonth(); // 0-indexado (Julho = 6, Agosto = 7)
             
-            // Definir o mês anterior (Julho) e o mês atual (Agosto)
-            let startMonth = 6; // Julho
-            let endMonth = currentMonth;
-            if (currentMonth < 6) {
-                // Se estiver antes de julho, usa junho e julho do ano anterior?
-                // Mas como estamos em agosto, vamos assumir que é agosto.
-                // Caso seja antes de julho, ajustar.
-                startMonth = 6;
-                endMonth = 7;
-            }
-            // Garantir que endMonth seja no máximo agosto (7)
-            if (endMonth > 7) endMonth = 7;
+            // Definir o mês de agosto (7 = agosto)
+            const targetMonth = 7; // Agosto
             
-            // Gerar dia aleatório entre 1 e 28 para simplicidade
-            const day = Math.floor(Math.random() * 28) + 1;
-            // Escolher mês aleatório entre startMonth e endMonth
-            const month = startMonth + Math.floor(Math.random() * (endMonth - startMonth + 1));
-            // Se mês for 6 (Julho) ou 7 (Agosto)
-            const year = currentYear;
-            // Garantir que a data não seja futura
-            const date = new Date(year, month, day);
-            if (date > now) {
-                // Se a data gerada for futura, ajustar para o mês anterior
-                const adjustedMonth = month - 1;
-                return new Date(year, adjustedMonth, day);
+            // Se o mês atual for agosto, usar o dia atual, senão usar o dia 28 de agosto
+            let maxDay = 28;
+            if (now.getMonth() === targetMonth && now.getFullYear() === currentYear) {
+                maxDay = Math.min(now.getDate(), 28);
             }
-            return date;
+            
+            // Gerar dia aleatório entre 1 e maxDay
+            const day = Math.floor(Math.random() * maxDay) + 1;
+            
+            return new Date(currentYear, targetMonth, day);
         }
 
         // ============================================================
@@ -5148,7 +5124,7 @@
             return selected;
         }
 
-        // Gerar avaliações iniciais com datas entre julho e agosto
+        // Gerar avaliações iniciais com datas em agosto de 2026
         function generateDefaultReviews() {
             usedTexts = []; // reset
             return baseReviewsData.map(item => ({
@@ -5165,17 +5141,17 @@
                 try {
                     const parsed = JSON.parse(stored);
                     if (Array.isArray(parsed) && parsed.length > 0) {
-                        // Verificar se as datas estão dentro do período Julho-Agosto
-                        // Se não, regenerar
+                        // Verificar se as datas estão no período de agosto de 2026
                         const now = new Date();
-                        const currentMonth = now.getMonth();
                         const currentYear = now.getFullYear();
+                        const currentMonth = now.getMonth();
                         let needsRegenerate = false;
                         for (let r of parsed) {
                             const d = new Date(r.date);
                             const month = d.getMonth();
                             const year = d.getFullYear();
-                            if (year !== currentYear || (month < 6 || month > 7)) {
+                            // Verificar se é agosto de 2026 e se a data não é futura
+                            if (year !== currentYear || month !== 7 || d > now) {
                                 needsRegenerate = true;
                                 break;
                             }
@@ -5520,24 +5496,25 @@
         }
 
         // ============================================================
-        // VERIFICAR SE O MÊS MUDOU E REGENERAR DATAS
+        // VERIFICAR SE AS DATAS ESTÃO NO PERÍODO CORRETO
         // ============================================================
         function checkAndUpdateReviewDates() {
             const now = new Date();
-            const currentMonth = now.getMonth();
             const currentYear = now.getFullYear();
+            const currentMonth = now.getMonth();
             let needsUpdate = false;
             for (let r of allReviews) {
                 const d = new Date(r.date);
                 const month = d.getMonth();
                 const year = d.getFullYear();
-                if (year !== currentYear || (month < 6 || month > 7)) {
+                // Verificar se é agosto de 2026 e se a data não é futura
+                if (year !== currentYear || month !== 7 || d > now) {
                     needsUpdate = true;
                     break;
                 }
             }
             if (needsUpdate) {
-                // Regenerar datas para o período Julho-Agosto
+                // Regenerar datas para agosto de 2026
                 allReviews = allReviews.map(r => ({
                     ...r,
                     date: generateReviewDate().toISOString()
@@ -5640,13 +5617,9 @@
             feedbackEl.className = '';
             feedbackEl.textContent = '';
 
-            // Gerar data atual para a nova avaliação
+            // Gerar data atual para a nova avaliação (em agosto de 2026)
             const now = new Date();
-            // Ajustar para o mês de agosto se estivermos em agosto, senão julho
-            let month = now.getMonth();
-            if (month < 6) month = 6; // se antes de julho, coloca julho
-            if (month > 7) month = 7; // se depois de agosto, coloca agosto
-            const date = new Date(now.getFullYear(), month, Math.min(now.getDate(), 28));
+            const date = new Date(now.getFullYear(), 7, Math.min(now.getDate(), 28));
             const newReview = {
                 name: currentUser.fullName,
                 city: currentUser.city || 'Maputo',

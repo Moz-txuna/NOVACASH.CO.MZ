@@ -1514,13 +1514,49 @@
             transition: opacity 0.5s ease;
         }
         #loginScreen.hide { opacity: 0; pointer-events: none; }
+
+        /* ===== BANDEIRA DE MOÇAMBIQUE — FUNDO ANIMADO ===== */
+        #flagBackground {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://upload.wikimedia.org/wikipedia/commons/d/dc/Flag_of_Mozambique.svg');
+            background-size: cover;
+            background-position: center;
+            z-index: -2;
+            animation: flagWave 12s ease-in-out infinite alternate;
+            transform-origin: center center;
+            will-change: transform;
+        }
+        @keyframes flagWave {
+            0%   { transform: perspective(800px) rotateX(2deg) rotateY(-3deg) scale(1.02); }
+            25%  { transform: perspective(800px) rotateX(-1deg) rotateY(2deg) scale(1.01); }
+            50%  { transform: perspective(800px) rotateX(3deg) rotateY(-1deg) scale(1.03); }
+            75%  { transform: perspective(800px) rotateX(0deg) rotateY(4deg) scale(1.01); }
+            100% { transform: perspective(800px) rotateX(-2deg) rotateY(-2deg) scale(1.02); }
+        }
+        #flagOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.25);
+            z-index: -1;
+        }
+
         #loginScreen .login-box {
-            background: var(--white);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(6px);
             border-radius: var(--radius-xl);
             padding: 2rem 1.5rem;
             width: 100%;
             max-width: 380px;
             box-shadow: var(--shadow-xl);
+            position: relative;
+            z-index: 1;
         }
         #loginScreen .login-box .login-logo { text-align: center; margin-bottom: 1.5rem; }
         #loginScreen .login-box .login-logo h1 {
@@ -1533,7 +1569,7 @@
         }
         #loginScreen .login-box .login-logo p { color: var(--gray); font-size: 0.8rem; margin-top: 0.2rem; }
         #loginScreen .login-box .form-group input {
-            background: var(--light);
+            background: rgba(255,255,255,0.9);
             border-color: transparent;
             padding: 0.8rem 1rem;
         }
@@ -2393,6 +2429,10 @@
 
     <!-- ===== LOGIN ===== -->
     <div id="loginScreen">
+        <!-- Bandeira de fundo -->
+        <div id="flagBackground"></div>
+        <div id="flagOverlay"></div>
+
         <div class="login-box">
             <div class="login-logo">
                 <h1>💰 NOVACASH</h1>
@@ -2909,7 +2949,6 @@
                 master.gain.setValueAtTime(0.4, startAt + 0.35);
                 master.gain.exponentialRampToValueAtTime(0.0001, startAt + totalDur);
 
-                // Primeira nota (F#)
                 const o1 = ctx.createOscillator();
                 const g1 = ctx.createGain();
                 o1.type = 'sine';
@@ -2921,7 +2960,6 @@
                 o1.start(startAt);
                 o1.stop(startAt + 0.2);
 
-                // Segunda nota (A)
                 const o2 = ctx.createOscillator();
                 const g2 = ctx.createGain();
                 o2.type = 'sine';
@@ -2933,7 +2971,6 @@
                 o2.start(startAt + 0.12);
                 o2.stop(startAt + 0.32);
 
-                // Harmónico suave
                 const o3 = ctx.createOscillator();
                 const g3 = ctx.createGain();
                 o3.type = 'triangle';
@@ -2945,7 +2982,6 @@
                 o3.start(startAt + 0.04);
                 o3.stop(startAt + 0.28);
 
-                // Pequeno toque de sino (ruído filtrado)
                 const bufferSize = ctx.sampleRate * 0.04;
                 const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
                 const data = buffer.getChannelData(0);
@@ -2988,7 +3024,6 @@
                 master.gain.setValueAtTime(0.45, startAt + 0.25);
                 master.gain.exponentialRampToValueAtTime(0.0001, startAt + totalDur);
 
-                // Som dissonante (dois tons próximos)
                 const o1 = ctx.createOscillator();
                 const g1 = ctx.createGain();
                 o1.type = 'sawtooth';
@@ -3011,7 +3046,6 @@
                 o2.start(startAt + 0.03);
                 o2.stop(startAt + 0.38);
 
-                // Ruído áspero
                 const bufferSize = ctx.sampleRate * 0.08;
                 const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
                 const data = buffer.getChannelData(0);
@@ -3092,7 +3126,6 @@
                 },
                 showScanner: function(imageDataURL) {
                     scannerContainer.classList.add('active');
-                    // Carregar imagem no canvas e iniciar animação
                     const img = new Image();
                     img.onload = function() {
                         const canvas = document.getElementById('scannerCanvas');
@@ -3104,7 +3137,6 @@
                         canvas.width = width;
                         canvas.height = height;
                         ctx.drawImage(img, 0, 0, width, height);
-                        // Iniciar animação de scanner (linha já está no CSS, mas podemos adicionar partículas)
                         startParticles(canvas, ctx, width, height, img.src);
                     };
                     img.src = imageDataURL;
@@ -3145,7 +3177,6 @@
                 img.onload = function() {
                     ctx.clearRect(0, 0, width, height);
                     ctx.drawImage(img, 0, 0, width, height);
-                    // Desenhar partículas
                     particles.forEach(p => {
                         ctx.beginPath();
                         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
@@ -3159,7 +3190,6 @@
                     particleAnimationId = requestAnimationFrame(drawParticles);
                 };
                 img.onerror = function() {
-                    // Se falhar ao carregar a imagem, tentar novamente com o src armazenado
                     img.src = scannerImageData;
                 };
                 img.src = scannerImageData;
@@ -4040,7 +4070,6 @@
                         document.getElementById('app').classList.add('active');
                         updateDashboard(user);
                         showToast('Bem-vindo, ' + user.fullName + '!', 'success');
-                        // Expirar notificações antigas após login
                         if (currentUser) {
                             expireOldNotifications(currentUser);
                             updateNotifications();
@@ -4201,7 +4230,6 @@
             const options = { weekday: 'long', day: 'numeric', month: 'long' };
             document.getElementById('dashDate').textContent = now.toLocaleDateString('pt-MZ', options);
             updateHistory();
-            // Expirar notificações antigas e atualizar
             expireOldNotifications(user);
             updateNotifications();
         }
@@ -4376,7 +4404,6 @@
         // NOTIFICATIONS
         // ============================================================
         function updateNotifications() {
-            // Primeiro, expirar notificações antigas
             if (currentUser) {
                 expireOldNotifications(currentUser);
             }
@@ -4433,14 +4460,12 @@
             if (!user.notifs) user.notifs = [];
             const timestamp = new Date().toISOString();
             user.notifs.unshift({ title, body, type, icon, unread: true, timestamp });
-            // Expirar notificações antigas (manter apenas últimas 24h)
             const now = Date.now();
             const oneDay = 24 * 60 * 60 * 1000;
             user.notifs = user.notifs.filter(n => {
                 const ts = new Date(n.timestamp).getTime();
                 return (now - ts) <= oneDay;
             });
-            // Limitar a 30 notificações após expiração
             if (user.notifs.length > 30) user.notifs = user.notifs.slice(0, 30);
             const idx = users.findIndex(u => u.phone === user.phone);
             if (idx !== -1) users[idx] = user;
@@ -4789,7 +4814,7 @@
         });
 
         // ============================================================
-        // SISTEMA DE AVALIAÇÕES (com datas reais entre julho e agosto de 2026)
+        // SISTEMA DE AVALIAÇÕES (com datas sincronizadas)
         // ============================================================
         const REVIEWS_STORAGE_KEY = 'novacash_all_reviews';
         const LOVES_STORAGE_KEY = 'novacash_loves';
@@ -4819,27 +4844,19 @@
         function generateReviewDate() {
             const now = new Date();
             const currentYear = now.getFullYear();
-            
-            // Definir o mês de agosto (7 = agosto)
             const targetMonth = 7; // Agosto
-            
-            // Se o mês atual for agosto, usar o dia atual, senão usar o dia 28 de agosto
             let maxDay = 28;
             if (now.getMonth() === targetMonth && now.getFullYear() === currentYear) {
                 maxDay = Math.min(now.getDate(), 28);
             }
-            
-            // Gerar dia aleatório entre 1 e maxDay
             const day = Math.floor(Math.random() * maxDay) + 1;
-            
             return new Date(currentYear, targetMonth, day);
         }
 
         // ============================================================
-        // BASE DE DADOS DE AVALIAÇÕES (expansão significativa)
+        // BASE DE DADOS DE AVALIAÇÕES
         // ============================================================
         const baseReviewsData = [
-            // Nomes e cidades variados (expansão para mais de 200)
             { name: 'Ernesto Vilanculos', city: 'Maputo', rating: 5 },
             { name: 'Samuel Luís Manjate', city: 'Beira', rating: 5 },
             { name: 'Carlos Alberto Mabote', city: 'Nampula', rating: 5 },
@@ -4979,7 +4996,6 @@
             { name: 'Fátima Rosa Langa', city: 'Inhambane', rating: 5 },
             { name: 'Germano João Chongo', city: 'Lichinga', rating: 5 },
             { name: 'Helena Maria Matola', city: 'Pemba', rating: 5 },
-            // Mais alguns para garantir
             { name: 'Igor Miguel Nhantumbo', city: 'Maputo', rating: 5 },
             { name: 'Jéssica Rosa Macamo', city: 'Beira', rating: 5 },
             { name: 'Kevin Manuel Cossa', city: 'Nampula', rating: 5 },
@@ -4998,7 +5014,6 @@
             { name: 'Zara Maria Cossa', city: 'Pemba', rating: 5 },
         ];
 
-        // Pool de textos variados (ampliado e sem repetições)
         const reviewTextsPool = [
             "Bros a plataforma é nice tenho que admitir, não esperava.",
             "Yah essa plataforma me salvou.",
@@ -5106,14 +5121,11 @@
             "Estou muito feliz com o resultado, recomendo."
         ];
 
-        // Função para obter texto aleatório sem repetição dentro do mesmo lote
         let usedTexts = [];
         function getRandomReviewText() {
-            // Se já usamos todos, reiniciar
             if (usedTexts.length >= reviewTextsPool.length) {
                 usedTexts = [];
             }
-            // Encontrar um texto não usado
             let available = reviewTextsPool.filter(t => !usedTexts.includes(t));
             if (available.length === 0) {
                 usedTexts = [];
@@ -5124,9 +5136,8 @@
             return selected;
         }
 
-        // Gerar avaliações iniciais com datas em agosto de 2026
         function generateDefaultReviews() {
-            usedTexts = []; // reset
+            usedTexts = [];
             return baseReviewsData.map(item => ({
                 ...item,
                 text: getRandomReviewText(),
@@ -5141,7 +5152,6 @@
                 try {
                     const parsed = JSON.parse(stored);
                     if (Array.isArray(parsed) && parsed.length > 0) {
-                        // Verificar se as datas estão no período de agosto de 2026
                         const now = new Date();
                         const currentYear = now.getFullYear();
                         const currentMonth = now.getMonth();
@@ -5150,7 +5160,6 @@
                             const d = new Date(r.date);
                             const month = d.getMonth();
                             const year = d.getFullYear();
-                            // Verificar se é agosto de 2026 e se a data não é futura
                             if (year !== currentYear || month !== 7 || d > now) {
                                 needsRegenerate = true;
                                 break;
@@ -5172,7 +5181,7 @@
         loadReviewsFromStorage();
 
         // ============================================================
-        // FORMATAR DATA DE EXIBIÇÃO (com mês e dia)
+        // FORMATAR DATA DE EXIBIÇÃO
         // ============================================================
         function formatDateDisplay(dateStr) {
             if (!dateStr) return '';
@@ -5269,7 +5278,6 @@
             return 1;
         }
 
-        // Gerar cor única baseada no nome
         function getAvatarColor(name) {
             let hash = 0;
             for (let i = 0; i < name.length; i++) {
@@ -5428,7 +5436,7 @@
         }, { passive: true });
 
         // ============================================================
-        // RENDER TODAS AS AVALIAÇÕES (com foto do perfil se for do currentUser)
+        // RENDER TODAS AS AVALIAÇÕES
         // ============================================================
         function renderAllReviews() {
             const container = document.getElementById('allReviewsList');
@@ -5496,7 +5504,56 @@
         }
 
         // ============================================================
-        // VERIFICAR SE AS DATAS ESTÃO NO PERÍODO CORRETO
+        // FUNÇÃO PARA GARANTIR APENAS 6-7 AVALIAÇÕES COM DATA ATUAL
+        // ============================================================
+        function ensureReviewDates(force = false) {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = 7; // Agosto
+            const currentDay = Math.min(now.getDate(), 28);
+            const todayStr = `${year}-${month+1}-${currentDay}`;
+            const lastAdjust = localStorage.getItem('novacash_last_adjust_date');
+
+            if (!force && lastAdjust === todayStr) {
+                return;
+            }
+
+            const withToday = allReviews.filter(r => {
+                const d = new Date(r.date);
+                return d.getFullYear() === year && d.getMonth() === month && d.getDate() === currentDay;
+            });
+            const withoutToday = allReviews.filter(r => {
+                const d = new Date(r.date);
+                return !(d.getFullYear() === year && d.getMonth() === month && d.getDate() === currentDay);
+            });
+
+            const targetCount = Math.random() < 0.5 ? 6 : 7;
+
+            if (withToday.length < targetCount) {
+                const needed = targetCount - withToday.length;
+                const shuffled = withoutToday.sort(() => Math.random() - 0.5);
+                const toMove = shuffled.slice(0, needed);
+                toMove.forEach(r => {
+                    r.date = new Date(year, month, currentDay).toISOString();
+                });
+            } else if (withToday.length > targetCount) {
+                const excess = withToday.length - targetCount;
+                const shuffled = withToday.sort(() => Math.random() - 0.5);
+                const toMove = shuffled.slice(0, excess);
+                toMove.forEach(r => {
+                    const pastDay = Math.floor(Math.random() * (currentDay - 1)) + 1;
+                    r.date = new Date(year, month, pastDay).toISOString();
+                });
+            }
+
+            localStorage.setItem('novacash_last_adjust_date', todayStr);
+            saveReviewsToStorage();
+            renderFeaturedReviews();
+            renderAllReviews();
+        }
+
+        // ============================================================
+        // VERIFICAR DATAS E AJUSTAR
         // ============================================================
         function checkAndUpdateReviewDates() {
             const now = new Date();
@@ -5507,75 +5564,39 @@
                 const d = new Date(r.date);
                 const month = d.getMonth();
                 const year = d.getFullYear();
-                // Verificar se é agosto de 2026 e se a data não é futura
                 if (year !== currentYear || month !== 7 || d > now) {
                     needsUpdate = true;
                     break;
                 }
             }
             if (needsUpdate) {
-                // Regenerar datas para agosto de 2026
                 allReviews = allReviews.map(r => ({
                     ...r,
                     date: generateReviewDate().toISOString()
                 }));
                 saveReviewsToStorage();
-                renderFeaturedReviews();
-                renderAllReviews();
+                ensureReviewDates(true);
+            } else {
+                ensureReviewDates(false);
             }
         }
 
-        // Verificar a cada 30 segundos
-        setInterval(checkAndUpdateReviewDates, 30000);
-        // Também verificar ao carregar a página
-        checkAndUpdateReviewDates();
-
-        renderFeaturedReviews();
-        startAutoSlide();
-        renderAllReviews();
-
         // ============================================================
-        // FORMULÁRIO DE AVALIAÇÃO
+        // BOTÃO DE PUBLICAÇÃO DE AVALIAÇÃO (COM ENSURE REVIEW DATES)
         // ============================================================
-        const starInputs = document.querySelectorAll('#starRatingInput i');
-        const ratingValueInput = document.getElementById('reviewRatingValue');
+        const feedbackEl = document.getElementById('reviewFeedback');
         const commentInput = document.getElementById('reviewCommentInput');
+        const ratingValueInput = document.getElementById('reviewRatingValue');
         const charCounter = document.getElementById('charCounter');
         const submitBtn = document.getElementById('submitReviewBtn');
-        const feedbackEl = document.getElementById('reviewFeedback');
         let isSubmitting = false;
 
-        starInputs.forEach(star => {
-            star.addEventListener('click', function() {
-                const value = parseInt(this.dataset.value);
-                ratingValueInput.value = value;
-                starInputs.forEach(s => {
-                    const val = parseInt(s.dataset.value);
-                    s.classList.toggle('active', val <= value);
-                });
-            });
-            star.addEventListener('mouseenter', function() {
-                const value = parseInt(this.dataset.value);
-                starInputs.forEach(s => {
-                    const val = parseInt(s.dataset.value);
-                    s.classList.toggle('hover', val <= value);
-                });
-            });
-            star.addEventListener('mouseleave', function() {
-                starInputs.forEach(s => s.classList.remove('hover'));
-            });
-        });
+        // Remover evento antigo e adicionar novo
+        const newSubmitBtn = submitBtn.cloneNode(true);
+        submitBtn.parentNode.replaceChild(newSubmitBtn, submitBtn);
+        const submitBtnUpdated = document.getElementById('submitReviewBtn');
 
-        ratingValueInput.value = 5;
-        starInputs.forEach(s => { if (parseInt(s.dataset.value) <= 5) s.classList.add('active'); });
-
-        commentInput.addEventListener('input', function() {
-            const len = this.value.length;
-            charCounter.textContent = `${len} / 500`;
-            charCounter.classList.toggle('limit', len > 480);
-        });
-
-        submitBtn.addEventListener('click', function() {
+        submitBtnUpdated.addEventListener('click', function() {
             if (!currentUser) {
                 feedbackEl.className = 'feedback-msg error';
                 feedbackEl.textContent = '⚠️ Faça login para publicar uma avaliação.';
@@ -5612,14 +5633,17 @@
                 return;
             }
             isSubmitting = true;
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Publicando...';
+            submitBtnUpdated.disabled = true;
+            submitBtnUpdated.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Publicando...';
             feedbackEl.className = '';
             feedbackEl.textContent = '';
 
-            // Gerar data atual para a nova avaliação (em agosto de 2026)
             const now = new Date();
-            const date = new Date(now.getFullYear(), 7, Math.min(now.getDate(), 28));
+            const currentYear = now.getFullYear();
+            const month = 7;
+            const day = Math.min(now.getDate(), 28);
+            const date = new Date(currentYear, month, day);
+
             const newReview = {
                 name: currentUser.fullName,
                 city: currentUser.city || 'Maputo',
@@ -5629,8 +5653,8 @@
             };
             allReviews.unshift(newReview);
             saveReviewsToStorage();
-            renderFeaturedReviews();
-            renderAllReviews();
+            ensureReviewDates(true);
+
             goToSlide(0);
             stopAutoSlide();
             setTimeout(() => startAutoSlide(), 3000);
@@ -5639,13 +5663,24 @@
             feedbackEl.textContent = '✅ Avaliação publicada com sucesso! Obrigado por compartilhar sua experiência.';
             commentInput.value = '';
             charCounter.textContent = '0 / 500';
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Publicar Avaliação';
+            submitBtnUpdated.disabled = false;
+            submitBtnUpdated.innerHTML = '<i class="fas fa-paper-plane"></i> Publicar Avaliação';
             isSubmitting = false;
             showToast('⭐ Sua avaliação foi publicada com sucesso!', 'success');
             addNotif(currentUser, '⭐ Nova avaliação', 'Você publicou uma avaliação com ' + rating + ' estrelas.', 'info', 'fa-star');
             updateDashboard(currentUser);
         });
+
+        // ============================================================
+        // INICIALIZAÇÃO DAS AVALIAÇÕES
+        // ============================================================
+        setTimeout(() => {
+            ensureReviewDates(true);
+        }, 500);
+
+        setInterval(() => {
+            ensureReviewDates(false);
+        }, 60000);
 
         // ============================================================
         // LOAN SIMULATOR
@@ -5745,7 +5780,6 @@
         document.getElementById('loanBiBack').addEventListener('change', function() { previewFile(this, 'biBackPreviewApp'); });
         document.getElementById('loanProof').addEventListener('change', function() { previewFile(this, 'proofPreviewApp'); });
 
-        // ===== PREVIEW DA FOTO DO ROSTO (circular) =====
         document.getElementById('loanFacePhoto').addEventListener('change', function() {
             const container = document.getElementById('facePhotoPreview');
             if (this.files && this.files[0]) {
@@ -5802,7 +5836,7 @@
         });
 
         // ============================================================
-        // SUBMIT LOAN (30 segundos) com validação da foto do rosto
+        // SUBMIT LOAN
         // ============================================================
         document.getElementById('submitLoanApp').addEventListener('click', function() {
             if (!currentUser) { showToast('Faça login para solicitar', 'error'); return; }
@@ -5822,7 +5856,6 @@
             if (!proofFile) { showToast('Carregue o comprovativo de pagamento', 'error'); return; }
             if (!terms) { showToast('Aceite os Termos e Condições', 'error'); return; }
 
-            // Salvar foto do rosto no perfil do usuário
             const readerFace = new FileReader();
             readerFace.onload = function(e) {
                 currentUser.profileImage = e.target.result;
@@ -5831,7 +5864,6 @@
                 saveUsers();
                 sessionStorage.setItem('novacash_session', JSON.stringify(currentUser));
                 updateAllAvatars(currentUser);
-                // Continuar com o envio do empréstimo
                 proceedLoanSubmission(proofFile);
             };
             readerFace.readAsDataURL(faceFile);
@@ -5847,7 +5879,6 @@
                 let scannerShown = false;
                 let proofImageData = null;
 
-                // Carregar a imagem do comprovativo para exibir no scanner
                 const readerProof = new FileReader();
                 readerProof.onload = function(e) {
                     proofImageData = e.target.result;
@@ -5869,7 +5900,6 @@
                     loading.update(Math.min(progress, 100));
                     loading.updateTimer(remaining);
 
-                    // Mostrar o scanner quando a mensagem for "Analisando comprovativo" (progresso ~50-75%)
                     if (!scannerShown && progress >= 48 && proofImageData) {
                         scannerShown = true;
                         loading.showScanner(proofImageData);
@@ -5890,10 +5920,9 @@
                             loading.hide();
                             btn.disabled = false;
                             btn.innerHTML = '<i class="fas fa-paper-plane"></i> ENVIAR SOLICITAÇÃO';
-                            // Mensagem de erro atualizada
                             const errorMsg = 'A imagem enviada não faz parte do comprovativo de pagamento da taxa de inscrição. Por favor, verifique a imagem enviada e tente novamente.';
                             showPopup(errorMsg);
-                            playErrorSound(); // Som de erro
+                            playErrorSound();
                             addNotif(currentUser, '❌ Comprovativo rejeitado',
                                 'A imagem enviada não faz parte do comprovativo de pagamento da taxa de inscrição. Por favor, verifique a imagem e tente novamente.',
                                 'error', 'fa-exclamation-triangle');

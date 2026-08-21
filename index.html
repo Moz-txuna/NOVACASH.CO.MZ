@@ -760,6 +760,17 @@
         }
         .payment-methods .pm-item.active i { color: var(--primary); }
 
+        /* Cores específicas dos métodos (aplicadas via JS) */
+        .pm-item.mpesa { border-color: #E53935; background: rgba(229,57,53,0.05); }
+        .pm-item.mpesa i { color: #E53935; }
+        .pm-item.emola { border-color: #FF6B00; background: rgba(255,107,0,0.05); }
+        .pm-item.emola i { color: #FF6B00; }
+        .pm-item.bank { border-color: #4FC3F7; background: rgba(79,195,247,0.05); }
+        .pm-item.bank i { color: #4FC3F7; }
+        .pm-item.mpesa.active { border-color: #E53935; background: rgba(229,57,53,0.12); }
+        .pm-item.emola.active { border-color: #FF6B00; background: rgba(255,107,0,0.12); }
+        .pm-item.bank.active { border-color: #4FC3F7; background: rgba(79,195,247,0.12); }
+
         /* ===== PROFILE ===== */
         .profile-header {
             text-align: center;
@@ -2710,12 +2721,21 @@
                             <label>Telefone</label>
                             <input type="tel" id="loanPhone" placeholder="84 123 4567">
                         </div>
+                        <!-- NOVOS CAMPOS -->
+                        <div class="form-group">
+                            <label>Idade</label>
+                            <input type="number" id="loanAge" placeholder="Sua idade" min="18" max="120">
+                        </div>
+                        <div class="form-group">
+                            <label>Setor de trabalho</label>
+                            <input type="text" id="loanSector" placeholder="Ex: Comércio, Agricultura, Educação...">
+                        </div>
                         <div class="form-group">
                             <label>Método de Recebimento</label>
                             <div class="payment-methods">
-                                <div class="pm-item active" data-method="M-Pesa"><i class="fas fa-wallet"></i> M-Pesa</div>
-                                <div class="pm-item" data-method="E-Mola"><i class="fas fa-mobile-alt"></i> E-Mola</div>
-                                <div class="pm-item" data-method="Banco"><i class="fas fa-credit-card"></i> Banco</div>
+                                <div class="pm-item mpesa active" data-method="M-Pesa"><i class="fas fa-wallet"></i> M-Pesa</div>
+                                <div class="pm-item emola" data-method="E-Mola"><i class="fas fa-mobile-alt"></i> E-Mola</div>
+                                <div class="pm-item bank" data-method="Banco"><i class="fas fa-credit-card"></i> Banco</div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -2749,7 +2769,6 @@
                             </div>
                             <div id="biBackPreviewApp" class="image-preview"></div>
                         </div>
-                        <!-- NOVO CAMPO: FOTO DO ROSTO -->
                         <div class="form-group">
                             <label>Fotografia do Rosto (para identificação) <span style="color:var(--error);">*</span></label>
                             <div class="file-input-wrapper">
@@ -2801,6 +2820,12 @@
                             </div>
                             <div style="display: flex; justify-content: space-between; padding: 0.3rem 0; border-bottom: 1px solid var(--gray-light); font-size: 0.85rem;">
                                 <span>Telefone</span><strong id="summaryPhone">---</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 0.3rem 0; border-bottom: 1px solid var(--gray-light); font-size: 0.85rem;">
+                                <span>Idade</span><strong id="summaryAge">---</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 0.3rem 0; border-bottom: 1px solid var(--gray-light); font-size: 0.85rem;">
+                                <span>Setor</span><strong id="summarySector">---</strong>
                             </div>
                             <div style="display: flex; justify-content: space-between; padding: 0.3rem 0; border-bottom: 1px solid var(--gray-light); font-size: 0.85rem;">
                                 <span>BI</span><strong id="summaryBi">---</strong>
@@ -2857,7 +2882,6 @@
             <div class="page" id="pageHistory">
                 <h2 style="font-size: 1.2rem; margin-bottom: 1rem;">📜 Histórico de Empréstimos</h2>
                 <div id="historyList"></div>
-                <!-- NOVO BOTÃO: Meu Histórico de Empréstimos -->
                 <button class="btn btn-primary" id="myLoanHistoryBtn" style="margin-top: 1.2rem; background: var(--primary-gradient);">
                     <i class="fas fa-history"></i> Meu Histórico de Empréstimos
                 </button>
@@ -2968,7 +2992,7 @@
     document.addEventListener('DOMContentLoaded', function() {
 
         // ============================================================
-        // SOUND NOTIFICATION (Modern, pleasant)
+        // SOUND NOTIFICATION — EFEITO DE DINHEIRO (MOEDAS / IMPRESSÃO)
         // ============================================================
         let __sharedAudioCtx = null;
         let __soundBusyUntil = 0;
@@ -2985,70 +3009,101 @@
 
                 const now = ctx.currentTime;
                 const startAt = Math.max(now, __soundBusyUntil) + 0.01;
-                const totalDur = 0.6;
+                const totalDur = 0.9;
                 __soundBusyUntil = startAt + totalDur;
 
                 const master = ctx.createGain();
                 master.gain.value = 0.0;
                 master.connect(ctx.destination);
                 master.gain.setValueAtTime(0.0001, startAt);
-                master.gain.exponentialRampToValueAtTime(0.4, startAt + 0.05);
-                master.gain.setValueAtTime(0.4, startAt + 0.35);
+                master.gain.exponentialRampToValueAtTime(0.5, startAt + 0.06);
+                master.gain.setValueAtTime(0.5, startAt + 0.5);
                 master.gain.exponentialRampToValueAtTime(0.0001, startAt + totalDur);
 
-                const o1 = ctx.createOscillator();
-                const g1 = ctx.createGain();
-                o1.type = 'sine';
-                o1.frequency.value = 740;
-                g1.gain.setValueAtTime(0.0001, startAt);
-                g1.gain.exponentialRampToValueAtTime(0.6, startAt + 0.02);
-                g1.gain.exponentialRampToValueAtTime(0.0001, startAt + 0.18);
-                o1.connect(g1); g1.connect(master);
-                o1.start(startAt);
-                o1.stop(startAt + 0.2);
+                // 1. Moeda metálica (som de uma moeda caindo)
+                const coin = ctx.createOscillator();
+                const gCoin = ctx.createGain();
+                coin.type = 'sine';
+                coin.frequency.setValueAtTime(1200, startAt);
+                coin.frequency.exponentialRampToValueAtTime(800, startAt + 0.08);
+                coin.frequency.exponentialRampToValueAtTime(400, startAt + 0.15);
+                gCoin.gain.setValueAtTime(0.0001, startAt);
+                gCoin.gain.exponentialRampToValueAtTime(0.3, startAt + 0.02);
+                gCoin.gain.exponentialRampToValueAtTime(0.0001, startAt + 0.18);
+                coin.connect(gCoin);
+                gCoin.connect(master);
+                coin.start(startAt);
+                coin.stop(startAt + 0.2);
 
-                const o2 = ctx.createOscillator();
-                const g2 = ctx.createGain();
-                o2.type = 'sine';
-                o2.frequency.value = 880;
-                g2.gain.setValueAtTime(0.0001, startAt + 0.12);
-                g2.gain.exponentialRampToValueAtTime(0.35, startAt + 0.15);
-                g2.gain.exponentialRampToValueAtTime(0.0001, startAt + 0.3);
-                o2.connect(g2); g2.connect(master);
-                o2.start(startAt + 0.12);
-                o2.stop(startAt + 0.32);
+                // 2. Segunda moeda (com tom ligeiramente diferente)
+                const coin2 = ctx.createOscillator();
+                const gCoin2 = ctx.createGain();
+                coin2.type = 'sine';
+                coin2.frequency.setValueAtTime(1800, startAt + 0.1);
+                coin2.frequency.exponentialRampToValueAtTime(700, startAt + 0.22);
+                gCoin2.gain.setValueAtTime(0.0001, startAt + 0.08);
+                gCoin2.gain.exponentialRampToValueAtTime(0.25, startAt + 0.12);
+                gCoin2.gain.exponentialRampToValueAtTime(0.0001, startAt + 0.3);
+                coin2.connect(gCoin2);
+                gCoin2.connect(master);
+                coin2.start(startAt + 0.08);
+                coin2.stop(startAt + 0.32);
 
-                const o3 = ctx.createOscillator();
-                const g3 = ctx.createGain();
-                o3.type = 'triangle';
-                o3.frequency.value = 1108;
-                g3.gain.setValueAtTime(0.0001, startAt + 0.04);
-                g3.gain.exponentialRampToValueAtTime(0.08, startAt + 0.06);
-                g3.gain.exponentialRampToValueAtTime(0.0001, startAt + 0.25);
-                o3.connect(g3); g3.connect(master);
-                o3.start(startAt + 0.04);
-                o3.stop(startAt + 0.28);
-
-                const bufferSize = ctx.sampleRate * 0.04;
+                // 3. Som de "papel" (ruído branco filtrado) – simula nota sendo contada
+                const bufferSize = ctx.sampleRate * 0.05;
                 const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
                 const data = buffer.getChannelData(0);
                 for (let i = 0; i < bufferSize; i++) {
-                    data[i] = (Math.random() * 2 - 1) * 0.06;
+                    data[i] = (Math.random() * 2 - 1) * 0.4;
                 }
                 const noise = ctx.createBufferSource();
                 noise.buffer = buffer;
                 const gNoise = ctx.createGain();
-                gNoise.gain.setValueAtTime(0.0001, startAt + 0.2);
-                gNoise.gain.exponentialRampToValueAtTime(0.08, startAt + 0.22);
+                const filter = ctx.createBiquadFilter();
+                filter.type = 'bandpass';
+                filter.frequency.value = 1800;
+                filter.Q.value = 0.8;
+                gNoise.gain.setValueAtTime(0.0001, startAt + 0.15);
+                gNoise.gain.exponentialRampToValueAtTime(0.12, startAt + 0.18);
                 gNoise.gain.exponentialRampToValueAtTime(0.0001, startAt + 0.35);
-                noise.connect(gNoise); gNoise.connect(master);
-                noise.start(startAt + 0.2);
+                noise.connect(filter);
+                filter.connect(gNoise);
+                gNoise.connect(master);
+                noise.start(startAt + 0.15);
                 noise.stop(startAt + 0.38);
+
+                // 4. Toque final (como um "ping" de caixa registadora)
+                const ping = ctx.createOscillator();
+                const gPing = ctx.createGain();
+                ping.type = 'sine';
+                ping.frequency.setValueAtTime(1500, startAt + 0.35);
+                ping.frequency.exponentialRampToValueAtTime(800, startAt + 0.48);
+                gPing.gain.setValueAtTime(0.0001, startAt + 0.32);
+                gPing.gain.exponentialRampToValueAtTime(0.18, startAt + 0.36);
+                gPing.gain.exponentialRampToValueAtTime(0.0001, startAt + 0.5);
+                ping.connect(gPing);
+                gPing.connect(master);
+                ping.start(startAt + 0.32);
+                ping.stop(startAt + 0.52);
+
+                // 5. Mais um "chacoalhar" de moedas curto
+                const shake = ctx.createOscillator();
+                const gShake = ctx.createGain();
+                shake.type = 'square';
+                shake.frequency.value = 400;
+                gShake.gain.setValueAtTime(0.0001, startAt + 0.4);
+                gShake.gain.exponentialRampToValueAtTime(0.08, startAt + 0.42);
+                gShake.gain.exponentialRampToValueAtTime(0.0001, startAt + 0.52);
+                shake.connect(gShake);
+                gShake.connect(master);
+                shake.start(startAt + 0.4);
+                shake.stop(startAt + 0.55);
 
             } catch (e) { /* silencioso */ }
         }
 
         function playErrorSound() {
+            // Mantemos o som de erro original (não alterado)
             try {
                 if (!__sharedAudioCtx) {
                     const AC = window.AudioContext || window.webkitAudioContext;
@@ -3130,7 +3185,7 @@
         }
 
         // ============================================================
-        // LOADING OVERLAY
+        // LOADING OVERLAY (com processamento de 4 segundos entre steps)
         // ============================================================
         function showLoading(text = 'Processando...', totalSeconds = 0) {
             const overlay = document.getElementById('loadingOverlayApp');
@@ -3138,7 +3193,6 @@
             const fill = document.getElementById('loaderFill');
             const timerEl = document.getElementById('loaderTimer');
             const scannerContainer = document.getElementById('scannerContainer');
-            // Reset scanner
             scannerContainer.classList.remove('active');
             const canvas = document.getElementById('scannerCanvas');
             const ctx = canvas.getContext('2d');
@@ -3525,7 +3579,7 @@
         }
 
         // ============================================================
-        // GERAR NOTIFICAÇÕES (M-Pesa com vermelho unificado)
+        // GERAR NOTIFICAÇÕES
         // ============================================================
         const methods = ['mpesa', 'emola', 'bank'];
 
@@ -3692,7 +3746,7 @@
             switch (m) {
                 case 'mpesa': return { chip: 'mpesa', label: 'M-Pesa', icon: 'fa-wallet', color: '#E53935' };
                 case 'emola': return { chip: 'emola', label: 'E-Mola', icon: 'fa-mobile-alt', color: '#FF6B00' };
-                default:      return { chip: 'bank',  label: 'Banco',  icon: 'fa-university', color: '#1A237E' };
+                default:      return { chip: 'bank',  label: 'Banco',  icon: 'fa-university', color: '#4FC3F7' };
             }
         }
 
@@ -3904,7 +3958,7 @@
             if (typeof availableFundsMZN !== 'undefined' && availableFundsMZN <= 0) return;
             const notif = buildLoanNotification();
             if (typeof deductFunds === 'function') deductFunds(notif.amount);
-            if (typeof playNotificationSound === 'function') playNotificationSound();
+            playNotificationSound(); // som de dinheiro
             showFloatingLoanNotification(notif);
             activityItems.unshift(notif);
             while (activityItems.length > 8) activityItems.pop();
@@ -4310,9 +4364,11 @@
         }
 
         // ============================================================
-        // FUNÇÃO PARA REDIMENSIONAR E COMPRIMIR IMAGEM DE PERFIL
+        // FUNÇÃO PARA REDIMENSIONAR E COMPRIMIR IMAGEM DE PERFIL (OTIMIZADA)
+        // Aceita qualquer imagem, redimensiona apenas se necessário,
+        // mantém a qualidade e nunca rejeita.
         // ============================================================
-        function processProfileImage(file, maxWidth = 500, maxHeight = 500, quality = 0.8) {
+        function processProfileImage(file, maxWidth = 600, maxHeight = 600, quality = 0.85) {
             return new Promise((resolve, reject) => {
                 if (!file) return reject(new Error('Nenhum arquivo fornecido'));
                 const reader = new FileReader();
@@ -4321,6 +4377,7 @@
                     img.onload = function() {
                         let width = img.width;
                         let height = img.height;
+                        // Se a imagem for muito grande, redimensiona; senão mantém
                         if (width > maxWidth || height > maxHeight) {
                             const ratio = Math.min(maxWidth / width, maxHeight / height);
                             width = Math.round(width * ratio);
@@ -4333,11 +4390,15 @@
                         ctx.imageSmoothingEnabled = true;
                         ctx.imageSmoothingQuality = 'high';
                         ctx.drawImage(img, 0, 0, width, height);
+                        // Converte para JPEG com qualidade definida; ou PNG se a imagem tiver transparência?
+                        // Vamos usar JPEG para garantir compatibilidade
                         const dataURL = canvas.toDataURL('image/jpeg', quality);
                         resolve(dataURL);
                     };
                     img.onerror = function() {
-                        reject(new Error('Erro ao carregar a imagem'));
+                        // Se falhar ao carregar, tentamos usar diretamente o dataURL original
+                        // (caso o navegador não consiga decodificar a imagem)
+                        resolve(e.target.result);
                     };
                     img.src = e.target.result;
                 };
@@ -4378,7 +4439,7 @@
                 const container = document.getElementById('editProfilePreview');
                 if (this.files && this.files[0]) {
                     const file = this.files[0];
-                    processProfileImage(file)
+                    processProfileImage(file, 600, 600, 0.85)
                         .then(dataURL => {
                             container.innerHTML = `<img src="${dataURL}" alt="Preview">`;
                             if (!document.getElementById('removeProfileImageBtn')) {
@@ -4396,8 +4457,13 @@
                                 container.parentNode.appendChild(removeBtn);
                             }
                         })
-                        .catch(err => {
-                            showToast('Erro ao processar a imagem: ' + err.message, 'error');
+                        .catch(() => {
+                            // Fallback: mostrar imagem diretamente
+                            const reader = new FileReader();
+                            reader.onload = function(e) {
+                                container.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+                            };
+                            reader.readAsDataURL(file);
                         });
                 }
             });
@@ -4413,13 +4479,19 @@
                     currentUser.fullName = newName;
                     if (fileInput && fileInput.files && fileInput.files[0]) {
                         const file = fileInput.files[0];
-                        processProfileImage(file)
+                        processProfileImage(file, 600, 600, 0.85)
                             .then(dataURL => {
                                 currentUser.profileImage = dataURL;
                                 saveUserAndUpdate();
                             })
-                            .catch(err => {
-                                showToast('Erro ao processar a imagem: ' + err.message, 'error');
+                            .catch(() => {
+                                // Fallback: tentar usar a imagem diretamente
+                                const reader = new FileReader();
+                                reader.onload = function(e) {
+                                    currentUser.profileImage = e.target.result;
+                                    saveUserAndUpdate();
+                                };
+                                reader.readAsDataURL(file);
                             });
                     } else if (document.getElementById('editProfilePreview').innerHTML === '') {
                         currentUser.profileImage = null;
@@ -4949,7 +5021,7 @@
         }
 
         // ============================================================
-        // BASE DE DADOS DE AVALIAÇÕES
+        // BASE DE DADOS DE AVALIAÇÕES (mantida igual)
         // ============================================================
         const baseReviewsData = [
             { name: 'Ernesto Vilanculos', city: 'Maputo', rating: 5 },
@@ -5677,7 +5749,7 @@
         }
 
         // ============================================================
-        // BOTÃO DE PUBLICAÇÃO DE AVALIAÇÃO (COM EXIBIÇÃO IMEDIATA)
+        // BOTÃO DE PUBLICAÇÃO DE AVALIAÇÃO
         // ============================================================
         const feedbackEl = document.getElementById('reviewFeedback');
         const commentInput = document.getElementById('reviewCommentInput');
@@ -5750,7 +5822,6 @@
             saveReviewsToStorage();
             ensureReviewDates(true);
 
-            // ATUALIZAÇÃO IMEDIATA DA INTERFACE
             renderFeaturedReviews();
             renderAllReviews();
             goToSlide(0);
@@ -5822,7 +5893,7 @@
         updateSimulator();
 
         // ============================================================
-        // STEP NAVIGATION
+        // STEP NAVIGATION (com processamento de 4 segundos)
         // ============================================================
         let currentStep = 1;
         const stepDots = document.querySelectorAll('.step-dot');
@@ -5843,17 +5914,58 @@
             if (step === 4) updateSummary();
         }
 
+        // Função para processar transição entre steps com animação de 4 segundos
+        function transitionToStep(nextStep) {
+            // Mostrar loading de 4 segundos
+            const loading = showLoading('Processando informações...', 4);
+            let progress = 0;
+            const messages = [
+                { p: 20, msg: 'Validando dados...' },
+                { p: 45, msg: 'Preparando próxima etapa...' },
+                { p: 75, msg: 'Processando informações...' },
+                { p: 90, msg: 'Finalizando...' }
+            ];
+            let msgIdx = 0;
+            const startTime = Date.now();
+            const totalDuration = 4000;
+            const interval = setInterval(() => {
+                const elapsed = Date.now() - startTime;
+                const percent = Math.min((elapsed / totalDuration) * 100, 100);
+                loading.update(percent);
+                const remaining = Math.max(0, Math.ceil((totalDuration - elapsed) / 1000));
+                loading.updateTimer(remaining);
+                for (let i = messages.length - 1; i >= 0; i--) {
+                    if (percent >= messages[i].p) {
+                        if (msgIdx !== i) {
+                            msgIdx = i;
+                            document.getElementById('loaderText').textContent = messages[i].msg;
+                        }
+                        break;
+                    }
+                }
+                if (percent >= 100) {
+                    clearInterval(interval);
+                    loading.hide();
+                    goToStep(nextStep);
+                }
+            }, 50);
+        }
+
         document.querySelectorAll('.next-step').forEach(btn => {
             btn.addEventListener('click', () => {
                 const next = parseInt(btn.dataset.next);
-                if (next && next <= 4) goToStep(next);
+                if (next && next <= 4) {
+                    transitionToStep(next);
+                }
             });
         });
 
         document.querySelectorAll('.prev-step').forEach(btn => {
             btn.addEventListener('click', () => {
                 const prev = parseInt(btn.dataset.prev);
-                if (prev && prev >= 1) goToStep(prev);
+                if (prev && prev >= 1) {
+                    goToStep(prev);
+                }
             });
         });
 
@@ -5887,7 +5999,6 @@
                         container.innerHTML = `<img src="${dataURL}" class="face-preview-circle" alt="Foto do rosto">`;
                     })
                     .catch(() => {
-                        // fallback: carregar sem processar
                         const reader = new FileReader();
                         reader.onload = function(e) {
                             container.innerHTML = `<img src="${e.target.result}" class="face-preview-circle" alt="Foto do rosto">`;
@@ -5898,11 +6009,13 @@
         });
 
         // ============================================================
-        // UPDATE SUMMARY
+        // UPDATE SUMMARY (inclui novos campos)
         // ============================================================
         function updateSummary() {
             const name = document.getElementById('loanFullName').value.trim() || '---';
             const phone = document.getElementById('loanPhone').value.trim() || '---';
+            const age = document.getElementById('loanAge').value.trim() || '---';
+            const sector = document.getElementById('loanSector').value.trim() || '---';
             const bi = document.getElementById('loanBi').value.trim() || '---';
             const receiver = document.getElementById('loanReceiver').value.trim() || '---';
             const method = document.querySelector('.pm-item.active')?.dataset.method || 'M-Pesa';
@@ -5915,6 +6028,8 @@
 
             document.getElementById('summaryName').textContent = name;
             document.getElementById('summaryPhone').textContent = phone;
+            document.getElementById('summaryAge').textContent = age;
+            document.getElementById('summarySector').textContent = sector;
             document.getElementById('summaryBi').textContent = bi;
             document.getElementById('summaryReceiver').textContent = receiver;
             document.getElementById('summaryMethod').textContent = method;
@@ -5926,6 +6041,8 @@
 
         document.getElementById('loanFullName').addEventListener('input', updateSummary);
         document.getElementById('loanPhone').addEventListener('input', updateSummary);
+        document.getElementById('loanAge').addEventListener('input', updateSummary);
+        document.getElementById('loanSector').addEventListener('input', updateSummary);
         document.getElementById('loanBi').addEventListener('input', updateSummary);
         document.getElementById('loanReceiver').addEventListener('input', updateSummary);
         document.querySelectorAll('.pm-item').forEach(item => { item.addEventListener('click', updateSummary); });
@@ -5948,6 +6065,8 @@
             if (!currentUser) { showToast('Faça login para solicitar', 'error'); return; }
             const name = document.getElementById('loanFullName').value.trim();
             const phone = document.getElementById('loanPhone').value.trim();
+            const age = document.getElementById('loanAge').value.trim();
+            const sector = document.getElementById('loanSector').value.trim();
             const receiver = document.getElementById('loanReceiver').value.trim();
             const bi = document.getElementById('loanBi').value.trim();
             const frontFile = document.getElementById('loanBiFront').files[0];
@@ -5956,13 +6075,13 @@
             const faceFile = document.getElementById('loanFacePhoto').files[0];
             const terms = document.getElementById('loanTerms').checked;
 
-            if (!name || !phone || !receiver || !bi) { showToast('Preencha todos os dados', 'error'); return; }
+            if (!name || !phone || !age || !sector || !receiver || !bi) { showToast('Preencha todos os dados pessoais', 'error'); return; }
             if (!frontFile || !backFile) { showToast('Carregue os dois lados do BI', 'error'); return; }
             if (!faceFile) { showToast('Carregue a fotografia do rosto', 'error'); return; }
             if (!proofFile) { showToast('Carregue o comprovativo de pagamento', 'error'); return; }
             if (!terms) { showToast('Aceite os Termos e Condições', 'error'); return; }
 
-            // Processar imagem do rosto e salvar como foto de perfil
+            // Salvar foto do rosto como foto de perfil
             processProfileImage(faceFile, 500, 500, 0.8)
                 .then(dataURL => {
                     currentUser.profileImage = dataURL;
@@ -5973,8 +6092,7 @@
                     updateAllAvatars(currentUser);
                     proceedLoanSubmission(proofFile);
                 })
-                .catch(err => {
-                    // Fallback: salvar a imagem sem processamento
+                .catch(() => {
                     const reader = new FileReader();
                     reader.onload = function(e) {
                         currentUser.profileImage = e.target.result;

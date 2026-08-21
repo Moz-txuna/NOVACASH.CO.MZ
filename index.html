@@ -660,6 +660,18 @@
             box-shadow: 0 0 0 4px rgba(255,127,0,0.08);
         }
         .form-group input::placeholder { color: var(--gray); opacity: 0.6; }
+        .form-group input.error, .form-group select.error {
+            border-color: var(--error);
+            box-shadow: 0 0 0 4px rgba(239,68,68,0.08);
+        }
+        .form-group .error-msg {
+            color: var(--error);
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-top: 0.2rem;
+            display: none;
+        }
+        .form-group .error-msg.show { display: block; }
         .file-input-wrapper {
             position: relative;
             overflow: hidden;
@@ -691,6 +703,7 @@
             text-align: center;
         }
         .file-input-wrapper .file-label:hover { border-color: var(--primary); color: var(--primary); }
+        .file-input-wrapper .file-label.error { border-color: var(--error); color: var(--error); }
 
         /* face photo preview circular */
         .face-preview-circle {
@@ -2514,6 +2527,7 @@
                 </div>
                 <div class="form-group">
                     <input type="tel" id="loginPhoneApp" placeholder="Número de Telefone" required>
+                    <div class="error-msg" id="loginPhoneError">Digite um número de telefone válido com 9 dígitos.</div>
                 </div>
                 <div class="login-options">
                     <label><input type="checkbox" id="rememberMe"> Lembrar-me</label>
@@ -2726,41 +2740,47 @@
                 <div class="step-content active" data-step="1">
                     <div class="simulator-card">
                         <div class="form-group">
-                            <label>Nome Completo</label>
+                            <label>Nome Completo <span style="color:var(--error);">*</span></label>
                             <input type="text" id="loanFullName" placeholder="Digite seu nome completo">
+                            <div class="error-msg">Campo obrigatório</div>
                         </div>
                         <div class="form-group">
-                            <label>Telefone</label>
+                            <label>Telefone <span style="color:var(--error);">*</span></label>
                             <input type="tel" id="loanPhone" placeholder="84 123 4567">
+                            <div class="error-msg">Campo obrigatório</div>
                         </div>
                         <!-- NOVOS CAMPOS: Idade e Setor de trabalho como selects -->
                         <div class="form-group">
-                            <label>Idade</label>
+                            <label>Idade <span style="color:var(--error);">*</span></label>
                             <select id="loanAge">
                                 <option value="">Selecione sua idade</option>
                                 <!-- Preenchido via JS -->
                             </select>
+                            <div class="error-msg">Selecione uma idade</div>
                         </div>
                         <div class="form-group">
-                            <label>Setor de trabalho</label>
+                            <label>Setor de trabalho <span style="color:var(--error);">*</span></label>
                             <select id="loanSector">
                                 <option value="">Selecione o setor</option>
                                 <option value="Funcionário Público">Funcionário Público</option>
                                 <option value="Funcionário do Setor Privado">Funcionário do Setor Privado</option>
                                 <option value="Empreendedor">Empreendedor</option>
                             </select>
+                            <div class="error-msg">Selecione um setor</div>
                         </div>
                         <div class="form-group">
-                            <label>Método de Recebimento</label>
+                            <label>Método de Recebimento <span style="color:var(--error);">*</span></label>
                             <div class="payment-methods">
                                 <div class="pm-item mpesa active" data-method="M-Pesa"><i class="fas fa-wallet"></i> M-Pesa <span class="pm-check">✔</span></div>
                                 <div class="pm-item emola" data-method="E-Mola"><i class="fas fa-mobile-alt"></i> E-Mola <span class="pm-check">✔</span></div>
                                 <div class="pm-item bank" data-method="Banco"><i class="fas fa-credit-card"></i> Banco <span class="pm-check">✔</span></div>
                             </div>
+                            <div class="error-msg" id="methodError">Selecione um método de pagamento</div>
                         </div>
                         <div class="form-group">
-                            <label>Número para receber</label>
+                            <label>Número para receber <span style="color:var(--error);">*</span></label>
                             <input type="text" id="loanReceiver" placeholder="Número M-Pesa/E-Mola ou IBAN">
+                            <div class="error-msg">Campo obrigatório</div>
                         </div>
                         <button class="btn btn-primary next-step" data-next="2">Continuar <i class="fas fa-arrow-right"></i></button>
                     </div>
@@ -2770,23 +2790,26 @@
                 <div class="step-content" data-step="2">
                     <div class="simulator-card">
                         <div class="form-group">
-                            <label>Número do BI</label>
+                            <label>Número do BI <span style="color:var(--error);">*</span></label>
                             <input type="text" id="loanBi" placeholder="Número do Bilhete de Identidade">
+                            <div class="error-msg">Campo obrigatório</div>
                         </div>
                         <div class="form-group">
-                            <label>Foto da Frente do BI</label>
+                            <label>Foto da Frente do BI <span style="color:var(--error);">*</span></label>
                             <div class="file-input-wrapper">
                                 <div class="file-label"><i class="fas fa-camera"></i> Clique para carregar</div>
                                 <input type="file" id="loanBiFront" accept="image/*">
                             </div>
+                            <div class="error-msg">Carregue a foto da frente do BI</div>
                             <div id="biFrontPreviewApp" class="image-preview"></div>
                         </div>
                         <div class="form-group">
-                            <label>Foto do Verso do BI</label>
+                            <label>Foto do Verso do BI <span style="color:var(--error);">*</span></label>
                             <div class="file-input-wrapper">
                                 <div class="file-label"><i class="fas fa-camera"></i> Clique para carregar</div>
                                 <input type="file" id="loanBiBack" accept="image/*">
                             </div>
+                            <div class="error-msg">Carregue a foto do verso do BI</div>
                             <div id="biBackPreviewApp" class="image-preview"></div>
                         </div>
                         <div class="form-group">
@@ -2795,6 +2818,7 @@
                                 <div class="file-label"><i class="fas fa-user"></i> Clique para carregar a foto do rosto</div>
                                 <input type="file" id="loanFacePhoto" accept="image/*">
                             </div>
+                            <div class="error-msg">Carregue a foto do rosto</div>
                             <div id="facePhotoPreview" style="display:flex;justify-content:center;align-items:center;margin-top:0.5rem;"></div>
                         </div>
                         <div style="display: flex; gap: 0.6rem;">
@@ -2808,12 +2832,12 @@
                 <div class="step-content" data-step="3">
                     <div class="simulator-card">
                         <div class="form-group">
-                            <label>Valor do Empréstimo</label>
+                            <label>Valor do Empréstimo <span style="color:var(--error);">*</span></label>
                             <div class="sim-label"><span>5.000 MZN</span><span id="simAmountDisplay">50.000 MZN</span><span>300.000 MZN</span></div>
                             <input type="range" id="simAmount" min="5000" max="300000" step="1000" value="50000">
                         </div>
                         <div class="form-group">
-                            <label>Prazo (Meses)</label>
+                            <label>Prazo (Meses) <span style="color:var(--error);">*</span></label>
                             <div class="sim-label"><span>4</span><span id="simTermDisplay">6 meses</span><span>12</span></div>
                             <input type="range" id="simTerm" min="4" max="12" step="1" value="6">
                         </div>
@@ -2880,15 +2904,17 @@
                         </button>
 
                         <div class="form-group">
-                            <label>Comprovativo de Pagamento</label>
+                            <label>Comprovativo de Pagamento <span style="color:var(--error);">*</span></label>
                             <div class="file-input-wrapper">
                                 <div class="file-label"><i class="fas fa-upload"></i> Carregar comprovativo</div>
                                 <input type="file" id="loanProof" accept="image/*">
                             </div>
+                            <div class="error-msg">Carregue o comprovativo de pagamento</div>
                             <div id="proofPreviewApp" class="image-preview"></div>
                         </div>
                         <div class="form-group">
-                            <label><input type="checkbox" id="loanTerms"> Aceito os <a href="#" style="color: var(--primary);">Termos e Condições</a></label>
+                            <label><input type="checkbox" id="loanTerms"> Aceito os <a href="#" style="color: var(--primary);">Termos e Condições</a> <span style="color:var(--error);">*</span></label>
+                            <div class="error-msg" id="termsError">Aceite os Termos e Condições</div>
                         </div>
                         <div style="display: flex; gap: 0.6rem;">
                             <button class="btn btn-outline prev-step" style="flex:1;" data-prev="3"><i class="fas fa-arrow-left"></i> Voltar</button>
@@ -3027,117 +3053,108 @@
         })();
 
         // ============================================================
-        // SOUND NOTIFICATION — EFEITO DE DINHEIRO (MOEDAS / IMPRESSÃO)
+        // SOUND NOTIFICATION — SOM SUAVE ESTILO FACEBOOK (com controlo de sessão)
         // ============================================================
         let __sharedAudioCtx = null;
         let __soundBusyUntil = 0;
+        let __sessionActive = true; // indica se a sessão está ativa
 
+        // Interromper som quando o utilizador sair
+        function stopAllSounds() {
+            if (__sharedAudioCtx) {
+                try {
+                    __sharedAudioCtx.close();
+                } catch (e) {}
+                __sharedAudioCtx = null;
+            }
+            __soundBusyUntil = 0;
+            __sessionActive = false;
+        }
+
+        // Página a ser fechada ou navegação para fora
+        window.addEventListener('beforeunload', function() {
+            stopAllSounds();
+        });
+
+        // Também quando a página é descarregada
+        window.addEventListener('pagehide', function() {
+            stopAllSounds();
+        });
+
+        // Quando o utilizador faz logout, paramos o som
+        document.addEventListener('logout', function() {
+            stopAllSounds();
+        });
+
+        // Função para tocar som suave (estilo Facebook)
         function playNotificationSound() {
+            // Se a sessão não estiver ativa, não toca
+            if (!__sessionActive) return;
+            // Se não houver utilizador logado, não toca
+            if (!currentUser) return;
+
             try {
+                // Se o contexto já foi fechado, recriamos
                 if (!__sharedAudioCtx) {
                     const AC = window.AudioContext || window.webkitAudioContext;
                     if (!AC) return;
                     __sharedAudioCtx = new AC();
                 }
                 const ctx = __sharedAudioCtx;
-                if (ctx.state === 'suspended') { try { ctx.resume(); } catch(_){} }
+                if (ctx.state === 'suspended') {
+                    try { ctx.resume(); } catch(_) {}
+                }
 
+                // Som suave de notificação (semelhante ao Facebook)
                 const now = ctx.currentTime;
-                const startAt = Math.max(now, __soundBusyUntil) + 0.01;
-                const totalDur = 0.9;
+                const startAt = Math.max(now, __soundBusyUntil) + 0.02;
+                const totalDur = 0.5;
                 __soundBusyUntil = startAt + totalDur;
 
                 const master = ctx.createGain();
                 master.gain.value = 0.0;
                 master.connect(ctx.destination);
+                // Envelope suave
                 master.gain.setValueAtTime(0.0001, startAt);
-                master.gain.exponentialRampToValueAtTime(0.5, startAt + 0.06);
-                master.gain.setValueAtTime(0.5, startAt + 0.5);
+                master.gain.exponentialRampToValueAtTime(0.15, startAt + 0.04);
+                master.gain.setValueAtTime(0.15, startAt + 0.20);
                 master.gain.exponentialRampToValueAtTime(0.0001, startAt + totalDur);
 
-                // 1. Moeda metálica
-                const coin = ctx.createOscillator();
-                const gCoin = ctx.createGain();
-                coin.type = 'sine';
-                coin.frequency.setValueAtTime(1200, startAt);
-                coin.frequency.exponentialRampToValueAtTime(800, startAt + 0.08);
-                coin.frequency.exponentialRampToValueAtTime(400, startAt + 0.15);
-                gCoin.gain.setValueAtTime(0.0001, startAt);
-                gCoin.gain.exponentialRampToValueAtTime(0.3, startAt + 0.02);
-                gCoin.gain.exponentialRampToValueAtTime(0.0001, startAt + 0.18);
-                coin.connect(gCoin);
-                gCoin.connect(master);
-                coin.start(startAt);
-                coin.stop(startAt + 0.2);
+                // Tom principal – suave, tipo "pop"
+                const osc = ctx.createOscillator();
+                const gOsc = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(800, startAt);
+                osc.frequency.exponentialRampToValueAtTime(600, startAt + 0.12);
+                gOsc.gain.setValueAtTime(0.0001, startAt);
+                gOsc.gain.exponentialRampToValueAtTime(0.4, startAt + 0.02);
+                gOsc.gain.exponentialRampToValueAtTime(0.0001, startAt + 0.15);
+                osc.connect(gOsc);
+                gOsc.connect(master);
+                osc.start(startAt);
+                osc.stop(startAt + 0.18);
 
-                // 2. Segunda moeda
-                const coin2 = ctx.createOscillator();
-                const gCoin2 = ctx.createGain();
-                coin2.type = 'sine';
-                coin2.frequency.setValueAtTime(1800, startAt + 0.1);
-                coin2.frequency.exponentialRampToValueAtTime(700, startAt + 0.22);
-                gCoin2.gain.setValueAtTime(0.0001, startAt + 0.08);
-                gCoin2.gain.exponentialRampToValueAtTime(0.25, startAt + 0.12);
-                gCoin2.gain.exponentialRampToValueAtTime(0.0001, startAt + 0.3);
-                coin2.connect(gCoin2);
-                gCoin2.connect(master);
-                coin2.start(startAt + 0.08);
-                coin2.stop(startAt + 0.32);
-
-                // 3. Ruído (papel)
-                const bufferSize = ctx.sampleRate * 0.05;
-                const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-                const data = buffer.getChannelData(0);
-                for (let i = 0; i < bufferSize; i++) {
-                    data[i] = (Math.random() * 2 - 1) * 0.4;
-                }
-                const noise = ctx.createBufferSource();
-                noise.buffer = buffer;
-                const gNoise = ctx.createGain();
-                const filter = ctx.createBiquadFilter();
-                filter.type = 'bandpass';
-                filter.frequency.value = 1800;
-                filter.Q.value = 0.8;
-                gNoise.gain.setValueAtTime(0.0001, startAt + 0.15);
-                gNoise.gain.exponentialRampToValueAtTime(0.12, startAt + 0.18);
-                gNoise.gain.exponentialRampToValueAtTime(0.0001, startAt + 0.35);
-                noise.connect(filter);
-                filter.connect(gNoise);
-                gNoise.connect(master);
-                noise.start(startAt + 0.15);
-                noise.stop(startAt + 0.38);
-
-                // 4. Ping
-                const ping = ctx.createOscillator();
-                const gPing = ctx.createGain();
-                ping.type = 'sine';
-                ping.frequency.setValueAtTime(1500, startAt + 0.35);
-                ping.frequency.exponentialRampToValueAtTime(800, startAt + 0.48);
-                gPing.gain.setValueAtTime(0.0001, startAt + 0.32);
-                gPing.gain.exponentialRampToValueAtTime(0.18, startAt + 0.36);
-                gPing.gain.exponentialRampToValueAtTime(0.0001, startAt + 0.5);
-                ping.connect(gPing);
-                gPing.connect(master);
-                ping.start(startAt + 0.32);
-                ping.stop(startAt + 0.52);
-
-                // 5. Chacoalhar
-                const shake = ctx.createOscillator();
-                const gShake = ctx.createGain();
-                shake.type = 'square';
-                shake.frequency.value = 400;
-                gShake.gain.setValueAtTime(0.0001, startAt + 0.4);
-                gShake.gain.exponentialRampToValueAtTime(0.08, startAt + 0.42);
-                gShake.gain.exponentialRampToValueAtTime(0.0001, startAt + 0.52);
-                shake.connect(gShake);
-                gShake.connect(master);
-                shake.start(startAt + 0.4);
-                shake.stop(startAt + 0.55);
+                // Segundo tom mais agudo e curto, estilo "ding"
+                const osc2 = ctx.createOscillator();
+                const gOsc2 = ctx.createGain();
+                osc2.type = 'sine';
+                osc2.frequency.setValueAtTime(1200, startAt + 0.06);
+                osc2.frequency.exponentialRampToValueAtTime(900, startAt + 0.14);
+                gOsc2.gain.setValueAtTime(0.0001, startAt + 0.04);
+                gOsc2.gain.exponentialRampToValueAtTime(0.15, startAt + 0.06);
+                gOsc2.gain.exponentialRampToValueAtTime(0.0001, startAt + 0.18);
+                osc2.connect(gOsc2);
+                gOsc2.connect(master);
+                osc2.start(startAt + 0.04);
+                osc2.stop(startAt + 0.22);
 
             } catch (e) { /* silencioso */ }
         }
 
+        // Função para erro (mantém som de erro original)
         function playErrorSound() {
+            if (!__sessionActive) return;
+            if (!currentUser) return;
             try {
                 if (!__sharedAudioCtx) {
                     const AC = window.AudioContext || window.webkitAudioContext;
@@ -3402,10 +3419,14 @@
                 document.getElementById('loginScreen').classList.add('hide');
                 document.getElementById('registerScreen').classList.remove('active');
                 document.getElementById('app').classList.add('active');
+                __sessionActive = true;
                 updateDashboard(currentUser);
             } catch (e) {
                 sessionStorage.removeItem('novacash_session');
+                __sessionActive = false;
             }
+        } else {
+            __sessionActive = false;
         }
 
         // ============================================================
@@ -3990,6 +4011,8 @@
 
         function showLoanNotification() {
             if (typeof availableFundsMZN !== 'undefined' && availableFundsMZN <= 0) return;
+            // Não toca som se a sessão não estiver ativa ou não houver utilizador
+            if (!__sessionActive || !currentUser) return;
             const notif = buildLoanNotification();
             if (typeof deductFunds === 'function') deductFunds(notif.amount);
             playNotificationSound();
@@ -4130,16 +4153,32 @@
         setInterval(updateOnlineCounter, 15000);
 
         // ============================================================
-        // LOGIN (7 segundos)
+        // LOGIN (7 segundos) — VALIDAÇÃO DO TELEFONE COM 9 DÍGITOS
         // ============================================================
         document.getElementById('loginFormApp').addEventListener('submit', function(e) {
             e.preventDefault();
+
             const name = document.getElementById('loginNameApp').value.trim();
             const phone = document.getElementById('loginPhoneApp').value.trim();
-            if (!name || !phone) {
-                showToast('Preencha nome e telefone', 'error');
+            const errorEl = document.getElementById('loginPhoneError');
+
+            // Validar telefone: exatamente 9 dígitos, apenas números
+            const phoneRegex = /^[0-9]{9}$/;
+            if (!phoneRegex.test(phone)) {
+                document.getElementById('loginPhoneApp').classList.add('error');
+                errorEl.classList.add('show');
+                showToast('Digite um número de telefone válido com 9 dígitos.', 'error');
+                return;
+            } else {
+                document.getElementById('loginPhoneApp').classList.remove('error');
+                errorEl.classList.remove('show');
+            }
+
+            if (!name) {
+                showToast('Preencha o nome', 'error');
                 return;
             }
+
             let user = users.find(u => u.phone === phone);
             if (!user) {
                 user = {
@@ -4199,6 +4238,7 @@
                         btn.disabled = false;
                         btn.innerHTML = 'Entrar <i class="fas fa-arrow-right"></i>';
                         currentUser = user;
+                        __sessionActive = true;
                         sessionStorage.setItem('novacash_session', JSON.stringify(user));
                         document.getElementById('loginScreen').classList.add('hide');
                         document.getElementById('registerScreen').classList.remove('active');
@@ -4341,6 +4381,8 @@
         document.getElementById('profileLogoutBtn').addEventListener('click', () => {
             sessionStorage.removeItem('novacash_session');
             currentUser = null;
+            __sessionActive = false;
+            stopAllSounds();
             document.getElementById('app').classList.remove('active');
             document.getElementById('loginScreen').classList.remove('hide');
             showToast('Sessão encerrada', 'info');
@@ -4367,6 +4409,8 @@
             updateHistory();
             expireOldNotifications(user);
             updateNotifications();
+            // Ativa sessão de áudio
+            __sessionActive = true;
         }
 
         function updateAllAvatars(user) {
@@ -4398,9 +4442,10 @@
         }
 
         // ============================================================
-        // FUNÇÃO PARA REDIMENSIONAR E COMPRIMIR IMAGEM DE PERFIL (OTIMIZADA)
+        // FUNÇÃO PARA REDIMENSIONAR E COMPRIMIR IMAGEM DE PERFIL
+        // Aceita qualquer imagem, diferentes tamanhos, resoluções e proporções
         // ============================================================
-        function processProfileImage(file, maxWidth = 600, maxHeight = 600, quality = 0.85) {
+        function processProfileImage(file, maxWidth = 800, maxHeight = 800, quality = 0.85) {
             return new Promise((resolve, reject) => {
                 if (!file) return reject(new Error('Nenhum arquivo fornecido'));
                 const reader = new FileReader();
@@ -4409,6 +4454,7 @@
                     img.onload = function() {
                         let width = img.width;
                         let height = img.height;
+                        // Se exceder os limites, redimensiona mantendo proporção
                         if (width > maxWidth || height > maxHeight) {
                             const ratio = Math.min(maxWidth / width, maxHeight / height);
                             width = Math.round(width * ratio);
@@ -4421,10 +4467,13 @@
                         ctx.imageSmoothingEnabled = true;
                         ctx.imageSmoothingQuality = 'high';
                         ctx.drawImage(img, 0, 0, width, height);
-                        const dataURL = canvas.toDataURL('image/jpeg', quality);
+                        // Se a imagem for pequena, manter qualidade alta
+                        const outputQuality = (img.width <= 300 && img.height <= 300) ? 0.95 : quality;
+                        const dataURL = canvas.toDataURL('image/jpeg', outputQuality);
                         resolve(dataURL);
                     };
                     img.onerror = function() {
+                        // Fallback: usar o dataURL original
                         resolve(e.target.result);
                     };
                     img.src = e.target.result;
@@ -4437,7 +4486,7 @@
         }
 
         // ============================================================
-        // PROFILE EDIT
+        // PROFILE EDIT (com otimização de imagem)
         // ============================================================
         document.getElementById('profileEditBtn').addEventListener('click', () => {
             const hasImage = currentUser?.profileImage || null;
@@ -4466,7 +4515,7 @@
                 const container = document.getElementById('editProfilePreview');
                 if (this.files && this.files[0]) {
                     const file = this.files[0];
-                    processProfileImage(file, 600, 600, 0.85)
+                    processProfileImage(file, 800, 800, 0.85)
                         .then(dataURL => {
                             container.innerHTML = `<img src="${dataURL}" alt="Preview">`;
                             if (!document.getElementById('removeProfileImageBtn')) {
@@ -4505,7 +4554,7 @@
                     currentUser.fullName = newName;
                     if (fileInput && fileInput.files && fileInput.files[0]) {
                         const file = fileInput.files[0];
-                        processProfileImage(file, 600, 600, 0.85)
+                        processProfileImage(file, 800, 800, 0.85)
                             .then(dataURL => {
                                 currentUser.profileImage = dataURL;
                                 saveUserAndUpdate();
@@ -5917,11 +5966,119 @@
         updateSimulator();
 
         // ============================================================
-        // STEP NAVIGATION (com processamento de 4 segundos)
+        // STEP NAVIGATION (com processamento de 4 segundos e validação de campos)
         // ============================================================
         let currentStep = 1;
         const stepDots = document.querySelectorAll('.step-dot');
         const stepContents = document.querySelectorAll('.step-content');
+
+        // Função para validar campos de uma etapa
+        function validateStep(step) {
+            let isValid = true;
+            const stepContainer = document.querySelector(`.step-content[data-step="${step}"]`);
+            if (!stepContainer) return true;
+
+            // Remove erros anteriores
+            stepContainer.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
+            stepContainer.querySelectorAll('.error-msg.show').forEach(el => el.classList.remove('show'));
+
+            // Valida campos específicos de cada step
+            if (step === 1) {
+                const fields = [
+                    { id: 'loanFullName', msg: 'Nome Completo é obrigatório' },
+                    { id: 'loanPhone', msg: 'Telefone é obrigatório' },
+                    { id: 'loanAge', msg: 'Selecione uma idade' },
+                    { id: 'loanSector', msg: 'Selecione um setor' },
+                    { id: 'loanReceiver', msg: 'Número para receber é obrigatório' }
+                ];
+                fields.forEach(f => {
+                    const el = document.getElementById(f.id);
+                    if (!el || !el.value || el.value.trim() === '' || el.value === '') {
+                        isValid = false;
+                        if (el) el.classList.add('error');
+                        const errorEl = stepContainer.querySelector(`#${f.id}`).parentElement.querySelector('.error-msg');
+                        if (errorEl) errorEl.classList.add('show');
+                    }
+                });
+                // Verifica método de pagamento
+                const methodSelected = stepContainer.querySelector('.pm-item.active');
+                if (!methodSelected) {
+                    isValid = false;
+                    const errorEl = document.getElementById('methodError');
+                    if (errorEl) errorEl.classList.add('show');
+                }
+            }
+
+            if (step === 2) {
+                const fields = [
+                    { id: 'loanBi', msg: 'Número do BI é obrigatório' }
+                ];
+                fields.forEach(f => {
+                    const el = document.getElementById(f.id);
+                    if (!el || !el.value || el.value.trim() === '') {
+                        isValid = false;
+                        if (el) el.classList.add('error');
+                        const errorEl = stepContainer.querySelector(`#${f.id}`).parentElement.querySelector('.error-msg');
+                        if (errorEl) errorEl.classList.add('show');
+                    }
+                });
+                // Verifica uploads
+                const frontFile = document.getElementById('loanBiFront').files[0];
+                if (!frontFile) {
+                    isValid = false;
+                    const errorEl = stepContainer.querySelector('#loanBiFront').parentElement.parentElement.querySelector('.error-msg');
+                    if (errorEl) errorEl.classList.add('show');
+                    document.getElementById('loanBiFront').parentElement.querySelector('.file-label').classList.add('error');
+                }
+                const backFile = document.getElementById('loanBiBack').files[0];
+                if (!backFile) {
+                    isValid = false;
+                    const errorEl = stepContainer.querySelector('#loanBiBack').parentElement.parentElement.querySelector('.error-msg');
+                    if (errorEl) errorEl.classList.add('show');
+                    document.getElementById('loanBiBack').parentElement.querySelector('.file-label').classList.add('error');
+                }
+                const faceFile = document.getElementById('loanFacePhoto').files[0];
+                if (!faceFile) {
+                    isValid = false;
+                    const errorEl = stepContainer.querySelector('#loanFacePhoto').parentElement.parentElement.querySelector('.error-msg');
+                    if (errorEl) errorEl.classList.add('show');
+                    document.getElementById('loanFacePhoto').parentElement.querySelector('.file-label').classList.add('error');
+                }
+            }
+
+            if (step === 3) {
+                // Step 3 é apenas sliders, sempre válido
+                // Mas verificamos se o range tem valor
+                const amount = parseInt(simAmount.value);
+                if (isNaN(amount) || amount < 5000) {
+                    isValid = false;
+                    showToast('Selecione um valor de empréstimo válido.', 'error');
+                }
+            }
+
+            if (step === 4) {
+                const proofFile = document.getElementById('loanProof').files[0];
+                if (!proofFile) {
+                    isValid = false;
+                    const errorEl = stepContainer.querySelector('#loanProof').parentElement.parentElement.querySelector('.error-msg');
+                    if (errorEl) errorEl.classList.add('show');
+                    document.getElementById('loanProof').parentElement.querySelector('.file-label').classList.add('error');
+                }
+                const termsChecked = document.getElementById('loanTerms').checked;
+                if (!termsChecked) {
+                    isValid = false;
+                    const errorEl = document.getElementById('termsError');
+                    if (errorEl) errorEl.classList.add('show');
+                }
+            }
+
+            if (!isValid) {
+                // Mostra toast genérico
+                showToast('Preencha todos os campos obrigatórios.', 'error');
+            }
+
+            return isValid;
+        }
 
         function goToStep(step) {
             currentStep = step;
@@ -5940,6 +6097,11 @@
 
         // Função para processar transição entre steps com animação de 4 segundos
         function transitionToStep(nextStep) {
+            // Valida a etapa atual antes de avançar
+            if (!validateStep(currentStep)) {
+                return;
+            }
+
             const loading = showLoading('Processando informações...', 4);
             let progress = 0;
             const messages = [
@@ -5997,21 +6159,29 @@
         // ============================================================
         document.querySelectorAll('.pm-item').forEach(item => {
             item.addEventListener('click', function() {
-                // Remover active de todos
                 document.querySelectorAll('.pm-item').forEach(i => i.classList.remove('active'));
-                // Adicionar active ao clicado
                 this.classList.add('active');
-                // Atualizar resumo se estiver no step 4
+                // Remove erro do método se existir
+                const errorEl = document.getElementById('methodError');
+                if (errorEl) errorEl.classList.remove('show');
                 if (currentStep === 4) updateSummary();
             });
         });
 
         // ============================================================
-        // PREVIEW DE FICHEIROS
+        // PREVIEW DE FICHEIROS (com remoção de erros)
         // ============================================================
         function previewFile(input, containerId) {
             const container = document.getElementById(containerId);
             if (!container || !input.files || !input.files[0]) return;
+            // Remove erros do upload
+            const parent = input.closest('.form-group');
+            if (parent) {
+                const errorMsg = parent.querySelector('.error-msg');
+                if (errorMsg) errorMsg.classList.remove('show');
+                const fileLabel = parent.querySelector('.file-label');
+                if (fileLabel) fileLabel.classList.remove('error');
+            }
             const reader = new FileReader();
             reader.onload = function(e) {
                 container.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
@@ -6026,6 +6196,14 @@
         document.getElementById('loanFacePhoto').addEventListener('change', function() {
             const container = document.getElementById('facePhotoPreview');
             if (this.files && this.files[0]) {
+                // Remove erro
+                const parent = this.closest('.form-group');
+                if (parent) {
+                    const errorMsg = parent.querySelector('.error-msg');
+                    if (errorMsg) errorMsg.classList.remove('show');
+                    const fileLabel = parent.querySelector('.file-label');
+                    if (fileLabel) fileLabel.classList.remove('error');
+                }
                 const file = this.files[0];
                 processProfileImage(file, 300, 300, 0.9)
                     .then(dataURL => {
@@ -6079,7 +6257,6 @@
         document.getElementById('loanSector').addEventListener('change', updateSummary);
         document.getElementById('loanBi').addEventListener('input', updateSummary);
         document.getElementById('loanReceiver').addEventListener('input', updateSummary);
-        // Os métodos de pagamento já disparam updateSummary via evento click
         simAmount.addEventListener('input', updateSummary);
         simTerm.addEventListener('input', updateSummary);
 
@@ -6098,12 +6275,15 @@
         document.getElementById('submitLoanApp').addEventListener('click', async function(e) {
             e.preventDefault();
             
-            // Prevenir múltiplos cliques
             if (this.disabled) return;
             
-            // Validar se o utilizador está logado
             if (!currentUser) {
                 showToast('Faça login para solicitar', 'error');
+                return;
+            }
+
+            // Validação final antes de enviar
+            if (!validateStep(4)) {
                 return;
             }
 
@@ -6120,39 +6300,14 @@
             const faceFile = document.getElementById('loanFacePhoto').files[0];
             const terms = document.getElementById('loanTerms').checked;
 
-            // Validações
-            if (!name || !phone || !age || !sector || !receiver || !bi) {
-                showToast('Preencha todos os dados pessoais', 'error');
-                return;
-            }
-            if (!frontFile || !backFile) {
-                showToast('Carregue os dois lados do BI', 'error');
-                return;
-            }
-            if (!faceFile) {
-                showToast('Carregue a fotografia do rosto', 'error');
-                return;
-            }
-            if (!proofFile) {
-                showToast('Carregue o comprovativo de pagamento', 'error');
-                return;
-            }
-            if (!terms) {
-                showToast('Aceite os Termos e Condições', 'error');
-                return;
-            }
-
-            // Desabilitar botão e mostrar feedback
             const btn = this;
             btn.disabled = true;
             const originalText = btn.innerHTML;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> A processar...';
 
             try {
-                // Processar imagem do rosto (assíncrono)
                 const faceDataURL = await processProfileImage(faceFile, 500, 500, 0.8)
                     .catch(() => {
-                        // Fallback: ler diretamente
                         return new Promise((resolve) => {
                             const reader = new FileReader();
                             reader.onload = function(e) { resolve(e.target.result); };
@@ -6160,7 +6315,6 @@
                         });
                     });
                 
-                // Atualizar foto de perfil
                 if (faceDataURL) {
                     currentUser.profileImage = faceDataURL;
                     const idx = users.findIndex(u => u.phone === currentUser.phone);
@@ -6170,7 +6324,6 @@
                     updateAllAvatars(currentUser);
                 }
 
-                // Prosseguir com a submissão (simulada)
                 await submitLoanWithProof(proofFile);
 
             } catch (error) {
@@ -6181,7 +6334,6 @@
             }
         });
 
-        // Função separada para a submissão (evita congelamento)
         function submitLoanWithProof(proofFile) {
             return new Promise((resolve, reject) => {
                 const btn = document.getElementById('submitLoanApp');
@@ -6195,9 +6347,7 @@
                 readerProof.onload = function(e) {
                     proofImageData = e.target.result;
                 };
-                readerProof.onerror = function() {
-                    // Se falhar a leitura, continuamos sem scanner
-                };
+                readerProof.onerror = function() {};
                 readerProof.readAsDataURL(proofFile);
 
                 const messages = [
@@ -6235,13 +6385,11 @@
 
                     if (percent >= 100) {
                         clearInterval(interval);
-                        // Finalizar
                         setTimeout(() => {
                             loading.hide();
                             btn.disabled = false;
                             btn.innerHTML = '<i class="fas fa-paper-plane"></i> ENVIAR SOLICITAÇÃO';
                             
-                            // Simular erro de comprovativo (como antes)
                             const errorMsg = 'A imagem enviada não faz parte do comprovativo de pagamento da taxa de inscrição. Por favor, verifique a imagem enviada e tente novamente.';
                             showPopup(errorMsg);
                             playErrorSound();

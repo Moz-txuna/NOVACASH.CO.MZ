@@ -3043,7 +3043,6 @@
         (function populateAgeSelect() {
             const select = document.getElementById('loanAge');
             if (!select) return;
-            // Mantém a primeira opção vazia
             for (let i = 20; i <= 60; i++) {
                 const option = document.createElement('option');
                 option.value = i;
@@ -3057,70 +3056,42 @@
         // ============================================================
         let __sharedAudioCtx = null;
         let __soundBusyUntil = 0;
-        let __sessionActive = true; // indica se a sessão está ativa
+        let __sessionActive = true;
 
-        // Interromper som quando o utilizador sair
         function stopAllSounds() {
             if (__sharedAudioCtx) {
-                try {
-                    __sharedAudioCtx.close();
-                } catch (e) {}
+                try { __sharedAudioCtx.close(); } catch (e) {}
                 __sharedAudioCtx = null;
             }
             __soundBusyUntil = 0;
             __sessionActive = false;
         }
 
-        // Página a ser fechada ou navegação para fora
-        window.addEventListener('beforeunload', function() {
-            stopAllSounds();
-        });
+        window.addEventListener('beforeunload', function() { stopAllSounds(); });
+        window.addEventListener('pagehide', function() { stopAllSounds(); });
+        document.addEventListener('logout', function() { stopAllSounds(); });
 
-        // Também quando a página é descarregada
-        window.addEventListener('pagehide', function() {
-            stopAllSounds();
-        });
-
-        // Quando o utilizador faz logout, paramos o som
-        document.addEventListener('logout', function() {
-            stopAllSounds();
-        });
-
-        // Função para tocar som suave (estilo Facebook)
         function playNotificationSound() {
-            // Se a sessão não estiver ativa, não toca
-            if (!__sessionActive) return;
-            // Se não houver utilizador logado, não toca
-            if (!currentUser) return;
-
+            if (!__sessionActive || !currentUser) return;
             try {
-                // Se o contexto já foi fechado, recriamos
                 if (!__sharedAudioCtx) {
                     const AC = window.AudioContext || window.webkitAudioContext;
                     if (!AC) return;
                     __sharedAudioCtx = new AC();
                 }
                 const ctx = __sharedAudioCtx;
-                if (ctx.state === 'suspended') {
-                    try { ctx.resume(); } catch(_) {}
-                }
-
-                // Som suave de notificação (semelhante ao Facebook)
+                if (ctx.state === 'suspended') { try { ctx.resume(); } catch(_) {} }
                 const now = ctx.currentTime;
                 const startAt = Math.max(now, __soundBusyUntil) + 0.02;
                 const totalDur = 0.5;
                 __soundBusyUntil = startAt + totalDur;
-
                 const master = ctx.createGain();
                 master.gain.value = 0.0;
                 master.connect(ctx.destination);
-                // Envelope suave
                 master.gain.setValueAtTime(0.0001, startAt);
                 master.gain.exponentialRampToValueAtTime(0.15, startAt + 0.04);
                 master.gain.setValueAtTime(0.15, startAt + 0.20);
                 master.gain.exponentialRampToValueAtTime(0.0001, startAt + totalDur);
-
-                // Tom principal – suave, tipo "pop"
                 const osc = ctx.createOscillator();
                 const gOsc = ctx.createGain();
                 osc.type = 'sine';
@@ -3133,8 +3104,6 @@
                 gOsc.connect(master);
                 osc.start(startAt);
                 osc.stop(startAt + 0.18);
-
-                // Segundo tom mais agudo e curto, estilo "ding"
                 const osc2 = ctx.createOscillator();
                 const gOsc2 = ctx.createGain();
                 osc2.type = 'sine';
@@ -3147,14 +3116,11 @@
                 gOsc2.connect(master);
                 osc2.start(startAt + 0.04);
                 osc2.stop(startAt + 0.22);
-
             } catch (e) { /* silencioso */ }
         }
 
-        // Função para erro (mantém som de erro original)
         function playErrorSound() {
-            if (!__sessionActive) return;
-            if (!currentUser) return;
+            if (!__sessionActive || !currentUser) return;
             try {
                 if (!__sharedAudioCtx) {
                     const AC = window.AudioContext || window.webkitAudioContext;
@@ -3162,13 +3128,11 @@
                     __sharedAudioCtx = new AC();
                 }
                 const ctx = __sharedAudioCtx;
-                if (ctx.state === 'suspended') { try { ctx.resume(); } catch(_){} }
-
+                if (ctx.state === 'suspended') { try { ctx.resume(); } catch(_) {} }
                 const now = ctx.currentTime;
                 const startAt = Math.max(now, __soundBusyUntil) + 0.01;
                 const totalDur = 0.7;
                 __soundBusyUntil = startAt + totalDur;
-
                 const master = ctx.createGain();
                 master.gain.value = 0.0;
                 master.connect(ctx.destination);
@@ -3176,7 +3140,6 @@
                 master.gain.exponentialRampToValueAtTime(0.45, startAt + 0.04);
                 master.gain.setValueAtTime(0.45, startAt + 0.25);
                 master.gain.exponentialRampToValueAtTime(0.0001, startAt + totalDur);
-
                 const o1 = ctx.createOscillator();
                 const g1 = ctx.createGain();
                 o1.type = 'sawtooth';
@@ -3187,7 +3150,6 @@
                 o1.connect(g1); g1.connect(master);
                 o1.start(startAt);
                 o1.stop(startAt + 0.35);
-
                 const o2 = ctx.createOscillator();
                 const g2 = ctx.createGain();
                 o2.type = 'square';
@@ -3198,7 +3160,6 @@
                 o2.connect(g2); g2.connect(master);
                 o2.start(startAt + 0.03);
                 o2.stop(startAt + 0.38);
-
                 const bufferSize = ctx.sampleRate * 0.08;
                 const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
                 const data = buffer.getChannelData(0);
@@ -3214,7 +3175,6 @@
                 noise.connect(gNoise); gNoise.connect(master);
                 noise.start(startAt + 0.05);
                 noise.stop(startAt + 0.35);
-
             } catch (e) { /* silencioso */ }
         }
 
@@ -3236,7 +3196,7 @@
         }
 
         // ============================================================
-        // LOADING OVERLAY (processamento de 4 segundos entre steps)
+        // LOADING OVERLAY
         // ============================================================
         function showLoading(text = 'Processando...', totalSeconds = 0) {
             const overlay = document.getElementById('loadingOverlayApp');
@@ -3248,24 +3208,20 @@
             const canvas = document.getElementById('scannerCanvas');
             const ctx = canvas.getContext('2d');
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-
             overlay.classList.add('active');
             if (text) textEl.textContent = text;
             fill.style.width = '0%';
-
             if (totalSeconds > 0) {
                 timerEl.style.display = 'block';
                 updateTimerDisplay(totalSeconds);
             } else {
                 timerEl.style.display = 'none';
             }
-
             function updateTimerDisplay(remaining) {
                 const mins = Math.floor(remaining / 60);
                 const secs = Math.floor(remaining % 60);
                 timerEl.textContent = `${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
             }
-
             return {
                 update: function(percent, msg) {
                     fill.style.width = Math.min(percent, 100) + '%';
@@ -3304,7 +3260,6 @@
             };
         }
 
-        // ===== PARTICLES FOR SCANNER =====
         let particleAnimationId = null;
         let particles = [];
         let scannerImageData = null;
@@ -3341,9 +3296,7 @@
                     });
                     particleAnimationId = requestAnimationFrame(drawParticles);
                 };
-                img.onerror = function() {
-                    img.src = scannerImageData;
-                };
+                img.onerror = function() { img.src = scannerImageData; };
                 img.src = scannerImageData;
             }
             drawParticles();
@@ -4011,7 +3964,6 @@
 
         function showLoanNotification() {
             if (typeof availableFundsMZN !== 'undefined' && availableFundsMZN <= 0) return;
-            // Não toca som se a sessão não estiver ativa ou não houver utilizador
             if (!__sessionActive || !currentUser) return;
             const notif = buildLoanNotification();
             if (typeof deductFunds === 'function') deductFunds(notif.amount);
@@ -4162,7 +4114,6 @@
             const phone = document.getElementById('loginPhoneApp').value.trim();
             const errorEl = document.getElementById('loginPhoneError');
 
-            // Validar telefone: exatamente 9 dígitos, apenas números
             const phoneRegex = /^[0-9]{9}$/;
             if (!phoneRegex.test(phone)) {
                 document.getElementById('loginPhoneApp').classList.add('error');
@@ -4409,7 +4360,6 @@
             updateHistory();
             expireOldNotifications(user);
             updateNotifications();
-            // Ativa sessão de áudio
             __sessionActive = true;
         }
 
@@ -4442,46 +4392,105 @@
         }
 
         // ============================================================
-        // FUNÇÃO PARA REDIMENSIONAR E COMPRIMIR IMAGEM DE PERFIL
-        // Aceita qualquer imagem, diferentes tamanhos, resoluções e proporções
+        // FUNÇÃO PARA REDIMENSIONAR E COMPRIMIR IMAGEM DE PERFIL — CORRIGIDA
         // ============================================================
-        function processProfileImage(file, maxWidth = 800, maxHeight = 800, quality = 0.85) {
+        function processProfileImage(file, maxWidth = 800, maxHeight = 800, quality = 0.85, timeoutMs = 10000) {
             return new Promise((resolve, reject) => {
                 if (!file) return reject(new Error('Nenhum arquivo fornecido'));
+
+                // Verifica se o arquivo é uma imagem
+                if (!file.type.startsWith('image/')) {
+                    return reject(new Error('O arquivo não é uma imagem válida'));
+                }
+
+                // Timeout para evitar travamentos
+                let timeoutId = setTimeout(() => {
+                    reject(new Error('Tempo limite excedido ao processar a imagem'));
+                }, timeoutMs);
+
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    const img = new Image();
-                    img.onload = function() {
-                        let width = img.width;
-                        let height = img.height;
-                        // Se exceder os limites, redimensiona mantendo proporção
-                        if (width > maxWidth || height > maxHeight) {
-                            const ratio = Math.min(maxWidth / width, maxHeight / height);
-                            width = Math.round(width * ratio);
-                            height = Math.round(height * ratio);
-                        }
-                        const canvas = document.createElement('canvas');
-                        canvas.width = width;
-                        canvas.height = height;
-                        const ctx = canvas.getContext('2d');
-                        ctx.imageSmoothingEnabled = true;
-                        ctx.imageSmoothingQuality = 'high';
-                        ctx.drawImage(img, 0, 0, width, height);
-                        // Se a imagem for pequena, manter qualidade alta
-                        const outputQuality = (img.width <= 300 && img.height <= 300) ? 0.95 : quality;
-                        const dataURL = canvas.toDataURL('image/jpeg', outputQuality);
-                        resolve(dataURL);
-                    };
-                    img.onerror = function() {
-                        // Fallback: usar o dataURL original
-                        resolve(e.target.result);
-                    };
-                    img.src = e.target.result;
+                    try {
+                        const img = new Image();
+                        img.onload = function() {
+                            clearTimeout(timeoutId);
+                            try {
+                                let width = img.width;
+                                let height = img.height;
+                                // Redimensiona se necessário
+                                if (width > maxWidth || height > maxHeight) {
+                                    const ratio = Math.min(maxWidth / width, maxHeight / height);
+                                    width = Math.round(width * ratio);
+                                    height = Math.round(height * ratio);
+                                }
+                                const canvas = document.createElement('canvas');
+                                canvas.width = width;
+                                canvas.height = height;
+                                const ctx = canvas.getContext('2d');
+                                ctx.imageSmoothingEnabled = true;
+                                ctx.imageSmoothingQuality = 'high';
+                                ctx.drawImage(img, 0, 0, width, height);
+                                // Se a imagem for pequena, manter qualidade alta
+                                const outputQuality = (img.width <= 300 && img.height <= 300) ? 0.95 : quality;
+                                // Converter para JPEG para compatibilidade
+                                const dataURL = canvas.toDataURL('image/jpeg', outputQuality);
+                                resolve(dataURL);
+                            } catch (err) {
+                                reject(new Error('Erro ao processar a imagem: ' + err.message));
+                            }
+                        };
+                        img.onerror = function() {
+                            clearTimeout(timeoutId);
+                            // Tentativa de fallback com URL.createObjectURL
+                            try {
+                                const blob = new Blob([e.target.result], { type: file.type });
+                                const url = URL.createObjectURL(blob);
+                                const fallbackImg = new Image();
+                                fallbackImg.onload = function() {
+                                    URL.revokeObjectURL(url);
+                                    let width = fallbackImg.width;
+                                    let height = fallbackImg.height;
+                                    if (width > maxWidth || height > maxHeight) {
+                                        const ratio = Math.min(maxWidth / width, maxHeight / height);
+                                        width = Math.round(width * ratio);
+                                        height = Math.round(height * ratio);
+                                    }
+                                    const canvas = document.createElement('canvas');
+                                    canvas.width = width;
+                                    canvas.height = height;
+                                    const ctx = canvas.getContext('2d');
+                                    ctx.drawImage(fallbackImg, 0, 0, width, height);
+                                    const dataURL = canvas.toDataURL('image/jpeg', quality);
+                                    resolve(dataURL);
+                                };
+                                fallbackImg.onerror = function() {
+                                    reject(new Error('Não foi possível decodificar a imagem. Formato não suportado.'));
+                                };
+                                fallbackImg.src = url;
+                            } catch (fallbackErr) {
+                                reject(new Error('Falha ao processar a imagem. Por favor, tente outra imagem.'));
+                            }
+                        };
+                        img.src = e.target.result;
+                    } catch (err) {
+                        clearTimeout(timeoutId);
+                        reject(new Error('Erro ao ler o arquivo: ' + err.message));
+                    }
                 };
                 reader.onerror = function() {
-                    reject(new Error('Erro ao ler o arquivo'));
+                    clearTimeout(timeoutId);
+                    reject(new Error('Erro ao ler o arquivo: ' + (reader.error ? reader.error.message : 'desconhecido')));
                 };
-                reader.readAsDataURL(file);
+                reader.onabort = function() {
+                    clearTimeout(timeoutId);
+                    reject(new Error('Leitura do arquivo foi abortada.'));
+                };
+                try {
+                    reader.readAsDataURL(file);
+                } catch (err) {
+                    clearTimeout(timeoutId);
+                    reject(new Error('Não foi possível iniciar a leitura do arquivo: ' + err.message));
+                }
             });
         }
 
@@ -4515,7 +4524,7 @@
                 const container = document.getElementById('editProfilePreview');
                 if (this.files && this.files[0]) {
                     const file = this.files[0];
-                    processProfileImage(file, 800, 800, 0.85)
+                    processProfileImage(file, 800, 800, 0.85, 12000)
                         .then(dataURL => {
                             container.innerHTML = `<img src="${dataURL}" alt="Preview">`;
                             if (!document.getElementById('removeProfileImageBtn')) {
@@ -4554,7 +4563,7 @@
                     currentUser.fullName = newName;
                     if (fileInput && fileInput.files && fileInput.files[0]) {
                         const file = fileInput.files[0];
-                        processProfileImage(file, 800, 800, 0.85)
+                        processProfileImage(file, 800, 800, 0.85, 12000)
                             .then(dataURL => {
                                 currentUser.profileImage = dataURL;
                                 saveUserAndUpdate();
@@ -5972,17 +5981,14 @@
         const stepDots = document.querySelectorAll('.step-dot');
         const stepContents = document.querySelectorAll('.step-content');
 
-        // Função para validar campos de uma etapa
         function validateStep(step) {
             let isValid = true;
             const stepContainer = document.querySelector(`.step-content[data-step="${step}"]`);
             if (!stepContainer) return true;
 
-            // Remove erros anteriores
             stepContainer.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
             stepContainer.querySelectorAll('.error-msg.show').forEach(el => el.classList.remove('show'));
 
-            // Valida campos específicos de cada step
             if (step === 1) {
                 const fields = [
                     { id: 'loanFullName', msg: 'Nome Completo é obrigatório' },
@@ -6000,7 +6006,6 @@
                         if (errorEl) errorEl.classList.add('show');
                     }
                 });
-                // Verifica método de pagamento
                 const methodSelected = stepContainer.querySelector('.pm-item.active');
                 if (!methodSelected) {
                     isValid = false;
@@ -6022,7 +6027,6 @@
                         if (errorEl) errorEl.classList.add('show');
                     }
                 });
-                // Verifica uploads
                 const frontFile = document.getElementById('loanBiFront').files[0];
                 if (!frontFile) {
                     isValid = false;
@@ -6047,8 +6051,6 @@
             }
 
             if (step === 3) {
-                // Step 3 é apenas sliders, sempre válido
-                // Mas verificamos se o range tem valor
                 const amount = parseInt(simAmount.value);
                 if (isNaN(amount) || amount < 5000) {
                     isValid = false;
@@ -6073,7 +6075,6 @@
             }
 
             if (!isValid) {
-                // Mostra toast genérico
                 showToast('Preencha todos os campos obrigatórios.', 'error');
             }
 
@@ -6095,9 +6096,7 @@
             if (step === 4) updateSummary();
         }
 
-        // Função para processar transição entre steps com animação de 4 segundos
         function transitionToStep(nextStep) {
-            // Valida a etapa atual antes de avançar
             if (!validateStep(currentStep)) {
                 return;
             }
@@ -6161,7 +6160,6 @@
             item.addEventListener('click', function() {
                 document.querySelectorAll('.pm-item').forEach(i => i.classList.remove('active'));
                 this.classList.add('active');
-                // Remove erro do método se existir
                 const errorEl = document.getElementById('methodError');
                 if (errorEl) errorEl.classList.remove('show');
                 if (currentStep === 4) updateSummary();
@@ -6174,7 +6172,6 @@
         function previewFile(input, containerId) {
             const container = document.getElementById(containerId);
             if (!container || !input.files || !input.files[0]) return;
-            // Remove erros do upload
             const parent = input.closest('.form-group');
             if (parent) {
                 const errorMsg = parent.querySelector('.error-msg');
@@ -6193,10 +6190,12 @@
         document.getElementById('loanBiBack').addEventListener('change', function() { previewFile(this, 'biBackPreviewApp'); });
         document.getElementById('loanProof').addEventListener('change', function() { previewFile(this, 'proofPreviewApp'); });
 
+        // ============================================================
+        // EVENTO DE CARREGAMENTO DA FOTO DO ROSTO — CORRIGIDO
+        // ============================================================
         document.getElementById('loanFacePhoto').addEventListener('change', function() {
             const container = document.getElementById('facePhotoPreview');
             if (this.files && this.files[0]) {
-                // Remove erro
                 const parent = this.closest('.form-group');
                 if (parent) {
                     const errorMsg = parent.querySelector('.error-msg');
@@ -6205,16 +6204,28 @@
                     if (fileLabel) fileLabel.classList.remove('error');
                 }
                 const file = this.files[0];
-                processProfileImage(file, 300, 300, 0.9)
+                // Mostra feedback de carregamento
+                container.innerHTML = '<div style="width:100px;height:100px;border-radius:50%;background:#f0f0f0;display:flex;align-items:center;justify-content:center;color:#999;"><i class="fas fa-spinner fa-spin fa-2x"></i></div>';
+                processProfileImage(file, 300, 300, 0.9, 8000)
                     .then(dataURL => {
                         container.innerHTML = `<img src="${dataURL}" class="face-preview-circle" alt="Foto do rosto">`;
                     })
-                    .catch(() => {
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            container.innerHTML = `<img src="${e.target.result}" class="face-preview-circle" alt="Foto do rosto">`;
-                        };
-                        reader.readAsDataURL(file);
+                    .catch(err => {
+                        // Fallback: tenta ler diretamente
+                        try {
+                            const reader = new FileReader();
+                            reader.onload = function(e) {
+                                container.innerHTML = `<img src="${e.target.result}" class="face-preview-circle" alt="Foto do rosto">`;
+                            };
+                            reader.onerror = function() {
+                                container.innerHTML = '<div style="color:red;font-size:0.8rem;">Erro ao carregar a imagem. Tente outra.</div>';
+                                showToast('Não foi possível carregar a imagem. Tente outra.', 'error');
+                            };
+                            reader.readAsDataURL(file);
+                        } catch (fallbackErr) {
+                            container.innerHTML = '<div style="color:red;font-size:0.8rem;">Erro ao carregar a imagem. Tente outra.</div>';
+                            showToast('Formato de imagem não suportado. Tente JPG ou PNG.', 'error');
+                        }
                     });
             }
         });
@@ -6270,51 +6281,62 @@
         });
 
         // ============================================================
-        // SUBMIT LOAN (CORRIGIDO - NÃO CONGELA)
+        // SUBMIT LOAN — CORRIGIDO (com timeout e tratamento robusto)
         // ============================================================
         document.getElementById('submitLoanApp').addEventListener('click', async function(e) {
             e.preventDefault();
-            
             if (this.disabled) return;
-            
             if (!currentUser) {
                 showToast('Faça login para solicitar', 'error');
                 return;
             }
-
-            // Validação final antes de enviar
             if (!validateStep(4)) {
                 return;
             }
 
-            // Recolher dados
-            const name = document.getElementById('loanFullName').value.trim();
-            const phone = document.getElementById('loanPhone').value.trim();
-            const age = document.getElementById('loanAge').value;
-            const sector = document.getElementById('loanSector').value;
-            const receiver = document.getElementById('loanReceiver').value.trim();
-            const bi = document.getElementById('loanBi').value.trim();
-            const frontFile = document.getElementById('loanBiFront').files[0];
-            const backFile = document.getElementById('loanBiBack').files[0];
-            const proofFile = document.getElementById('loanProof').files[0];
-            const faceFile = document.getElementById('loanFacePhoto').files[0];
-            const terms = document.getElementById('loanTerms').checked;
-
             const btn = this;
-            btn.disabled = true;
             const originalText = btn.innerHTML;
+            btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> A processar...';
 
+            // Timeout global de 60 segundos para evitar travamento
+            let globalTimeout = setTimeout(() => {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+                showToast('Tempo limite excedido. Tente novamente.', 'error');
+                if (document.getElementById('loadingOverlayApp').classList.contains('active')) {
+                    hideLoading();
+                }
+            }, 60000);
+
             try {
-                const faceDataURL = await processProfileImage(faceFile, 500, 500, 0.8)
-                    .catch(() => {
-                        return new Promise((resolve) => {
-                            const reader = new FileReader();
-                            reader.onload = function(e) { resolve(e.target.result); };
-                            reader.readAsDataURL(faceFile);
-                        });
-                    });
-                
+                const faceFile = document.getElementById('loanFacePhoto').files[0];
+                const proofFile = document.getElementById('loanProof').files[0];
+
+                // Processar foto do rosto com timeout de 15 segundos
+                let faceDataURL = null;
+                if (faceFile) {
+                    try {
+                        faceDataURL = await Promise.race([
+                            processProfileImage(faceFile, 500, 500, 0.8, 15000),
+                            new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout no processamento da foto')), 15000))
+                        ]);
+                    } catch (faceError) {
+                        // Fallback: tenta leitura direta
+                        try {
+                            faceDataURL = await new Promise((resolve, reject) => {
+                                const reader = new FileReader();
+                                reader.onload = function(e) { resolve(e.target.result); };
+                                reader.onerror = function() { reject(new Error('Erro ao ler a foto')); };
+                                reader.readAsDataURL(faceFile);
+                            });
+                        } catch (fallbackErr) {
+                            throw new Error('Não foi possível processar a foto do rosto. Tente outra imagem.');
+                        }
+                    }
+                }
+
+                // Atualiza o perfil com a foto processada
                 if (faceDataURL) {
                     currentUser.profileImage = faceDataURL;
                     const idx = users.findIndex(u => u.phone === currentUser.phone);
@@ -6324,16 +6346,29 @@
                     updateAllAvatars(currentUser);
                 }
 
+                // Processa o comprovativo (sempre termina com erro simulado, mas garante que o botão seja reativado)
                 await submitLoanWithProof(proofFile);
 
-            } catch (error) {
-                console.error('Erro no processamento:', error);
-                showToast('Ocorreu um erro ao processar. Tente novamente.', 'error');
+                // Após o processamento do comprovativo, reativa o botão
+                clearTimeout(globalTimeout);
                 btn.disabled = false;
                 btn.innerHTML = originalText;
+
+            } catch (error) {
+                clearTimeout(globalTimeout);
+                console.error('Erro no processamento:', error);
+                showToast(error.message || 'Ocorreu um erro. Tente novamente.', 'error');
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+                if (document.getElementById('loadingOverlayApp').classList.contains('active')) {
+                    hideLoading();
+                }
             }
         });
 
+        // ============================================================
+        // FUNÇÃO SUBMIT LOAN WITH PROOF — CORRIGIDA (com rejeição em erro)
+        // ============================================================
         function submitLoanWithProof(proofFile) {
             return new Promise((resolve, reject) => {
                 const btn = document.getElementById('submitLoanApp');
@@ -6343,83 +6378,85 @@
                 let scannerShown = false;
                 let proofImageData = null;
 
+                let proofTimeout = setTimeout(() => {
+                    loading.hide();
+                    reject(new Error('Tempo limite excedido ao processar o comprovativo.'));
+                }, 25000);
+
                 const readerProof = new FileReader();
                 readerProof.onload = function(e) {
+                    clearTimeout(proofTimeout);
                     proofImageData = e.target.result;
-                };
-                readerProof.onerror = function() {};
-                readerProof.readAsDataURL(proofFile);
+                    // Inicia a simulação de progresso
+                    const startTime = Date.now();
+                    const totalDuration = totalSeconds * 1000;
+                    const interval = setInterval(() => {
+                        const elapsedMs = Date.now() - startTime;
+                        const percent = Math.min((elapsedMs / totalDuration) * 100, 100);
+                        loading.update(percent);
+                        const remaining = Math.max(0, Math.ceil((totalDuration - elapsedMs) / 1000));
+                        loading.updateTimer(remaining);
 
-                const messages = [
-                    { p: 10, msg: 'Verificando documentos...' },
-                    { p: 30, msg: 'Validando comprovativo...' },
-                    { p: 50, msg: 'Analisando comprovativo...' },
-                    { p: 70, msg: 'Autenticando comprovativo...' },
-                    { p: 90, msg: 'Finalizando análise...' }
-                ];
-                let msgIdx = 0;
-                const startTime = Date.now();
-                const totalDuration = totalSeconds * 1000;
-
-                const interval = setInterval(() => {
-                    const elapsedMs = Date.now() - startTime;
-                    const percent = Math.min((elapsedMs / totalDuration) * 100, 100);
-                    loading.update(percent);
-                    const remaining = Math.max(0, Math.ceil((totalDuration - elapsedMs) / 1000));
-                    loading.updateTimer(remaining);
-
-                    if (!scannerShown && percent >= 48 && proofImageData) {
-                        scannerShown = true;
-                        loading.showScanner(proofImageData);
-                    }
-
-                    for (let i = messages.length - 1; i >= 0; i--) {
-                        if (percent >= messages[i].p) {
-                            if (msgIdx !== i) {
-                                msgIdx = i;
-                                document.getElementById('loaderText').textContent = messages[i].msg;
-                            }
-                            break;
+                        if (!scannerShown && percent >= 48 && proofImageData) {
+                            scannerShown = true;
+                            loading.showScanner(proofImageData);
                         }
-                    }
 
-                    if (percent >= 100) {
-                        clearInterval(interval);
-                        setTimeout(() => {
-                            loading.hide();
-                            btn.disabled = false;
-                            btn.innerHTML = '<i class="fas fa-paper-plane"></i> ENVIAR SOLICITAÇÃO';
-                            
-                            const errorMsg = 'A imagem enviada não faz parte do comprovativo de pagamento da taxa de inscrição. Por favor, verifique a imagem enviada e tente novamente.';
-                            showPopup(errorMsg);
-                            playErrorSound();
-                            addNotif(currentUser, '❌ Comprovativo rejeitado',
-                                'A imagem enviada não faz parte do comprovativo de pagamento da taxa de inscrição. Por favor, verifique a imagem e tente novamente.',
-                                'error', 'fa-exclamation-triangle');
-                            
-                            const errorModalHTML = `
-                                <div style="text-align:center;margin-bottom:1rem;">
-                                    <i class="fas fa-exclamation-triangle" style="font-size:2.5rem;color:var(--error);"></i>
-                                    <p style="margin-top:0.5rem;font-weight:600;">Comprovativo Rejeitado</p>
-                                    <p style="color:var(--gray);font-size:0.85rem;">A imagem enviada não faz parte do comprovativo de pagamento da taxa de inscrição. Por favor, verifique a imagem enviada e tente novamente.</p>
-                                </div>
-                                <div style="background:#f8f4f0;border-radius:16px;padding:0.8rem;margin:0.6rem 0;">
-                                    <div style="font-size:0.75rem;color:var(--gray);">Dados para pagamento:</div>
-                                    <div style="display:flex;justify-content:space-between;font-weight:600;">
-                                        <span>876364927</span>
-                                        <span>TIOFELO EDSON LUIS JAIELA</span>
+                        if (percent >= 100) {
+                            clearInterval(interval);
+                            // Simula erro do comprovativo (conforme requisito do sistema)
+                            setTimeout(() => {
+                                loading.hide();
+                                const errorMsg = 'A imagem enviada não faz parte do comprovativo de pagamento da taxa de inscrição. Por favor, verifique a imagem enviada e tente novamente.';
+                                showPopup(errorMsg);
+                                playErrorSound();
+                                addNotif(currentUser, '❌ Comprovativo rejeitado',
+                                    'A imagem enviada não faz parte do comprovativo de pagamento da taxa de inscrição. Por favor, verifique a imagem e tente novamente.',
+                                    'error', 'fa-exclamation-triangle');
+
+                                const errorModalHTML = `
+                                    <div style="text-align:center;margin-bottom:1rem;">
+                                        <i class="fas fa-exclamation-triangle" style="font-size:2.5rem;color:var(--error);"></i>
+                                        <p style="margin-top:0.5rem;font-weight:600;">Comprovativo Rejeitado</p>
+                                        <p style="color:var(--gray);font-size:0.85rem;">A imagem enviada não faz parte do comprovativo de pagamento da taxa de inscrição. Por favor, verifique a imagem enviada e tente novamente.</p>
                                     </div>
-                                </div>
-                                <button class="pay-btn" id="understoodBtn" style="background:var(--primary);">ENTENDI, VOU PAGAR</button>
-                            `;
-                            openModal('Pagamento da Taxa', errorModalHTML);
-                            document.getElementById('understoodBtn')?.addEventListener('click', function() {
-                                document.getElementById('modalOverlay').classList.remove('active');
-                            });
-                            resolve();
-                        }, 400);
-                    }
-                }, 50);
+                                    <div style="background:#f8f4f0;border-radius:16px;padding:0.8rem;margin:0.6rem 0;">
+                                        <div style="font-size:0.75rem;color:var(--gray);">Dados para pagamento:</div>
+                                        <div style="display:flex;justify-content:space-between;font-weight:600;">
+                                            <span>876364927</span>
+                                            <span>TIOFELO EDSON LUIS JAIELA</span>
+                                        </div>
+                                    </div>
+                                    <button class="pay-btn" id="understoodBtn" style="background:var(--primary);">ENTENDI, VOU PAGAR</button>
+                                `;
+                                openModal('Pagamento da Taxa', errorModalHTML);
+                                document.getElementById('understoodBtn')?.addEventListener('click', function() {
+                                    document.getElementById('modalOverlay').classList.remove('active');
+                                });
+                                // Resolve a Promise para que o fluxo continue e o botão seja reativado
+                                resolve();
+                            }, 400);
+                        }
+                    }, 50);
+                };
+                readerProof.onerror = function() {
+                    clearTimeout(proofTimeout);
+                    loading.hide();
+                    reject(new Error('Erro ao ler o comprovativo: ' + (readerProof.error ? readerProof.error.message : 'desconhecido')));
+                };
+                readerProof.onabort = function() {
+                    clearTimeout(proofTimeout);
+                    loading.hide();
+                    reject(new Error('Leitura do comprovativo abortada.'));
+                };
+
+                try {
+                    readerProof.readAsDataURL(proofFile);
+                } catch (err) {
+                    clearTimeout(proofTimeout);
+                    loading.hide();
+                    reject(new Error('Não foi possível iniciar a leitura do comprovativo: ' + err.message));
+                }
             });
         }
 

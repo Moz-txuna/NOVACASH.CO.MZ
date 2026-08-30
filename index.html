@@ -196,12 +196,52 @@
         .app-content::-webkit-scrollbar { width: 0; }
 
         /* ===== GREETING ===== */
-        .greeting-section { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem; }
+        .greeting-section { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; }
         .greeting-section h1 { font-size: 1.3rem; font-weight: 700; }
         .greeting-section h1 span { color: var(--primary); }
         .greeting-section p { color: var(--gray); font-size: 0.8rem; margin-top: 0.1rem; }
 
-        /* ===== PREMIUM BANK CARD ===== */
+        /* ===== ONLINE COUNTER ===== */
+        .online-counter {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--gray);
+            padding: 0.5rem 0.8rem;
+            background: rgba(16,185,129,0.08);
+            border-radius: 30px;
+            margin-bottom: 0.8rem;
+            border: 1px solid rgba(16,185,129,0.12);
+            transition: all 0.3s ease;
+        }
+        .online-counter .online-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #10B981;
+            display: inline-block;
+            animation: pulse-dot 2s infinite;
+            flex-shrink: 0;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.85); }
+        }
+        .online-counter .counter-number {
+            font-weight: 800;
+            color: var(--dark);
+            min-width: 36px;
+            display: inline-block;
+            transition: all 0.5s ease;
+        }
+        .online-counter .counter-label {
+            color: var(--gray);
+            font-weight: 500;
+        }
+
+        /* ===== PREMIUM BANK CARD (redesenhado) ===== */
         .bank-card-premium {
             background: linear-gradient(145deg, #1a1a2e 0%, #16213e 100%);
             border-radius: var(--radius-lg);
@@ -302,54 +342,38 @@
             font-weight: 600;
             margin-top: 0.2rem;
         }
-        .bank-card-premium .funds-btn-card {
-            width: 100%;
-            padding: 0.7rem;
-            border-radius: var(--radius);
-            border: none;
-            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
-            color: #1a1a2e;
-            font-weight: 700;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: var(--transition);
-            box-shadow: 0 4px 15px rgba(255,215,0,0.25);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.6rem;
-            position: relative;
-            z-index: 1;
-        }
-        .bank-card-premium .funds-btn-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(255,215,0,0.4);
-        }
-        .bank-card-premium .card-limits {
+
+        /* ===== FUNDOS E LIMITES (abaixo do cartão) ===== */
+        .card-limits-outside {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 0.5rem;
-            margin-top: 0.8rem;
-            position: relative;
-            z-index: 1;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.6rem;
+            margin-bottom: 1.2rem;
         }
-        .bank-card-premium .card-limits .limit-item {
-            background: rgba(255,255,255,0.06);
-            border-radius: 10px;
-            padding: 0.4rem;
+        .card-limits-outside .limit-item {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 0.8rem 0.4rem;
             text-align: center;
-            border: 1px solid rgba(255,255,255,0.06);
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(0,0,0,0.04);
+            transition: var(--transition);
         }
-        .bank-card-premium .card-limits .limit-item .limit-label {
-            font-size: 0.5rem;
-            color: rgba(255,255,255,0.5);
+        .card-limits-outside .limit-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+        .card-limits-outside .limit-item .limit-label {
+            font-size: 0.55rem;
+            color: var(--gray);
             text-transform: uppercase;
             letter-spacing: 0.3px;
         }
-        .bank-card-premium .card-limits .limit-item .limit-value {
-            font-size: 0.75rem;
+        .card-limits-outside .limit-item .limit-value {
+            font-size: 0.85rem;
             font-weight: 700;
-            color: var(--primary-light);
+            color: var(--primary);
+            margin-top: 0.2rem;
+        }
+        .card-limits-outside .limit-item .limit-value .highlight {
+            color: var(--dark);
         }
 
         /* ===== LOAN BUTTON ===== */
@@ -415,46 +439,6 @@
         }
         .quick-stat .stat-value .stat-suffix { font-size: 0.7rem; font-weight: 600; color: var(--gray); }
         .quick-stat .stat-label { font-size: 0.6rem; color: var(--gray); font-weight: 500; }
-
-        /* ===== ONLINE COUNTER ===== */
-        .online-counter {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--gray);
-            padding: 0.5rem 0.8rem;
-            background: rgba(16,185,129,0.08);
-            border-radius: 30px;
-            margin-bottom: 0.8rem;
-            border: 1px solid rgba(16,185,129,0.12);
-            transition: all 0.3s ease;
-        }
-        .online-counter .online-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: #10B981;
-            display: inline-block;
-            animation: pulse-dot 2s infinite;
-            flex-shrink: 0;
-        }
-        @keyframes pulse-dot {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(0.85); }
-        }
-        .online-counter .counter-number {
-            font-weight: 800;
-            color: var(--dark);
-            min-width: 36px;
-            display: inline-block;
-            transition: all 0.5s ease;
-        }
-        .online-counter .counter-label {
-            color: var(--gray);
-            font-weight: 500;
-        }
 
         /* ===== ACTIVITY ===== */
         .section-title {
@@ -946,7 +930,7 @@
         .history-item .hi-status.pending { background: rgba(255,127,0,0.12); color: var(--primary); }
         .history-item .hi-status.rejected { background: rgba(239,68,68,0.12); color: var(--error); }
 
-        /* ===== REVIEWS SECTION ===== */
+        /* ===== REVIEWS SECTION (sem carrossel) ===== */
         .reviews-section-app {
             margin-top: 2rem;
             padding-top: 1.5rem;
@@ -1028,190 +1012,6 @@
             font-weight: 600;
             color: var(--dark);
             font-size: 0.7rem;
-        }
-
-        .reviews-slider-wrapper {
-            position: relative;
-            overflow: hidden;
-            border-radius: var(--radius-lg);
-            margin: 0 -0.2rem 1.8rem;
-        }
-        .reviews-slider-track {
-            display: flex;
-            transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            will-change: transform;
-        }
-        .review-card-premium {
-            flex: 0 0 100%;
-            padding: 0.4rem;
-            box-sizing: border-box;
-        }
-        .review-card-premium .card-inner {
-            background: var(--white);
-            border-radius: var(--radius);
-            padding: 1.2rem 1.2rem 1rem;
-            box-shadow: var(--shadow);
-            border: 1px solid rgba(0,0,0,0.03);
-            transition: var(--transition);
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
-        .review-card-premium .card-inner:hover {
-            transform: translateY(-3px);
-            box-shadow: var(--shadow-lg);
-        }
-        .review-card-premium .card-inner .user-row {
-            display: flex;
-            align-items: center;
-            gap: 0.7rem;
-            margin-bottom: 0.4rem;
-        }
-        .review-card-premium .card-inner .user-row .user-avatar-review {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            background: var(--primary-gradient);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 700;
-            font-size: 0.9rem;
-            flex-shrink: 0;
-            box-shadow: 0 2px 8px rgba(255,127,0,0.15);
-            overflow: hidden;
-        }
-        .review-card-premium .card-inner .user-row .user-avatar-review img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .review-card-premium .card-inner .user-row .user-info {
-            flex: 1;
-        }
-        .review-card-premium .card-inner .user-row .user-info .name {
-            font-weight: 700;
-            font-size: 0.9rem;
-            color: var(--dark);
-        }
-        .review-card-premium .card-inner .user-row .user-info .city {
-            font-size: 0.7rem;
-            color: var(--gray);
-            display: flex;
-            align-items: center;
-            gap: 0.2rem;
-        }
-        .review-card-premium .card-inner .user-row .user-info .city i {
-            font-size: 0.55rem;
-            color: var(--primary);
-        }
-        .review-card-premium .card-inner .stars {
-            color: #FFD700;
-            font-size: 0.9rem;
-            letter-spacing: 1.5px;
-            margin: 0.2rem 0 0.4rem;
-        }
-        .review-card-premium .card-inner .comment {
-            font-size: 0.85rem;
-            line-height: 1.5;
-            color: var(--dark);
-            flex: 1;
-            margin-bottom: 0.5rem;
-        }
-        .review-card-premium .card-inner .date {
-            font-size: 0.6rem;
-            color: var(--gray);
-            opacity: 0.6;
-            align-self: flex-end;
-            margin-top: 0.2rem;
-        }
-        .review-card-premium .card-inner .review-love {
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
-            background: none;
-            border: none;
-            font-size: 0.7rem;
-            color: var(--gray);
-            cursor: pointer;
-            padding: 0.2rem 0.4rem;
-            border-radius: 20px;
-            transition: var(--transition);
-            font-family: 'Inter', sans-serif;
-            font-weight: 500;
-            margin-top: 0.4rem;
-            align-self: flex-start;
-        }
-        .review-card-premium .card-inner .review-love:hover {
-            background: rgba(233,30,99,0.06);
-            color: var(--love-color);
-        }
-        .review-card-premium .card-inner .review-love.loved {
-            color: var(--love-color);
-        }
-        .review-card-premium .card-inner .review-love.loved i {
-            animation: lovePop 0.3s ease;
-        }
-        @keyframes lovePop {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.3); }
-            100% { transform: scale(1); }
-        }
-        .review-card-premium .card-inner .review-love .love-count {
-            font-weight: 600;
-            min-width: 14px;
-            text-align: center;
-        }
-
-        .slider-controls {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 0.8rem;
-            margin-top: 0.6rem;
-            margin-bottom: 1.8rem;
-        }
-        .slider-controls button {
-            background: var(--white);
-            border: 1px solid var(--gray-light);
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: var(--transition);
-            font-size: 0.9rem;
-            color: var(--gray);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: var(--shadow);
-        }
-        .slider-controls button:hover {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-            transform: scale(1.05);
-        }
-        .slider-controls .dots {
-            display: flex;
-            gap: 0.4rem;
-        }
-        .slider-controls .dots .dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--gray-light);
-            transition: var(--transition);
-            cursor: pointer;
-            border: none;
-            padding: 0;
-        }
-        .slider-controls .dots .dot.active {
-            background: var(--primary);
-            width: 20px;
-            border-radius: 6px;
         }
 
         .all-reviews-title {
@@ -1335,6 +1135,11 @@
         }
         .review-list-item .review-love.loved i {
             animation: lovePop 0.3s ease;
+        }
+        @keyframes lovePop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+            100% { transform: scale(1); }
         }
         .review-list-item .review-love .love-count {
             font-weight: 600;
@@ -2404,7 +2209,7 @@
             .chat-window-app { width: 95%; right: 0.5rem; bottom: 6rem; max-height: 450px; }
             .step-progress .step-label { font-size: 0.45rem; }
             .bottom-nav .nav-item { max-width: 60px; }
-            .bank-card-premium .card-limits { grid-template-columns: repeat(2, 1fr); }
+            .card-limits-outside { grid-template-columns: repeat(2, 1fr); }
             .loading-overlay-app .loader-progress { width: 90%; }
             .loading-overlay-app .loader-spinner { width: 50px; height: 50px; }
             .reviews-header-premium {
@@ -2423,14 +2228,6 @@
             .reviews-header-premium .avg-box .big-score { font-size: 1.8rem; }
             .reviews-header-premium .avg-box .stars-big { font-size: 0.9rem; }
             .reviews-header-premium .avg-box .total-reviews { font-size: 0.65rem; }
-            .review-card-premium .card-inner { padding: 1rem; }
-            .review-card-premium .card-inner .user-row .user-avatar-review { width: 36px; height: 36px; font-size: 0.8rem; }
-            .review-card-premium .card-inner .user-row .user-info .name { font-size: 0.8rem; }
-            .review-card-premium .card-inner .comment { font-size: 0.8rem; }
-            .review-form-premium { padding: 1rem; }
-            .review-form-premium .star-rating-input { font-size: 1.5rem; }
-            .review-form-premium .form-actions { flex-direction: column; align-items: stretch; }
-            .review-form-premium .form-actions .btn-submit-review { justify-content: center; }
             .review-list-item { padding: 0.8rem 1rem; }
             .review-list-item .user-row .user-avatar-review { width: 30px; height: 30px; font-size: 0.7rem; }
             .review-list-item .user-row .user-info .name { font-size: 0.8rem; }
@@ -2448,10 +2245,6 @@
             .bottom-nav { max-width: 600px; left: 50%; transform: translateX(-50%); border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
             .chat-window-app { right: calc(50% - 300px + 1rem); }
             .chat-fab { right: calc(50% - 300px + 1rem); }
-            .review-card-premium { flex: 0 0 50%; }
-        }
-        @media (min-width: 1024px) {
-            .review-card-premium { flex: 0 0 33.333%; }
         }
     </style>
 </head>
@@ -2595,7 +2388,14 @@
                     </div>
                 </div>
 
-                <!-- Premium Bank Card -->
+                <!-- ONLINE COUNTER (movido para baixo da saudação) -->
+                <div class="online-counter" id="onlineCounter">
+                    <span class="online-dot"></span>
+                    <span class="counter-number" id="onlineCount">76</span>
+                    <span class="counter-label">pessoas online neste momento</span>
+                </div>
+
+                <!-- Premium Bank Card (redesenhado) -->
                 <div class="bank-card-premium">
                     <div class="card-chip-row">
                         <span class="chip">💳</span>
@@ -2613,15 +2413,21 @@
                         <div class="debt-amount" id="cardDebtAmount">0,00 MZN</div>
                         <span class="debt-status" id="cardDebtStatus"><i class="fas fa-check-circle"></i> Sem dívidas ativas</span>
                     </div>
-                    <button class="funds-btn-card" id="fundsBtnCard">
-                        <i class="fas fa-coins"></i> Fundos Disponíveis para Empréstimo
-                        <i class="fas fa-chevron-right" style="font-size:0.7rem;"></i>
-                    </button>
-                    <div class="card-limits">
-                        <div class="limit-item"><div class="limit-label">MÁXIMO</div><div class="limit-value">300.000 MZN</div></div>
-                        <div class="limit-item"><div class="limit-label">MÍNIMO</div><div class="limit-value">5.000 MZN</div></div>
-                        <div class="limit-item"><div class="limit-label">PRAZO</div><div class="limit-value">4 a 12 meses</div></div>
-                        <div class="limit-item"><div class="limit-label">ANÁLISE</div><div class="limit-value">8 a 30 min</div></div>
+                </div>
+
+                <!-- Informações de fundos e limites (abaixo do cartão) -->
+                <div class="card-limits-outside">
+                    <div class="limit-item">
+                        <div class="limit-label">FUNDOS DISPONÍVEIS</div>
+                        <div class="limit-value" id="outsideFunds">16.000.000 MT</div>
+                    </div>
+                    <div class="limit-item">
+                        <div class="limit-label">LIMITE MÍNIMO</div>
+                        <div class="limit-value">5.000 <span class="highlight">MZN</span></div>
+                    </div>
+                    <div class="limit-item">
+                        <div class="limit-label">LIMITE MÁXIMO</div>
+                        <div class="limit-value">300.000 <span class="highlight">MZN</span></div>
                     </div>
                 </div>
 
@@ -2650,13 +2456,6 @@
                     </div>
                 </div>
 
-                <!-- ONLINE COUNTER -->
-                <div class="online-counter" id="onlineCounter">
-                    <span class="online-dot"></span>
-                    <span class="counter-number" id="onlineCount">76</span>
-                    <span class="counter-label">pessoas online neste momento</span>
-                </div>
-
                 <!-- Activity -->
                 <div class="section-title">
                     <span>Atividade Recente</span>
@@ -2666,7 +2465,7 @@
                     <!-- gerado dinamicamente via JS -->
                 </div>
 
-                <!-- ===== SEÇÃO DE AVALIAÇÕES PREMIUM ===== -->
+                <!-- ===== SEÇÃO DE AVALIAÇÕES PREMIUM (sem carrossel) ===== -->
                 <div class="reviews-section-app" id="reviewsPremiumSection">
                     <div class="reviews-header-premium" id="reviewsHeader">
                         <div class="avg-box">
@@ -2681,16 +2480,6 @@
                             <div class="bar-row"><span class="bar-label">2★</span><div class="bar-track"><div class="bar-fill" style="width:0%"></div></div><span class="bar-percent">0%</span></div>
                             <div class="bar-row"><span class="bar-label">1★</span><div class="bar-track"><div class="bar-fill" style="width:0%"></div></div><span class="bar-percent">0%</span></div>
                         </div>
-                    </div>
-
-                    <div class="reviews-slider-wrapper" id="reviewsSliderWrapper">
-                        <div class="reviews-slider-track" id="reviewsSliderTrack"></div>
-                    </div>
-
-                    <div class="slider-controls" id="sliderControls">
-                        <button id="sliderPrev"><i class="fas fa-chevron-left"></i></button>
-                        <div class="dots" id="sliderDots"></div>
-                        <button id="sliderNext"><i class="fas fa-chevron-right"></i></button>
                     </div>
 
                     <div class="all-reviews-title">
@@ -3430,6 +3219,12 @@
             if (updateEl) {
                 const now = new Date();
                 updateEl.textContent = 'Atualizado ' + now.toLocaleTimeString('pt-MZ');
+            }
+
+            // Atualiza também o valor exibido fora do cartão
+            const outsideFunds = document.getElementById('outsideFunds');
+            if (outsideFunds) {
+                outsideFunds.textContent = formatNumber(availableFundsMZN) + ' MT';
             }
 
             localStorage.setItem('novacash_funds_mzn', availableFundsMZN.toString());
@@ -4831,7 +4626,7 @@
         // ============================================================
         // FUNDS MODAL
         // ============================================================
-        document.getElementById('fundsBtnCard').addEventListener('click', function(e) {
+        document.getElementById('fundsBtnCard')?.addEventListener('click', function(e) {
             e.stopPropagation();
             updateFundsDisplay();
             document.getElementById('fundsModal').classList.add('active');
@@ -5417,14 +5212,62 @@
                         }
                         if (!needsRegenerate) {
                             allReviews = parsed;
+                            // Ajustar a quantidade para entre 147 e 157
+                            adjustReviewCount();
                             return;
                         }
                     }
                 } catch (e) { /* ignore */ }
             }
             allReviews = generateDefaultReviews();
+            adjustReviewCount();
             saveReviewsToStorage();
         }
+
+        function adjustReviewCount() {
+            const targetMin = 147;
+            const targetMax = 157;
+            let currentCount = allReviews.length;
+            if (currentCount < targetMin) {
+                const toAdd = targetMin - currentCount + Math.floor(Math.random() * 3);
+                for (let i = 0; i < toAdd; i++) {
+                    const base = baseReviewsData[Math.floor(Math.random() * baseReviewsData.length)];
+                    allReviews.push({
+                        name: base.name,
+                        city: base.city,
+                        rating: base.rating,
+                        text: getRandomReviewText(),
+                        date: generateReviewDate().toISOString()
+                    });
+                }
+            } else if (currentCount > targetMax) {
+                const toRemove = currentCount - targetMax + Math.floor(Math.random() * 3);
+                for (let i = 0; i < toRemove; i++) {
+                    allReviews.pop();
+                }
+            }
+            // Garantir que os primeiros 6 ou 7 tenham a data de hoje
+            updateRecentReviewsDates();
+        }
+
+        function updateRecentReviewsDates() {
+            const now = new Date();
+            const todayStr = now.toISOString().split('T')[0];
+            // Ordenar por data decrescente
+            const sorted = [...allReviews].sort((a, b) => new Date(b.date) - new Date(a.date));
+            const count = Math.min(6 + Math.floor(Math.random() * 2), sorted.length); // 6 ou 7
+            for (let i = 0; i < count; i++) {
+                if (sorted[i]) {
+                    // Ajustar a data para hoje, mantendo a hora atual
+                    const d = new Date(sorted[i].date);
+                    d.setFullYear(now.getFullYear());
+                    d.setMonth(now.getMonth());
+                    d.setDate(now.getDate());
+                    sorted[i].date = d.toISOString();
+                }
+            }
+        }
+
         function saveReviewsToStorage() {
             localStorage.setItem(REVIEWS_STORAGE_KEY, JSON.stringify(allReviews));
         }
@@ -5443,36 +5286,90 @@
         }
 
         // ============================================================
-        // SLIDER DE AVALIAÇÕES
+        // RENDER TODAS AS AVALIAÇÕES (sem carrossel)
         // ============================================================
-        let currentIndex = 0;
-        let slidesPerView = 1;
-        let autoSlideInterval = null;
-        const SLIDER_DELAY = 6500;
-        const track = document.getElementById('reviewsSliderTrack');
-        const dotsContainer = document.getElementById('sliderDots');
-        const prevBtn = document.getElementById('sliderPrev');
-        const nextBtn = document.getElementById('sliderNext');
-        const wrapper = document.getElementById('reviewsSliderWrapper');
+        function renderAllReviews() {
+            const container = document.getElementById('allReviewsList');
+            const badge = document.getElementById('reviewCountBadge');
+            if (!container) return;
+            // Garantir que os primeiros 6-7 comentários tenham data atual
+            updateRecentReviewsDates();
+            saveReviewsToStorage();
 
-        let reviewLoveCounts = {};
-        function loadLoveCountsFromStorage() {
-            const stored = localStorage.getItem('novacash_love_counts');
-            if (stored) {
-                try {
-                    const parsed = JSON.parse(stored);
-                    if (typeof parsed === 'object' && parsed !== null) {
-                        reviewLoveCounts = parsed;
-                        return;
+            const sorted = [...allReviews].sort((a, b) => new Date(b.date) - new Date(a.date));
+            badge.textContent = sorted.length;
+            container.innerHTML = '';
+            sorted.forEach((review, index) => {
+                const div = document.createElement('div');
+                div.className = 'review-list-item';
+                const nameFull = review.name;
+                const initials = nameFull.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+                const fullStars = Math.floor(review.rating);
+                const emptyStars = 5 - fullStars;
+                const stars = '★'.repeat(fullStars) + '☆'.repeat(emptyStars);
+                const cityHtml = review.city ? `<span class="city"><i class="fas fa-map-marker-alt"></i> ${review.city}</span>` : '';
+                const dateFormatted = formatDateDisplay(review.date);
+                const reviewKey = `${review.name}-${review.date}`;
+                const loveCount = getLoveCountForReview(reviewKey);
+                const isLoved = hasUserLovedReview(reviewKey);
+                const isCurrentUser = currentUser && review.name === currentUser.fullName;
+                const avatarColor = getAvatarColor(review.name);
+                let avatarHtml = initials;
+                if (isCurrentUser && currentUser.profileImage) {
+                    avatarHtml = `<img src="${currentUser.profileImage}" alt="${nameFull}">`;
+                } else {
+                    avatarHtml = `<div style="background:${avatarColor};width:100%;height:100%;display:flex;align-items:center;justify-content:center;border-radius:50%;color:white;font-weight:700;font-size:0.8rem;">${initials}</div>`;
+                }
+
+                // Verificar se o comentário tem menos de 4 horas
+                const now = new Date();
+                const reviewDate = new Date(review.date);
+                const diffMs = now - reviewDate;
+                const isRecent = diffMs < 4 * 60 * 60 * 1000;
+
+                // Se for recente, não mostra contagem de adoros e desabilita
+                const loveHtml = isRecent ? `
+                    <span style="font-size:0.6rem;color:var(--gray);opacity:0.5;margin-top:0.3rem;display:block;">⏳ Aguarde 4h para reagir</span>
+                ` : `
+                    <button class="review-love ${isLoved ? 'loved' : ''}" data-review-key="${reviewKey}">
+                        <i class="fas fa-heart"></i>
+                        <span class="love-count">${loveCount}</span>
+                    </button>
+                `;
+
+                div.innerHTML = `
+                    <div class="user-row">
+                        <div class="user-avatar-review">${avatarHtml}</div>
+                        <div class="user-info">
+                            <div class="name">${review.name} ${cityHtml}</div>
+                        </div>
+                    </div>
+                    <div class="stars">${stars}</div>
+                    <div class="comment">${review.text}</div>
+                    <span class="date">${dateFormatted}</span>
+                    ${loveHtml}
+                `;
+                container.appendChild(div);
+            });
+
+            // Adicionar eventos de love apenas para os botões ativos
+            document.querySelectorAll('#allReviewsList .review-love:not([disabled])').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const key = this.dataset.reviewKey;
+                    if (key) {
+                        const newState = toggleLoveReview(key);
+                        if (newState !== undefined) {
+                            const countSpan = this.querySelector('.love-count');
+                            const loveCount = getLoveCountForReview(key);
+                            if (countSpan) countSpan.textContent = loveCount;
+                            this.classList.toggle('loved', newState);
+                            updateAllReviewLoves(key);
+                        }
                     }
-                } catch (e) { /* ignore */ }
-            }
-            reviewLoveCounts = {};
+                });
+            });
         }
-        function saveLoveCountsToStorage() {
-            localStorage.setItem('novacash_love_counts', JSON.stringify(reviewLoveCounts));
-        }
-        loadLoveCountsFromStorage();
 
         function getLoveCountForReview(reviewKey) {
             if (!reviewLoveCounts[reviewKey]) {
@@ -5493,6 +5390,17 @@
             if (!currentUser) {
                 showToast('Faça login para adicionar ❤️ Adoro', 'info');
                 return false;
+            }
+            // Verificar se o comentário tem menos de 4 horas
+            const review = allReviews.find(r => `${r.name}-${r.date}` === reviewKey);
+            if (review) {
+                const now = new Date();
+                const reviewDate = new Date(review.date);
+                const diffMs = now - reviewDate;
+                if (diffMs < 4 * 60 * 60 * 1000) {
+                    showToast('⏳ Aguarde 4 horas para poder reagir a este comentário.', 'info');
+                    return false;
+                }
             }
             const userKey = currentUser.phone || currentUser.fullName;
             const loveKey = `${userKey}-${reviewKey}`;
@@ -5517,92 +5425,6 @@
             }
         }
 
-        function getFeaturedReviews() {
-            const sorted = [...allReviews].sort((a, b) => new Date(b.date) - new Date(a.date));
-            return sorted.slice(0, 6);
-        }
-
-        function getSlidesPerView() {
-            if (window.innerWidth >= 1024) return 3;
-            if (window.innerWidth >= 768) return 2;
-            return 1;
-        }
-
-        function getAvatarColor(name) {
-            let hash = 0;
-            for (let i = 0; i < name.length; i++) {
-                hash = name.charCodeAt(i) + ((hash << 5) - hash);
-            }
-            const h = Math.abs(hash % 360);
-            return `hsl(${h}, 70%, 60%)`;
-        }
-
-        function renderFeaturedReviews() {
-            track.innerHTML = '';
-            const featured = getFeaturedReviews();
-            featured.forEach((review) => {
-                const card = document.createElement('div');
-                card.className = 'review-card-premium';
-                const nameFull = review.name;
-                const initials = nameFull.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
-                const fullStars = Math.floor(review.rating);
-                const emptyStars = 5 - fullStars;
-                const stars = '★'.repeat(fullStars) + '☆'.repeat(emptyStars);
-                const cityHtml = review.city ? `<div class="city"><i class="fas fa-map-marker-alt"></i> ${review.city}</div>` : '';
-                const dateFormatted = formatDateDisplay(review.date);
-                const reviewKey = `${review.name}-${review.date}`;
-                const loveCount = getLoveCountForReview(reviewKey);
-                const isLoved = hasUserLovedReview(reviewKey);
-
-                const isCurrentUser = currentUser && review.name === currentUser.fullName;
-                const avatarColor = getAvatarColor(review.name);
-                let avatarHtml = initials;
-                if (isCurrentUser && currentUser.profileImage) {
-                    avatarHtml = `<img src="${currentUser.profileImage}" alt="${nameFull}">`;
-                } else {
-                    avatarHtml = `<div style="background:${avatarColor};width:100%;height:100%;display:flex;align-items:center;justify-content:center;border-radius:50%;color:white;font-weight:700;font-size:0.9rem;">${initials}</div>`;
-                }
-
-                card.innerHTML = `
-                    <div class="card-inner">
-                        <div class="user-row">
-                            <div class="user-avatar-review">${avatarHtml}</div>
-                            <div class="user-info">
-                                <div class="name">${review.name}</div>
-                                ${cityHtml}
-                            </div>
-                        </div>
-                        <div class="stars">${stars}</div>
-                        <div class="comment">${review.text}</div>
-                        <div class="date">${dateFormatted}</div>
-                        <button class="review-love ${isLoved ? 'loved' : ''}" data-review-key="${reviewKey}">
-                            <i class="fas fa-heart"></i>
-                            <span class="love-count">${loveCount}</span>
-                        </button>
-                    </div>
-                `;
-                track.appendChild(card);
-            });
-            updateDots();
-            goToSlide(0);
-            document.querySelectorAll('.review-card-premium .review-love').forEach(btn => {
-                btn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    const key = this.dataset.reviewKey;
-                    if (key) {
-                        const newState = toggleLoveReview(key);
-                        if (newState !== undefined) {
-                            const countSpan = this.querySelector('.love-count');
-                            const loveCount = getLoveCountForReview(key);
-                            if (countSpan) countSpan.textContent = loveCount;
-                            this.classList.toggle('loved', newState);
-                            updateAllReviewLoves(key);
-                        }
-                    }
-                });
-            });
-        }
-
         function updateAllReviewLoves(reviewKey) {
             const loveCount = getLoveCountForReview(reviewKey);
             const isLoved = hasUserLovedReview(reviewKey);
@@ -5613,222 +5435,32 @@
             });
         }
 
-        function updateDots() {
-            const featured = getFeaturedReviews();
-            const total = Math.ceil(featured.length / getSlidesPerView());
-            dotsContainer.innerHTML = '';
-            for (let i = 0; i < total; i++) {
-                const dot = document.createElement('button');
-                dot.className = 'dot' + (i === currentIndex ? ' active' : '');
-                dot.dataset.index = i;
-                dot.addEventListener('click', () => goToSlide(i));
-                dotsContainer.appendChild(dot);
-            }
-        }
-
-        function goToSlide(index) {
-            const featured = getFeaturedReviews();
-            const total = Math.ceil(featured.length / getSlidesPerView());
-            if (total === 0) return;
-            if (index < 0) index = total - 1;
-            if (index >= total) index = 0;
-            currentIndex = index;
-            const offset = -index * 100;
-            track.style.transform = `translateX(${offset}%)`;
-            document.querySelectorAll('.dot').forEach((dot, i) => {
-                dot.classList.toggle('active', i === index);
-            });
-        }
-
-        function nextSlide() {
-            const featured = getFeaturedReviews();
-            const total = Math.ceil(featured.length / getSlidesPerView());
-            if (total === 0) return;
-            goToSlide((currentIndex + 1) % total);
-        }
-
-        function prevSlide() {
-            const featured = getFeaturedReviews();
-            const total = Math.ceil(featured.length / getSlidesPerView());
-            if (total === 0) return;
-            goToSlide((currentIndex - 1 + total) % total);
-        }
-
-        function startAutoSlide() {
-            if (autoSlideInterval) clearInterval(autoSlideInterval);
-            const featured = getFeaturedReviews();
-            if (featured.length === 0) return;
-            autoSlideInterval = setInterval(nextSlide, SLIDER_DELAY);
-        }
-
-        function stopAutoSlide() {
-            if (autoSlideInterval) {
-                clearInterval(autoSlideInterval);
-                autoSlideInterval = null;
-            }
-        }
-
-        nextBtn.addEventListener('click', () => { stopAutoSlide(); nextSlide(); startAutoSlide(); });
-        prevBtn.addEventListener('click', () => { stopAutoSlide(); prevSlide(); startAutoSlide(); });
-        wrapper.addEventListener('mouseenter', stopAutoSlide);
-        wrapper.addEventListener('mouseleave', startAutoSlide);
-
-        let touchStartX = 0;
-        let touchEndX = 0;
-        wrapper.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
-        wrapper.addEventListener('touchend', (e) => {
-            touchEndX = e.changedTouches[0].screenX;
-            const diff = touchStartX - touchEndX;
-            if (Math.abs(diff) > 30) {
-                if (diff > 0) { stopAutoSlide(); nextSlide(); startAutoSlide(); }
-                else { stopAutoSlide(); prevSlide(); startAutoSlide(); }
-            }
-        }, { passive: true });
-
-        // ============================================================
-        // RENDER TODAS AS AVALIAÇÕES
-        // ============================================================
-        function renderAllReviews() {
-            const container = document.getElementById('allReviewsList');
-            const badge = document.getElementById('reviewCountBadge');
-            if (!container) return;
-            const sorted = [...allReviews].sort((a, b) => new Date(b.date) - new Date(a.date));
-            badge.textContent = sorted.length;
-            container.innerHTML = '';
-            sorted.forEach(review => {
-                const div = document.createElement('div');
-                div.className = 'review-list-item';
-                const nameFull = review.name;
-                const initials = nameFull.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
-                const fullStars = Math.floor(review.rating);
-                const emptyStars = 5 - fullStars;
-                const stars = '★'.repeat(fullStars) + '☆'.repeat(emptyStars);
-                const cityHtml = review.city ? `<span class="city"><i class="fas fa-map-marker-alt"></i> ${review.city}</span>` : '';
-                const dateFormatted = formatDateDisplay(review.date);
-                const reviewKey = `${review.name}-${review.date}`;
-                const loveCount = getLoveCountForReview(reviewKey);
-                const isLoved = hasUserLovedReview(reviewKey);
-
-                const isCurrentUser = currentUser && review.name === currentUser.fullName;
-                const avatarColor = getAvatarColor(review.name);
-                let avatarHtml = initials;
-                if (isCurrentUser && currentUser.profileImage) {
-                    avatarHtml = `<img src="${currentUser.profileImage}" alt="${nameFull}">`;
-                } else {
-                    avatarHtml = `<div style="background:${avatarColor};width:100%;height:100%;display:flex;align-items:center;justify-content:center;border-radius:50%;color:white;font-weight:700;font-size:0.8rem;">${initials}</div>`;
-                }
-
-                div.innerHTML = `
-                    <div class="user-row">
-                        <div class="user-avatar-review">${avatarHtml}</div>
-                        <div class="user-info">
-                            <div class="name">${review.name} ${cityHtml}</div>
-                        </div>
-                    </div>
-                    <div class="stars">${stars}</div>
-                    <div class="comment">${review.text}</div>
-                    <span class="date">${dateFormatted}</span>
-                    <button class="review-love ${isLoved ? 'loved' : ''}" data-review-key="${reviewKey}">
-                        <i class="fas fa-heart"></i>
-                        <span class="love-count">${loveCount}</span>
-                    </button>
-                `;
-                container.appendChild(div);
-            });
-            document.querySelectorAll('#allReviewsList .review-love').forEach(btn => {
-                btn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    const key = this.dataset.reviewKey;
-                    if (key) {
-                        const newState = toggleLoveReview(key);
-                        if (newState !== undefined) {
-                            const countSpan = this.querySelector('.love-count');
-                            const loveCount = getLoveCountForReview(key);
-                            if (countSpan) countSpan.textContent = loveCount;
-                            this.classList.toggle('loved', newState);
-                            updateAllReviewLoves(key);
-                        }
+        let reviewLoveCounts = {};
+        function loadLoveCountsFromStorage() {
+            const stored = localStorage.getItem('novacash_love_counts');
+            if (stored) {
+                try {
+                    const parsed = JSON.parse(stored);
+                    if (typeof parsed === 'object' && parsed !== null) {
+                        reviewLoveCounts = parsed;
+                        return;
                     }
-                });
-            });
+                } catch (e) { /* ignore */ }
+            }
+            reviewLoveCounts = {};
         }
-
-        // ============================================================
-        // FUNÇÃO PARA GARANTIR APENAS 6-7 AVALIAÇÕES COM DATA ATUAL
-        // ============================================================
-        function ensureReviewDates(force = false) {
-            const now = new Date();
-            const year = now.getFullYear();
-            const month = 7; // Agosto
-            const currentDay = Math.min(now.getDate(), 28);
-            const todayStr = `${year}-${month+1}-${currentDay}`;
-            const lastAdjust = localStorage.getItem('novacash_last_adjust_date');
-
-            if (!force && lastAdjust === todayStr) {
-                return;
-            }
-
-            const withToday = allReviews.filter(r => {
-                const d = new Date(r.date);
-                return d.getFullYear() === year && d.getMonth() === month && d.getDate() === currentDay;
-            });
-            const withoutToday = allReviews.filter(r => {
-                const d = new Date(r.date);
-                return !(d.getFullYear() === year && d.getMonth() === month && d.getDate() === currentDay);
-            });
-
-            const targetCount = Math.random() < 0.5 ? 6 : 7;
-
-            if (withToday.length < targetCount) {
-                const needed = targetCount - withToday.length;
-                const shuffled = withoutToday.sort(() => Math.random() - 0.5);
-                const toMove = shuffled.slice(0, needed);
-                toMove.forEach(r => {
-                    r.date = new Date(year, month, currentDay).toISOString();
-                });
-            } else if (withToday.length > targetCount) {
-                const excess = withToday.length - targetCount;
-                const shuffled = withToday.sort(() => Math.random() - 0.5);
-                const toMove = shuffled.slice(0, excess);
-                toMove.forEach(r => {
-                    const pastDay = Math.floor(Math.random() * (currentDay - 1)) + 1;
-                    r.date = new Date(year, month, pastDay).toISOString();
-                });
-            }
-
-            localStorage.setItem('novacash_last_adjust_date', todayStr);
-            saveReviewsToStorage();
-            renderFeaturedReviews();
-            renderAllReviews();
+        function saveLoveCountsToStorage() {
+            localStorage.setItem('novacash_love_counts', JSON.stringify(reviewLoveCounts));
         }
+        loadLoveCountsFromStorage();
 
-        // ============================================================
-        // VERIFICAR DATAS E AJUSTAR
-        // ============================================================
-        function checkAndUpdateReviewDates() {
-            const now = new Date();
-            const currentYear = now.getFullYear();
-            const currentMonth = now.getMonth();
-            let needsUpdate = false;
-            for (let r of allReviews) {
-                const d = new Date(r.date);
-                const month = d.getMonth();
-                const year = d.getFullYear();
-                if (year !== currentYear || month !== 7 || d > now) {
-                    needsUpdate = true;
-                    break;
-                }
+        function getAvatarColor(name) {
+            let hash = 0;
+            for (let i = 0; i < name.length; i++) {
+                hash = name.charCodeAt(i) + ((hash << 5) - hash);
             }
-            if (needsUpdate) {
-                allReviews = allReviews.map(r => ({
-                    ...r,
-                    date: generateReviewDate().toISOString()
-                }));
-                saveReviewsToStorage();
-                ensureReviewDates(true);
-            } else {
-                ensureReviewDates(false);
-            }
+            const h = Math.abs(hash % 360);
+            return `hsl(${h}, 70%, 60%)`;
         }
 
         // ============================================================
@@ -5888,27 +5520,19 @@
             feedbackEl.textContent = '';
 
             const now = new Date();
-            const currentYear = now.getFullYear();
-            const month = 7;
-            const day = Math.min(now.getDate(), 28);
-            const date = new Date(currentYear, month, day);
+            const date = now.toISOString();
 
             const newReview = {
                 name: currentUser.fullName,
                 city: currentUser.city || 'Maputo',
                 rating: rating,
                 text: text,
-                date: date.toISOString()
+                date: date
             };
             allReviews.unshift(newReview);
+            adjustReviewCount();
             saveReviewsToStorage();
-            ensureReviewDates(true);
-
-            renderFeaturedReviews();
             renderAllReviews();
-            goToSlide(0);
-            stopAutoSlide();
-            setTimeout(() => startAutoSlide(), 3000);
 
             feedbackEl.className = 'feedback-msg success';
             feedbackEl.textContent = '✅ Avaliação publicada com sucesso! Obrigado por compartilhar sua experiência.';
@@ -5925,13 +5549,12 @@
         // ============================================================
         // INICIALIZAÇÃO DAS AVALIAÇÕES
         // ============================================================
-        setTimeout(() => {
-            ensureReviewDates(true);
-        }, 500);
-
+        renderAllReviews();
         setInterval(() => {
-            ensureReviewDates(false);
-        }, 60000);
+            adjustReviewCount();
+            saveReviewsToStorage();
+            renderAllReviews();
+        }, 3600000); // a cada hora
 
         // ============================================================
         // LOAN SIMULATOR

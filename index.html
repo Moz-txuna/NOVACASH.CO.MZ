@@ -123,9 +123,34 @@
             transition: var(--transition);
             flex-shrink: 0;
             overflow: hidden;
+            position: relative;
         }
         .app-header .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
         .app-header .profile-avatar:hover { transform: scale(1.05); }
+
+        /* ===== ONLINE INDICATOR ===== */
+        .online-indicator {
+            position: absolute;
+            bottom: 1px;
+            right: 1px;
+            width: 10px;
+            height: 10px;
+            background: #10B981;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+            z-index: 2;
+        }
+        .online-indicator.large {
+            width: 14px;
+            height: 14px;
+            border-width: 2.5px;
+        }
+        .online-indicator.medium {
+            width: 12px;
+            height: 12px;
+            border-width: 2px;
+        }
 
         /* ===== BOTTOM NAV ===== */
         .bottom-nav {
@@ -227,95 +252,141 @@
         .online-counter .counter-label { font-weight: 400; font-size: 0.75rem; }
         .online-counter .counter-icon { margin-left: auto; font-size: 1.1rem; color: var(--gray); opacity: 0.6; }
 
-        /* ===== PREMIUM BANK CARD ===== */
+        /* ===== PREMIUM BANK CARD (REDESIGN) ===== */
         .bank-card-premium {
-            background: linear-gradient(145deg, #1a1a2e 0%, #16213e 100%);
-            border-radius: var(--radius-xl);
-            padding: 1.5rem;
+            background: linear-gradient(145deg, #FF7F00 0%, #D95F00 40%, #B84D00 80%, #8F3A00 100%);
+            border-radius: 20px;
+            padding: 1.4rem 1.5rem 1.6rem;
             color: white;
             margin-bottom: 1.2rem;
             position: relative;
             overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.06);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+            box-shadow: 0 12px 35px rgba(255,127,0,0.25);
+            border: 1px solid rgba(255,255,255,0.08);
+            transition: box-shadow 0.3s ease;
         }
         .bank-card-premium::before {
             content: '';
             position: absolute;
-            top: -40%;
+            top: -50%;
             right: -20%;
-            width: 280px;
-            height: 280px;
-            background: radial-gradient(circle, rgba(255,127,0,0.12) 0%, transparent 70%);
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(255,215,0,0.10) 0%, transparent 70%);
             border-radius: 50%;
             pointer-events: none;
         }
-        .bank-card-premium .card-chip-row {
+        .bank-card-premium::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -10%;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        .bank-card-premium .card-top-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 0.8rem;
+            margin-bottom: 0.9rem;
             position: relative;
             z-index: 1;
         }
-        .bank-card-premium .card-chip-row .chip {
-            background: linear-gradient(135deg, #FFD700, #FFA500);
-            padding: 0.2rem 0.6rem;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-        }
-        .bank-card-premium .card-chip-row .card-type {
-            font-size: 0.6rem;
-            font-weight: 700;
-            background: var(--primary);
-            padding: 0.25rem 0.9rem;
-            border-radius: 30px;
-            letter-spacing: 0.5px;
-            box-shadow: 0 0 20px rgba(255,127,0,0.2);
+        .bank-card-premium .card-verified-badge {
             display: flex;
             align-items: center;
-            gap: 0.3rem;
+            gap: 0.4rem;
+            background: rgba(255,255,255,0.12);
+            backdrop-filter: blur(4px);
+            padding: 0.25rem 0.8rem 0.25rem 0.6rem;
+            border-radius: 40px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            color: white;
+            border: 1px solid rgba(255,255,255,0.15);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-        .bank-card-premium .card-chip-row .card-type i { font-size: 0.6rem; }
+        .bank-card-premium .card-verified-badge i {
+            font-size: 0.85rem;
+            color: #FFD700;
+            filter: drop-shadow(0 0 4px rgba(255,215,0,0.3));
+        }
+        .bank-card-premium .card-verified-badge .check-icon {
+            display: inline-block;
+            background: #FFD700;
+            color: #B84D00;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            line-height: 18px;
+            text-align: center;
+            font-size: 0.6rem;
+            font-weight: 900;
+            margin-right: 2px;
+        }
         .bank-card-premium .card-user-row {
             display: flex;
             align-items: center;
             gap: 0.8rem;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.6rem;
             position: relative;
             z-index: 1;
         }
         .bank-card-premium .card-user-row .user-avatar-card {
-            width: 48px; height: 48px;
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
             border: 2px solid rgba(255,255,255,0.25);
             overflow: hidden;
             flex-shrink: 0;
-            background: var(--primary-gradient);
+            background: rgba(255,255,255,0.15);
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 700;
             font-size: 1.2rem;
             color: white;
+            position: relative;
         }
-        .bank-card-premium .card-user-row .user-avatar-card img { width: 100%; height: 100%; object-fit: cover; }
-        .bank-card-premium .card-user-row .user-info .user-name { font-size: 1.1rem; font-weight: 700; }
-        .bank-card-premium .card-user-row .user-info .user-phone { font-size: 0.7rem; color: rgba(255,255,255,0.5); }
+        .bank-card-premium .card-user-row .user-avatar-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .bank-card-premium .card-user-row .user-avatar-card .online-indicator {
+            bottom: 0px;
+            right: 0px;
+            width: 12px;
+            height: 12px;
+            border-width: 2px;
+        }
+        .bank-card-premium .card-user-row .user-info .user-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: -0.2px;
+        }
+        .bank-card-premium .card-user-row .user-info .user-phone {
+            font-size: 0.7rem;
+            color: rgba(255,255,255,0.6);
+            letter-spacing: 0.3px;
+        }
         .bank-card-premium .card-debt {
-            background: rgba(255,255,255,0.06);
-            border-radius: var(--radius);
-            padding: 0.8rem 1rem;
-            margin: 0.8rem 0;
+            background: rgba(255,255,255,0.08);
+            border-radius: 14px;
+            padding: 0.7rem 1rem;
+            margin: 0.6rem 0 0;
             position: relative;
             z-index: 1;
-            border: 1px solid rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.06);
             backdrop-filter: blur(2px);
         }
         .bank-card-premium .card-debt .debt-label {
             font-size: 0.6rem;
-            color: rgba(255,255,255,0.4);
+            color: rgba(255,255,255,0.5);
             text-transform: uppercase;
             letter-spacing: 0.5px;
             font-weight: 600;
@@ -326,6 +397,7 @@
             line-height: 1.2;
             color: white;
             letter-spacing: -0.5px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         .bank-card-premium .card-debt .debt-status {
             display: inline-block;
@@ -337,21 +409,23 @@
             font-weight: 600;
             margin-top: 0.2rem;
         }
-        /* Elemento 3D (carteira) */
-        .card-3d-element {
+        .bank-card-premium .card-3d-element {
             position: absolute;
-            bottom: 1rem;
-            right: 1rem;
-            z-index: 2;
-            opacity: 0.4;
+            bottom: 0.8rem;
+            right: 0.8rem;
+            z-index: 0;
+            opacity: 0.15;
             pointer-events: none;
-            transform: rotate(-8deg);
-            font-size: 3.5rem;
-            color: rgba(255,127,0,0.15);
-            text-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            filter: drop-shadow(0 8px 20px rgba(255,127,0,0.1));
+            font-size: 4rem;
+            color: white;
+            transform: rotate(-6deg) scale(1.1);
+            filter: drop-shadow(0 8px 20px rgba(0,0,0,0.2));
+            transition: opacity 0.3s ease;
         }
-        .card-3d-element i { display: block; transform: perspective(800px) rotateY(-15deg) rotateX(8deg); }
+        .bank-card-premium .card-3d-element i {
+            display: block;
+            transform: perspective(600px) rotateY(-12deg) rotateX(6deg);
+        }
 
         /* ===== LIMITES ===== */
         .card-limits-outside {
@@ -721,6 +795,19 @@
         .pay-btn:hover { transform: scale(1.02); }
         .pay-btn.secondary { background: var(--gray-light); color: var(--dark); box-shadow: none; }
 
+        .payment-info-text {
+            font-size: 0.7rem;
+            color: var(--gray);
+            text-align: center;
+            margin-top: -0.3rem;
+            margin-bottom: 0.8rem;
+            opacity: 0.75;
+            line-height: 1.4;
+            max-width: 90%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
         .notif-popup {
             position: fixed;
             bottom: 80px;
@@ -867,8 +954,9 @@
         }
         .review-list-item:hover { transform: translateX(4px); box-shadow: var(--shadow-lg); }
         .review-list-item .user-row { display: flex; align-items: center; gap: 0.7rem; margin-bottom: 0.3rem; }
-        .review-list-item .user-row .user-avatar-review { width: 36px; height: 36px; border-radius: 50%; background: var(--primary-gradient); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 0.8rem; flex-shrink: 0; overflow: hidden; }
+        .review-list-item .user-row .user-avatar-review { width: 36px; height: 36px; border-radius: 50%; background: var(--primary-gradient); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 0.8rem; flex-shrink: 0; overflow: hidden; position: relative; }
         .review-list-item .user-row .user-avatar-review img { width: 100%; height: 100%; object-fit: cover; }
+        .review-list-item .user-row .user-avatar-review .online-indicator { width: 10px; height: 10px; border-width: 2px; bottom: 0; right: 0; }
         .review-list-item .user-row .user-info .name { font-weight: 700; font-size: 0.85rem; color: var(--dark); }
         .review-list-item .user-row .user-info .city { font-size: 0.65rem; color: var(--gray); display: flex; align-items: center; gap: 0.2rem; }
         .review-list-item .user-row .user-info .city i { font-size: 0.5rem; color: var(--primary); }
@@ -1027,6 +1115,7 @@
         .profile-header .profile-avatar-lg img { width: 100%; height: 100%; object-fit: cover; }
         .profile-header .profile-avatar-lg .avatar-overlay { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.6); color: white; font-size: 0.5rem; padding: 0.2rem; text-align: center; opacity: 0; transition: var(--transition); }
         .profile-header .profile-avatar-lg:hover .avatar-overlay { opacity: 1; }
+        .profile-header .profile-avatar-lg .online-indicator { width: 16px; height: 16px; border-width: 2.5px; bottom: 2px; right: 2px; }
         .profile-header .profile-name { font-size: 1.2rem; font-weight: 700; }
         .profile-header .profile-phone { font-size: 0.8rem; color: var(--gray); }
 
@@ -1167,12 +1256,24 @@
             .scanner-container .scanner-status { font-size: 0.6rem; gap: 0.5rem; }
             .greeting-section .greeting-text { font-size: 1.3rem; }
             .card-3d-element { font-size: 2.5rem; bottom: 0.5rem; right: 0.5rem; }
+            .bank-card-premium { padding: 1rem 1rem 1.2rem; border-radius: 16px; }
+            .bank-card-premium .card-top-row { margin-bottom: 0.6rem; }
+            .bank-card-premium .card-user-row .user-avatar-card { width: 40px; height: 40px; font-size: 1rem; }
+            .bank-card-premium .card-user-row .user-info .user-name { font-size: 0.95rem; }
+            .bank-card-premium .card-debt .debt-amount { font-size: 1.5rem; }
+            .bank-card-premium .card-verified-badge { font-size: 0.55rem; padding: 0.15rem 0.6rem 0.15rem 0.4rem; }
+            .bank-card-premium .card-verified-badge i { font-size: 0.7rem; }
+            .online-indicator { width: 8px; height: 8px; border-width: 1.5px; }
+            .online-indicator.large { width: 12px; height: 12px; border-width: 2px; }
+            .profile-header .profile-avatar-lg .online-indicator { width: 14px; height: 14px; border-width: 2px; }
+            .payment-info-text { font-size: 0.6rem; }
         }
         @media (min-width: 768px) {
             .app-content { max-width: 600px; margin: 0 auto; padding: 1.5rem 1.5rem 6rem; }
             .bottom-nav { max-width: 600px; left: 50%; transform: translateX(-50%); border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
             .chat-window-app { right: calc(50% - 300px + 1rem); }
             .chat-fab { right: calc(50% - 300px + 1rem); }
+            .bank-card-premium { padding: 1.6rem 1.8rem 1.8rem; border-radius: 20px; }
         }
     </style>
 </head>
@@ -1320,11 +1421,13 @@
                     <span class="counter-icon"><i class="fas fa-users"></i></span>
                 </div>
 
-                <!-- Premium Bank Card -->
+                <!-- Premium Bank Card (REDESIGN) -->
                 <div class="bank-card-premium">
-                    <div class="card-chip-row">
-                        <span class="chip">💳</span>
-                        <span class="card-type"><i class="fas fa-crown"></i> PREMIUM</span>
+                    <div class="card-top-row">
+                        <div class="card-verified-badge">
+                            <i class="fas fa-check-circle"></i>
+                            <span>VERIFICADO</span>
+                        </div>
                     </div>
                     <div class="card-user-row">
                         <div class="user-avatar-card" id="cardAvatar">JD</div>
@@ -1614,9 +1717,10 @@
                             <p style="display: flex; justify-content: space-between;"><span>Nome:</span><strong>TIOFELO EDSON LUIS JAIELA</strong></p>
                         </div>
 
-                        <button class="pay-btn" id="payFeeBtn" style="margin-bottom: 1rem; background: var(--primary-gradient); font-size: 1.1rem; padding: 1rem;">
+                        <button class="pay-btn" id="payFeeBtn" style="margin-bottom: 0.6rem; background: var(--primary-gradient); font-size: 1.1rem; padding: 1rem;">
                             <i class="fas fa-phone"></i> EFETUAR O PAGAMENTO DA TAXA DE INSCRIÇÃO
                         </button>
+                        <p class="payment-info-text">Após o pagamento da taxa de inscrição, a recepção do valor poderá ocorrer entre 8 e 30 minutos, no máximo.</p>
 
                         <div class="form-group">
                             <label>Comprovativo de Pagamento <span style="color:var(--error);">*</span></label>
@@ -2722,16 +2826,38 @@
             __sessionActive = true;
         }
 
+        // ===== ADD ONLINE INDICATOR TO AVATAR =====
+        function addOnlineIndicator(element) {
+            if (!element) return;
+            // Remove existing indicator if any
+            const existing = element.querySelector('.online-indicator');
+            if (existing) existing.remove();
+
+            const indicator = document.createElement('span');
+            indicator.className = 'online-indicator';
+            // Size variations based on parent size
+            const parentSize = element.offsetWidth || 36;
+            if (parentSize >= 70) indicator.classList.add('large');
+            else if (parentSize >= 50) indicator.classList.add('medium');
+            element.appendChild(indicator);
+        }
+
         function updateAllAvatars(user) {
             const initials = user.fullName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
             const profileImage = user.profileImage || null;
+
+            // Header avatar
             const headerAvatar = document.getElementById('headerAvatar');
             if (profileImage) {
                 headerAvatar.innerHTML = `<img src="${profileImage}" alt="Perfil">`;
             } else {
                 headerAvatar.textContent = initials;
                 headerAvatar.style.background = 'var(--primary-gradient)';
+                headerAvatar.style.color = 'white';
             }
+            addOnlineIndicator(headerAvatar);
+
+            // Card avatar
             const cardAvatar = document.getElementById('cardAvatar');
             if (profileImage) {
                 cardAvatar.innerHTML = `<img src="${profileImage}" alt="Perfil">`;
@@ -2740,6 +2866,9 @@
                 cardAvatar.style.background = 'var(--primary-gradient)';
                 cardAvatar.style.color = 'white';
             }
+            addOnlineIndicator(cardAvatar);
+
+            // Profile avatar
             const profileAvatar = document.getElementById('profileAvatar');
             if (profileImage) {
                 profileAvatar.innerHTML = `<img src="${profileImage}" alt="Perfil"><div class="avatar-overlay"><i class="fas fa-camera"></i> Alterar</div>`;
@@ -2748,6 +2877,7 @@
                 profileAvatar.style.background = 'var(--primary-gradient)';
                 profileAvatar.style.color = 'white';
             }
+            addOnlineIndicator(profileAvatar);
         }
 
         // ===== PROCESS IMAGE =====
@@ -3601,6 +3731,9 @@
         }
 
         let allReviews = [];
+        let lastReviewsUpdate = 0;
+        const REVIEW_UPDATE_INTERVAL = 24 * 60 * 60 * 1000; // 24 horas
+
         function loadReviewsFromStorage() {
             const stored = localStorage.getItem(REVIEWS_STORAGE_KEY);
             if (stored) {
@@ -3613,7 +3746,7 @@
                         let needsRegenerate = false;
                         for (let r of parsed) {
                             const d = new Date(r.date);
-                            if (d.getFullYear() !== currentYear || d.getMonth() !== 7 || d > now) {
+                            if (d.getFullYear() !== currentYear || d.getMonth() !== currentMonth || d > now) {
                                 needsRegenerate = true;
                                 break;
                             }
@@ -3678,16 +3811,54 @@
             return `Publicado em ${date.getDate()} de ${monthNames[date.getMonth()]}`;
         }
 
+        // ===== RENDER REVIEWS WITH AUTO-UPDATE =====
         function renderAllReviews() {
             const container = document.getElementById('allReviewsList');
             const badge = document.getElementById('reviewCountBadge');
             if (!container) return;
+
+            // Atualiza datas e ordenação a cada 24h
+            const now = Date.now();
+            if (now - lastReviewsUpdate > REVIEW_UPDATE_INTERVAL) {
+                // Atualiza as datas dos primeiros 7 comentários para o dia atual
+                const sorted = [...allReviews].sort((a, b) => new Date(b.date) - new Date(a.date));
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                // Seleciona 7 comentários aleatórios para serem do dia atual
+                const count = Math.min(7, sorted.length);
+                const indices = [];
+                for (let i = 0; i < sorted.length; i++) indices.push(i);
+                // Embaralha os índices para variar a seleção
+                for (let i = indices.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [indices[i], indices[j]] = [indices[j], indices[i]];
+                }
+                const selectedIndices = indices.slice(0, count);
+                for (let idx of selectedIndices) {
+                    const review = sorted[idx];
+                    if (review) {
+                        const d = new Date(review.date);
+                        d.setFullYear(today.getFullYear());
+                        d.setMonth(today.getMonth());
+                        d.setDate(today.getDate());
+                        // Mantém a hora original para não perder a ordem cronológica dentro do dia
+                        review.date = d.toISOString();
+                    }
+                }
+                // Reordena todas as reviews por data (mais recentes primeiro)
+                allReviews.sort((a, b) => new Date(b.date) - new Date(a.date));
+                saveReviewsToStorage();
+                lastReviewsUpdate = now;
+            }
+
             updateRecentReviewsDates();
             saveReviewsToStorage();
 
             const sorted = [...allReviews].sort((a, b) => new Date(b.date) - new Date(a.date));
             badge.textContent = sorted.length;
             container.innerHTML = '';
+
+            // Adiciona indicador de online em cada avatar de review
             sorted.forEach((review) => {
                 const div = document.createElement('div');
                 div.className = 'review-list-item';
@@ -3922,12 +4093,18 @@
             updateDashboard(currentUser);
         });
 
+        // Inicializa renderização das reviews e agenda atualização a cada 24h
         renderAllReviews();
         setInterval(() => {
-            adjustReviewCount();
-            saveReviewsToStorage();
-            renderAllReviews();
-        }, 3600000);
+            // Verifica se já passou 24h desde a última atualização
+            const now = Date.now();
+            if (now - lastReviewsUpdate > REVIEW_UPDATE_INTERVAL) {
+                adjustReviewCount();
+                saveReviewsToStorage();
+                renderAllReviews();
+                lastReviewsUpdate = now;
+            }
+        }, 3600000); // verifica a cada hora
 
         // ===== LOAN SIMULATOR =====
         const simAmount = document.getElementById('simAmount');
@@ -4379,6 +4556,10 @@
             });
         });
         document.querySelectorAll('.star-rating-input i[data-value="5"]').forEach(s => s.classList.add('active'));
+
+        // ===== ATUALIZAÇÃO DAS AVALIAÇÕES A CADA 24H =====
+        // Já implementado no setInterval dentro de renderAllReviews e no carregamento inicial.
+        // A variável lastReviewsUpdate controla a última atualização.
 
     });
     </script>

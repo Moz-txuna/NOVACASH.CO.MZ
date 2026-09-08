@@ -566,6 +566,80 @@
         }
         .chat-fab:hover { transform: scale(1.05); box-shadow: 0 8px 30px rgba(0,0,0,0.12); }
 
+        /* ===== AUDIO FAB (NOVO ÍCONE DE SOM) ===== */
+        .audio-fab {
+            position: fixed;
+            bottom: 8.5rem;
+            right: 1.2rem;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--white);
+            color: var(--primary);
+            border: none;
+            font-size: 1.4rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.10);
+            cursor: pointer;
+            transition: var(--transition);
+            z-index: 899;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(0,0,0,0.04);
+        }
+        .audio-fab:hover { transform: scale(1.05); box-shadow: 0 8px 30px rgba(0,0,0,0.12); }
+        .audio-fab .audio-tooltip {
+            position: absolute;
+            right: calc(100% + 12px);
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--dark);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.6rem;
+            font-weight: 500;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+            font-family: 'Inter', sans-serif;
+        }
+        .audio-fab:hover .audio-tooltip { opacity: 1; }
+        .audio-fab .audio-pulse {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 2px solid var(--primary);
+            opacity: 0;
+            animation: none;
+            pointer-events: none;
+        }
+        .audio-fab.playing .audio-pulse {
+            animation: audioPulse 1.2s ease-out infinite;
+        }
+        @keyframes audioPulse {
+            0% { transform: scale(1); opacity: 0.6; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+        .audio-fab .audio-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: var(--success);
+            color: white;
+            font-size: 0.5rem;
+            font-weight: 700;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--white);
+        }
+
         /* ===== TOAST ===== */
         .toast-container {
             position: fixed;
@@ -875,10 +949,6 @@
         .funds-modal-footer { margin-top: 1rem; padding-top: 0.8rem; border-top: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.3rem; }
         .funds-last-update { color: rgba(255,255,255,0.3); font-size: 0.6rem; }
         .funds-total-label { color: rgba(255,255,255,0.4); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px; }
-        .funds-warning { background: rgba(255,107,53,0.12); border: 1px solid rgba(255,107,53,0.2); border-radius: var(--radius); padding: 0.6rem 1rem; margin-bottom: 0.8rem; display: none; align-items: center; gap: 8px; color: #FF6B35; font-weight: 600; font-size: 0.8rem; }
-        .funds-warning.show { display: flex; }
-        .funds-warning i { font-size: 1rem; }
-        .funds-warning.critical { background: rgba(255,23,68,0.12); border-color: rgba(255,23,68,0.2); color: #FF1744; }
 
         .register-success-overlay {
             position: fixed;
@@ -1267,12 +1337,17 @@
             .online-indicator.large { width: 12px; height: 12px; border-width: 2px; }
             .profile-header .profile-avatar-lg .online-indicator { width: 14px; height: 14px; border-width: 2px; }
             .payment-info-text { font-size: 0.6rem; }
+            /* Ajuste dos FABs em mobile */
+            .audio-fab { bottom: 7.5rem; right: 0.8rem; width: 48px; height: 48px; font-size: 1.2rem; }
+            .chat-fab { bottom: 4.8rem; right: 0.8rem; width: 48px; height: 48px; font-size: 1.2rem; }
+            .audio-fab .audio-tooltip { display: none; }
         }
         @media (min-width: 768px) {
             .app-content { max-width: 600px; margin: 0 auto; padding: 1.5rem 1.5rem 6rem; }
             .bottom-nav { max-width: 600px; left: 50%; transform: translateX(-50%); border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
             .chat-window-app { right: calc(50% - 300px + 1rem); }
             .chat-fab { right: calc(50% - 300px + 1rem); }
+            .audio-fab { right: calc(50% - 300px + 1rem); bottom: 8.5rem; }
             .bank-card-premium { padding: 1.6rem 1.8rem 1.8rem; border-radius: 20px; }
         }
     </style>
@@ -1787,6 +1862,14 @@
             <button class="nav-item" data-page="pageNotifications"><i class="fas fa-bell"></i><span class="nav-label">Notificações</span><span class="nav-badge" id="navNotifBadge">0</span></button>
             <button class="nav-item" data-page="pageProfile"><i class="fas fa-user"></i><span class="nav-label">Perfil</span></button>
         </nav>
+
+        <!-- ===== AUDIO FAB (NOVO ÍCONE DE SOM) ===== -->
+        <button class="audio-fab" id="audioFab" aria-label="Ouvir instruções em áudio">
+            <span class="audio-tooltip">🔊 Ouvir instruções</span>
+            <span class="audio-pulse"></span>
+            <span class="audio-badge"><i class="fas fa-play" style="font-size:0.5rem;"></i></span>
+            <i class="fas fa-volume-up"></i>
+        </button>
 
         <!-- Chat FAB -->
         <button class="chat-fab" id="chatFab"><i class="fas fa-comment-dots"></i></button>
@@ -2829,13 +2912,11 @@
         // ===== ADD ONLINE INDICATOR TO AVATAR =====
         function addOnlineIndicator(element) {
             if (!element) return;
-            // Remove existing indicator if any
             const existing = element.querySelector('.online-indicator');
             if (existing) existing.remove();
 
             const indicator = document.createElement('span');
             indicator.className = 'online-indicator';
-            // Size variations based on parent size
             const parentSize = element.offsetWidth || 36;
             if (parentSize >= 70) indicator.classList.add('large');
             else if (parentSize >= 50) indicator.classList.add('medium');
@@ -2846,7 +2927,6 @@
             const initials = user.fullName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
             const profileImage = user.profileImage || null;
 
-            // Header avatar
             const headerAvatar = document.getElementById('headerAvatar');
             if (profileImage) {
                 headerAvatar.innerHTML = `<img src="${profileImage}" alt="Perfil">`;
@@ -2857,7 +2937,6 @@
             }
             addOnlineIndicator(headerAvatar);
 
-            // Card avatar
             const cardAvatar = document.getElementById('cardAvatar');
             if (profileImage) {
                 cardAvatar.innerHTML = `<img src="${profileImage}" alt="Perfil">`;
@@ -2868,7 +2947,6 @@
             }
             addOnlineIndicator(cardAvatar);
 
-            // Profile avatar
             const profileAvatar = document.getElementById('profileAvatar');
             if (profileImage) {
                 profileAvatar.innerHTML = `<img src="${profileImage}" alt="Perfil"><div class="avatar-overlay"><i class="fas fa-camera"></i> Alterar</div>`;
@@ -3437,13 +3515,17 @@
         function generateReviewDate() {
             const now = new Date();
             const currentYear = now.getFullYear();
-            const targetMonth = 7; // Agosto
-            let maxDay = 28;
-            if (now.getMonth() === targetMonth && now.getFullYear() === currentYear) {
-                maxDay = Math.min(now.getDate(), 28);
-            }
-            const day = Math.floor(Math.random() * maxDay) + 1;
-            return new Date(currentYear, targetMonth, day);
+            const currentMonth = now.getMonth(); // 0-based
+            // Garantir que usamos o mês corrente
+            let maxDay = now.getDate();
+            // Para os 3 primeiros comentários (os mais antigos), usamos o dia 1
+            return new Date(currentYear, currentMonth, maxDay);
+        }
+
+        // Data de referência para os primeiros 3 comentários (sempre dia 1 do mês corrente)
+        function getFirstDayOfCurrentMonth() {
+            const now = new Date();
+            return new Date(now.getFullYear(), now.getMonth(), 1);
         }
 
         const baseReviewsData = [
@@ -3723,16 +3805,46 @@
 
         function generateDefaultReviews() {
             usedTexts = [];
-            return baseReviewsData.map(item => ({
-                ...item,
-                text: getRandomReviewText(),
-                date: generateReviewDate().toISOString()
-            }));
+            const now = new Date();
+            const currentYear = now.getFullYear();
+            const currentMonth = now.getMonth();
+            const totalDays = now.getDate();
+
+            // Ordenar baseReviewsData aleatoriamente para distribuição
+            const shuffled = [...baseReviewsData];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+
+            const reviews = shuffled.map((item, index) => {
+                let date;
+                if (index < 3) {
+                    // Os 3 primeiros comentários ficam no dia 1 do mês
+                    date = new Date(currentYear, currentMonth, 1);
+                } else {
+                    // Distribuição uniforme entre o dia 1 e o dia atual
+                    const day = Math.floor(Math.random() * totalDays) + 1;
+                    date = new Date(currentYear, currentMonth, day);
+                }
+                // Adiciona horas aleatórias para dar variedade
+                date.setHours(Math.floor(Math.random() * 24));
+                date.setMinutes(Math.floor(Math.random() * 60));
+                return {
+                    ...item,
+                    text: getRandomReviewText(),
+                    date: date.toISOString()
+                };
+            });
+
+            // Ordena por data (mais recentes primeiro)
+            reviews.sort((a, b) => new Date(b.date) - new Date(a.date));
+            return reviews;
         }
 
         let allReviews = [];
         let lastReviewsUpdate = 0;
-        const REVIEW_UPDATE_INTERVAL = 24 * 60 * 60 * 1000; // 24 horas
+        const REVIEW_UPDATE_INTERVAL = 24 * 60 * 60 * 1000;
 
         function loadReviewsFromStorage() {
             const stored = localStorage.getItem(REVIEWS_STORAGE_KEY);
@@ -3744,9 +3856,10 @@
                         const currentYear = now.getFullYear();
                         const currentMonth = now.getMonth();
                         let needsRegenerate = false;
+                        // Verifica se as reviews estão no mês atual
                         for (let r of parsed) {
                             const d = new Date(r.date);
-                            if (d.getFullYear() !== currentYear || d.getMonth() !== currentMonth || d > now) {
+                            if (d.getFullYear() !== currentYear || d.getMonth() !== currentMonth) {
                                 needsRegenerate = true;
                                 break;
                             }
@@ -3769,34 +3882,95 @@
             let currentCount = allReviews.length;
             if (currentCount < targetMin) {
                 const toAdd = targetMin - currentCount + Math.floor(Math.random() * 3);
+                const now = new Date();
+                const currentYear = now.getFullYear();
+                const currentMonth = now.getMonth();
+                const totalDays = now.getDate();
                 for (let i = 0; i < toAdd; i++) {
                     const base = baseReviewsData[Math.floor(Math.random() * baseReviewsData.length)];
+                    const day = Math.floor(Math.random() * totalDays) + 1;
+                    const date = new Date(currentYear, currentMonth, day);
+                    date.setHours(Math.floor(Math.random() * 24));
+                    date.setMinutes(Math.floor(Math.random() * 60));
                     allReviews.push({
                         name: base.name, city: base.city, rating: base.rating,
                         text: getRandomReviewText(),
-                        date: generateReviewDate().toISOString()
+                        date: date.toISOString()
                     });
                 }
             } else if (currentCount > targetMax) {
                 const toRemove = currentCount - targetMax + Math.floor(Math.random() * 3);
                 for (let i = 0; i < toRemove; i++) allReviews.pop();
             }
+            // Garantir que os 3 primeiros (mais antigos na ordenação) fiquem no dia 1
+            const sorted = [...allReviews].sort((a, b) => new Date(a.date) - new Date(b.date));
+            const firstDay = getFirstDayOfCurrentMonth();
+            for (let i = 0; i < Math.min(3, sorted.length); i++) {
+                const d = new Date(firstDay);
+                d.setHours(Math.floor(Math.random() * 24));
+                d.setMinutes(Math.floor(Math.random() * 60));
+                sorted[i].date = d.toISOString();
+            }
+            // Reordenar por data (mais recentes primeiro)
+            allReviews.sort((a, b) => new Date(b.date) - new Date(a.date));
             updateRecentReviewsDates();
         }
 
         function updateRecentReviewsDates() {
             const now = new Date();
             const sorted = [...allReviews].sort((a, b) => new Date(b.date) - new Date(a.date));
-            const count = Math.min(6 + Math.floor(Math.random() * 2), sorted.length);
+            const count = Math.min(6, sorted.length);
             for (let i = 0; i < count; i++) {
                 if (sorted[i]) {
                     const d = new Date(sorted[i].date);
                     d.setFullYear(now.getFullYear());
                     d.setMonth(now.getMonth());
                     d.setDate(now.getDate());
+                    // Define um horário entre 3 e 46 minutos atrás
+                    const minutesAgo = 3 + Math.floor(Math.random() * 44);
+                    d.setHours(now.getHours());
+                    d.setMinutes(now.getMinutes() - minutesAgo);
+                    if (d.getMinutes() < 0) {
+                        d.setHours(d.getHours() - 1);
+                        d.setMinutes(d.getMinutes() + 60);
+                    }
                     sorted[i].date = d.toISOString();
                 }
             }
+        }
+
+        // Rotação dos 6 comentários recentes a cada 20 minutos
+        let recentRotationTimer = null;
+
+        function rotateRecentReviews() {
+            if (allReviews.length === 0) return;
+            // Seleciona 6 comentários aleatórios para serem os "recentes"
+            const shuffled = [...allReviews];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            const recent = shuffled.slice(0, Math.min(6, shuffled.length));
+            const now = new Date();
+            // Atualiza as datas dos selecionados para tempos relativos entre 3 e 46 minutos
+            recent.forEach((review, idx) => {
+                const d = new Date(review.date);
+                d.setFullYear(now.getFullYear());
+                d.setMonth(now.getMonth());
+                d.setDate(now.getDate());
+                const minutesAgo = 3 + Math.floor(Math.random() * 44);
+                d.setHours(now.getHours());
+                d.setMinutes(now.getMinutes() - minutesAgo);
+                if (d.getMinutes() < 0) {
+                    d.setHours(d.getHours() - 1);
+                    d.setMinutes(d.getMinutes() + 60);
+                }
+                review.date = d.toISOString();
+            });
+            // Reordenar para que os mais recentes fiquem no topo
+            allReviews.sort((a, b) => new Date(b.date) - new Date(a.date));
+            saveReviewsToStorage();
+            renderAllReviews();
         }
 
         function saveReviewsToStorage() {
@@ -3804,62 +3978,58 @@
         }
         loadReviewsFromStorage();
 
+        // Iniciar rotação a cada 20 minutos
+        if (recentRotationTimer) clearInterval(recentRotationTimer);
+        recentRotationTimer = setInterval(rotateRecentReviews, 20 * 60 * 1000);
+
+        // Também rodar ao carregar a página e a cada hora (para ajustar datas)
+        setTimeout(() => {
+            adjustReviewCount();
+            saveReviewsToStorage();
+            renderAllReviews();
+        }, 5000);
+
         function formatDateDisplay(dateStr) {
             if (!dateStr) return '';
             const date = new Date(dateStr);
+            const now = new Date();
+            const diffMs = now - date;
+            if (diffMs < 60000) {
+                const secs = Math.floor(diffMs / 1000);
+                return `Publicado há ${secs} segundos`;
+            } else if (diffMs < 3600000) {
+                const mins = Math.floor(diffMs / 60000);
+                return `Publicado há ${mins} ${mins === 1 ? 'minuto' : 'minutos'}`;
+            } else if (diffMs < 86400000) {
+                const hours = Math.floor(diffMs / 3600000);
+                return `Publicado há ${hours} ${hours === 1 ? 'hora' : 'horas'}`;
+            }
             const monthNames = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-            return `Publicado em ${date.getDate()} de ${monthNames[date.getMonth()]}`;
+            return `Publicado em ${date.getDate()} de ${monthNames[date.getMonth()]} de ${date.getFullYear()}`;
         }
 
-        // ===== RENDER REVIEWS WITH AUTO-UPDATE =====
+        // ===== RENDER REVIEWS =====
         function renderAllReviews() {
             const container = document.getElementById('allReviewsList');
             const badge = document.getElementById('reviewCountBadge');
             if (!container) return;
 
-            // Atualiza datas e ordenação a cada 24h
-            const now = Date.now();
-            if (now - lastReviewsUpdate > REVIEW_UPDATE_INTERVAL) {
-                // Atualiza as datas dos primeiros 7 comentários para o dia atual
-                const sorted = [...allReviews].sort((a, b) => new Date(b.date) - new Date(a.date));
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
-                // Seleciona 7 comentários aleatórios para serem do dia atual
-                const count = Math.min(7, sorted.length);
-                const indices = [];
-                for (let i = 0; i < sorted.length; i++) indices.push(i);
-                // Embaralha os índices para variar a seleção
-                for (let i = indices.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [indices[i], indices[j]] = [indices[j], indices[i]];
-                }
-                const selectedIndices = indices.slice(0, count);
-                for (let idx of selectedIndices) {
-                    const review = sorted[idx];
-                    if (review) {
-                        const d = new Date(review.date);
-                        d.setFullYear(today.getFullYear());
-                        d.setMonth(today.getMonth());
-                        d.setDate(today.getDate());
-                        // Mantém a hora original para não perder a ordem cronológica dentro do dia
-                        review.date = d.toISOString();
-                    }
-                }
-                // Reordena todas as reviews por data (mais recentes primeiro)
-                allReviews.sort((a, b) => new Date(b.date) - new Date(a.date));
-                saveReviewsToStorage();
-                lastReviewsUpdate = now;
+            // Garantir que os 3 primeiros comentários (mais antigos) fiquem no dia 1
+            const sorted = [...allReviews].sort((a, b) => new Date(a.date) - new Date(b.date));
+            const firstDay = getFirstDayOfCurrentMonth();
+            for (let i = 0; i < Math.min(3, sorted.length); i++) {
+                const d = new Date(firstDay);
+                d.setHours(Math.floor(Math.random() * 24));
+                d.setMinutes(Math.floor(Math.random() * 60));
+                sorted[i].date = d.toISOString();
             }
-
-            updateRecentReviewsDates();
+            allReviews.sort((a, b) => new Date(b.date) - new Date(a.date));
             saveReviewsToStorage();
 
-            const sorted = [...allReviews].sort((a, b) => new Date(b.date) - new Date(a.date));
-            badge.textContent = sorted.length;
+            badge.textContent = allReviews.length;
             container.innerHTML = '';
 
-            // Adiciona indicador de online em cada avatar de review
-            sorted.forEach((review) => {
+            allReviews.forEach((review, index) => {
                 const div = document.createElement('div');
                 div.className = 'review-list-item';
                 const nameFull = review.name;
@@ -4092,19 +4262,6 @@
             addNotif(currentUser, '⭐ Nova avaliação', 'Você publicou uma avaliação com ' + rating + ' estrelas.', 'info', 'fa-star');
             updateDashboard(currentUser);
         });
-
-        // Inicializa renderização das reviews e agenda atualização a cada 24h
-        renderAllReviews();
-        setInterval(() => {
-            // Verifica se já passou 24h desde a última atualização
-            const now = Date.now();
-            if (now - lastReviewsUpdate > REVIEW_UPDATE_INTERVAL) {
-                adjustReviewCount();
-                saveReviewsToStorage();
-                renderAllReviews();
-                lastReviewsUpdate = now;
-            }
-        }, 3600000); // verifica a cada hora
 
         // ===== LOAN SIMULATOR =====
         const simAmount = document.getElementById('simAmount');
@@ -4557,9 +4714,131 @@
         });
         document.querySelectorAll('.star-rating-input i[data-value="5"]').forEach(s => s.classList.add('active'));
 
-        // ===== ATUALIZAÇÃO DAS AVALIAÇÕES A CADA 24H =====
-        // Já implementado no setInterval dentro de renderAllReviews e no carregamento inicial.
-        // A variável lastReviewsUpdate controla a última atualização.
+        // ===== AUDIO FAB (NOVO ÍCONE DE SOM) =====
+        const audioFab = document.getElementById('audioFab');
+        let isAudioPlaying = false;
+        let audioSynth = null;
+
+        function getClientName() {
+            if (currentUser && currentUser.fullName) {
+                return currentUser.fullName;
+            }
+            return 'cliente';
+        }
+
+        function buildAudioScript() {
+            const name = getClientName();
+            return `Saudações, ${name}. Seja bem-vindo à NOVACASH.
+
+Para solicitar o seu empréstimo, siga as seguintes instruções:
+
+Primeiro, clique no botão ‘Solicitar o seu empréstimo’.
+
+Depois, preencha todos os dados exigidos, incluindo os seus dados pessoais e a fotografia frontal e traseira do seu Bilhete de Identidade ou outro documento de identificação aceite pela plataforma.
+
+Em seguida, escolha o valor do empréstimo que pretende solicitar.
+
+Pague a taxa de inscrição correspondente ao valor solicitado.
+
+Depois de efetuar o pagamento, faça uma captura de ecrã, ou screenshot, da mensagem de confirmação da transferência.
+
+Envie essa captura através da opção ‘Enviar comprovativo’.
+
+A nossa inteligência artificial irá verificar a transferência no nosso sistema e avaliar a mensagem de confirmação enviada.
+
+Se todas as informações estiverem corretas e a transferência for confirmada, receberá o seu empréstimo dentro de 8 a 30 minutos, no máximo.
+
+Boa solicitação, senhor ${name}. Seja bem-vindo à NOVACASH.`;
+        }
+
+        function playAudioInstructions() {
+            if (!window.speechSynthesis) {
+                showToast('Seu navegador não suporta síntese de voz.', 'error');
+                return;
+            }
+
+            if (isAudioPlaying) {
+                // Se já está a tocar, para
+                if (audioSynth) {
+                    window.speechSynthesis.cancel();
+                    audioSynth = null;
+                }
+                isAudioPlaying = false;
+                audioFab.classList.remove('playing');
+                const badge = audioFab.querySelector('.audio-badge i');
+                if (badge) badge.className = 'fas fa-play';
+                audioFab.querySelector('.audio-tooltip').textContent = '🔊 Ouvir instruções';
+                showToast('Áudio interrompido.', 'info');
+                return;
+            }
+
+            const script = buildAudioScript();
+            const utterance = new SpeechSynthesisUtterance(script);
+            utterance.lang = 'pt-PT';
+            utterance.rate = 0.95;
+            utterance.pitch = 1.0;
+
+            // Seleciona uma voz em português se disponível
+            const voices = window.speechSynthesis.getVoices();
+            const ptVoice = voices.find(v => v.lang.startsWith('pt'));
+            if (ptVoice) utterance.voice = ptVoice;
+
+            isAudioPlaying = true;
+            audioFab.classList.add('playing');
+            const badge = audioFab.querySelector('.audio-badge i');
+            if (badge) badge.className = 'fas fa-stop';
+            audioFab.querySelector('.audio-tooltip').textContent = '⏹️ Parar áudio';
+
+            utterance.onend = function() {
+                isAudioPlaying = false;
+                audioFab.classList.remove('playing');
+                const badge = audioFab.querySelector('.audio-badge i');
+                if (badge) badge.className = 'fas fa-play';
+                audioFab.querySelector('.audio-tooltip').textContent = '🔊 Ouvir instruções';
+                audioSynth = null;
+            };
+
+            utterance.onerror = function() {
+                isAudioPlaying = false;
+                audioFab.classList.remove('playing');
+                const badge = audioFab.querySelector('.audio-badge i');
+                if (badge) badge.className = 'fas fa-play';
+                audioFab.querySelector('.audio-tooltip').textContent = '🔊 Ouvir instruções';
+                audioSynth = null;
+                showToast('Erro ao reproduzir áudio. Tente novamente.', 'error');
+            };
+
+            audioSynth = utterance;
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // Carregar vozes antecipadamente
+        if (window.speechSynthesis) {
+            window.speechSynthesis.getVoices();
+            window.speechSynthesis.onvoiceschanged = function() {
+                window.speechSynthesis.getVoices();
+            };
+        }
+
+        audioFab.addEventListener('click', function(e) {
+            e.stopPropagation();
+            playAudioInstructions();
+        });
+
+        // Interromper áudio se o usuário sair ou fechar
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden && isAudioPlaying) {
+                if (window.speechSynthesis) {
+                    window.speechSynthesis.cancel();
+                }
+                isAudioPlaying = false;
+                audioFab.classList.remove('playing');
+                const badge = audioFab.querySelector('.audio-badge i');
+                if (badge) badge.className = 'fas fa-play';
+                audioFab.querySelector('.audio-tooltip').textContent = '🔊 Ouvir instruções';
+                audioSynth = null;
+            }
+        });
 
     });
     </script>
